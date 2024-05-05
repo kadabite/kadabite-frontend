@@ -1,0 +1,4 @@
+2024-05-05 16:41:09,865 - INFO - Loop 1
+2024-05-05 16:41:09,868 - INFO - Received task from queue
+2024-05-05 16:41:13,203 - INFO - Email task with user id = 4 is completed!
+2024-05-05 16:41:13,203 - INFO - Loop 1
