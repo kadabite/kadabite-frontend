@@ -1,4 +1,10 @@
-2024-05-05 16:41:09,865 - INFO - Loop 1
-2024-05-05 16:41:09,868 - INFO - Received task from queue
-2024-05-05 16:41:13,203 - INFO - Email task with user id = 4 is completed!
-2024-05-05 16:41:13,203 - INFO - Loop 1
+2024-05-06 11:19:03,886 - DEBUG - Using selector: EpollSelector
+2024-05-06 11:19:03,886 - INFO - Loop 1
+2024-05-06 11:19:42,477 - INFO - Received task from queue
+2024-05-06 11:19:47,862 - INFO - Email task with user id = 4 is completed!
+2024-05-06 11:19:47,863 - INFO - Loop 1
+2024-05-06 11:20:44,945 - DEBUG - Using selector: EpollSelector
+2024-05-06 11:20:44,945 - INFO - Loop 1
+2024-05-06 11:20:54,313 - INFO - Received task from queue
+2024-05-06 11:21:03,009 - INFO - Email task with user id = 4 is completed!
+2024-05-06 11:21:03,010 - INFO - Loop 1
