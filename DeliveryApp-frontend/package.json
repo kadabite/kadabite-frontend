@@ -7,7 +7,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "@heroicons/react": "^2.1.4",
+    "@mui/icons-material": "^6.0.0",
+    "@mui/material": "^6.0.0",
+    "@mui/styled-engine-sc": "^6.0.0",
     "@tailwindcss/forms": "^0.5.7",
     "@types/pg": "^8.11.6",
     "@vercel/postgres": "^0.8.0",
@@ -21,6 +26,7 @@
     "postcss": "8.4.38",
     "react": "19.0.0-rc-f38c22b244-20240704",
     "react-dom": "19.0.0-rc-f38c22b244-20240704",
+    "styled-components": "^6.1.12",
     "tailwindcss": "3.4.4",
     "typescript": "5.5.2",
     "use-debounce": "^10.0.1",

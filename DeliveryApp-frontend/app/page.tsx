@@ -4,24 +4,56 @@ import Link from 'next/link';
 import styles from '@/app/ui/home.module.css';
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image'
+import { Button } from '@/app/ui/button';
+import Nav from '@/app/ui/landing_page/nav';
+import ToggleMenu from './ui/landing_page/ToggleMenu';
 
 export default function Page() {
+
   return (
     <>
-    <nav aria-label="header section"></nav>
+     {/* Desktop Navigation */}
+    <nav aria-label="header section" className='hidden md:flex flex-row justify-between shadow-md min-h-4 items-center p-4 bg-gray-50'>
+      <Image 
+        alt='company logo'
+        height={30}
+        width={70}
+        src='/logo.png'
+        className='cursor-pointer transition-transform transform hover:scale-105'
+      />
+      <div className='flex flex-row xl:space-x-10'>
+        <Nav url='/'>Home</Nav>
+        <Nav url='/#about_us'>About Us</Nav>
+        <Nav url='/'>Our foods</Nav>
+        <Nav url='/#how_it_works'>How it works</Nav>
+        <Nav url='/#success_stories'>Success Stories</Nav>
+        <Nav url='/#contact'>Contact</Nav>
+      </div>
+
+      <div className='flex flex-row space-x-2'>
+        <Button className='bg-orange-500'>Sign Up</Button>
+        <div className='mt-auto mb-auto'> -or- </div>
+        <Button className='hover:bg-orange-400 focus-visible:outline-orange-500 active:bg-orange-600'>Login</Button>
+      </div>
+    </nav>
+      {/* Mobile Icon */}
+        <ToggleMenu />
+      {/* Mobile Navigation */}
+      <nav>
+      </nav> 
+    
     <main>
       <section aria-label="hero section">
         <div>Cadatech</div>
-        <div></div>
       </section>
-      <section aria-label="how it works section">
+      <section aria-label="how it works section" id='how_it_works'>
         <div id="headline"></div>
       </section>
       <section aria-label="Featured Restaurants or Dishes"></section>
       <section aria-label="Why Choose Us Section"></section>
-      <section aria-label="Customer Testimonials:"></section>
+      <section aria-label="Customer Testimonials:" id='success_stories'></section>
     </main>
-    <footer></footer>
+    <footer id='contact'>taptap</footer>
     </>
     // <main className="flex min-h-screen flex-col p-6">
     //   <div className={styles.shape} />
