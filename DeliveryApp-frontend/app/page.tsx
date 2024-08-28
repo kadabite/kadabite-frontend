@@ -5,8 +5,8 @@ import styles from '@/app/ui/home.module.css';
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image'
 import { Button } from '@/app/ui/button';
-import Nav from '@/app/ui/landing_page/nav';
 import ToggleMenu from './ui/landing_page/ToggleMenu';
+import { navItems } from '@/app/lib/utils';
 
 export default function Page() {
 
@@ -22,12 +22,12 @@ export default function Page() {
         className='cursor-pointer transition-transform transform hover:scale-105'
       />
       <div className='flex flex-row xl:space-x-10'>
-        <Nav url='/'>Home</Nav>
-        <Nav url='/#about_us'>About Us</Nav>
-        <Nav url='/'>Our foods</Nav>
-        <Nav url='/#how_it_works'>How it works</Nav>
-        <Nav url='/#success_stories'>Success Stories</Nav>
-        <Nav url='/#contact'>Contact</Nav>
+        { navItems.map(({ name, url }: { name: string, url: string}) => (
+              <Link key={name} href={url} className={`${lusitana.className} text-gray-800 md:leading-normal flex items-center gap-5 p-2 self-start rounded-md font-medium hover:text-white transition-colors hover:bg-orange-400 active:text-white active:bg-orange-400 focus:text-white focus:bg-orange-400`}>
+                {name}
+              </Link>
+            ))
+          }
       </div>
 
       <div className='flex flex-row space-x-2'>
@@ -36,12 +36,8 @@ export default function Page() {
         <Button className='hover:bg-orange-400 focus-visible:outline-orange-500 active:bg-orange-600'>Login</Button>
       </div>
     </nav>
-      {/* Mobile Icon */}
-        <ToggleMenu />
-      {/* Mobile Navigation */}
-      <nav>
-      </nav> 
-    
+    {/* Mobile Navigation */}
+    <ToggleMenu />
     <main>
       <section aria-label="hero section">
         <div>Cadatech</div>

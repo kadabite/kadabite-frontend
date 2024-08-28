@@ -67,3 +67,12 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export const navItems = [
+    { name: 'Home', url: '/' },
+    { name: 'About Us', url: '/#about_us' },
+    { name: 'Our foods', url: '/' },
+    { name: 'How it works', url: '/#how_it_works' },
+    { name: 'Success stories', url: '/#success_stores' },
+    { name: 'Contact', url: '/#contact' },
+  ];
