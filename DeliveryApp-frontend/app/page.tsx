@@ -5,8 +5,8 @@ import styles from '@/app/ui/home.module.css';
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image'
 import ToggleMenu, { Navigation } from '@/app/ui/landing_page/ToggleMenu';
-import { navItems } from '@/app/lib/utils';
 import Search from '@/app/ui/search';
+import { Button } from '@/app/ui/button';
 
 export default function Page() {
 
@@ -18,9 +18,19 @@ export default function Page() {
     <ToggleMenu />
     <Search placeholder='find desired food(s) / restaurant(s)'/>
     <main>
-      <section aria-label="hero section">
-        <div>Cadatech</div>
+      <section aria-label="hero section" className='relative w-full p-10 bg-orange-50 shadow-md'>
+        <div className='text-orange-900 w-full md:text-7xl text-4xl tracking-wide leading-relaxed'>Healthy Eating. <br/>Better Living.</div>
+        <div className='text-gray-900 w-full text-xl tracking-wide leading-loose my-8'>
+          Accomplish your goals with convenient, <br />
+          healthy meals delivered to your door.
+        </div>
+        <div className='flex flex-row space-x-2'>
+          <Button className='bg-orange-500'>Order Now</Button>
+          <div className='mt-auto mb-auto'> -or- </div>
+          <Button className='hover:bg-orange-400 focus-visible:outline-orange-500 active:bg-orange-600'>Find restaurant near you</Button>
+        </div>
       </section>
+
       <section aria-label="how it works section" id='how_it_works'>
         <div id="headline"></div>
       </section>
