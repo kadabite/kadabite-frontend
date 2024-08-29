@@ -103,7 +103,7 @@ export function Navigation() {
         <Button className='hover:bg-orange-400 focus-visible:outline-orange-500 active:bg-orange-600'>Login</Button>
       </div>
     </nav>
-    <div className="h-20 w-full hidden md:flex flex-row"></div>
+    <div className="h-20 w-full hidden md:flex flex-row relative"></div>
     </>
   );
 }

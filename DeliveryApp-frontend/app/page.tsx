@@ -6,6 +6,7 @@ import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image'
 import ToggleMenu, { Navigation } from '@/app/ui/landing_page/ToggleMenu';
 import { navItems } from '@/app/lib/utils';
+import Search from '@/app/ui/search';
 
 export default function Page() {
 
@@ -15,6 +16,7 @@ export default function Page() {
     <Navigation />
     {/* Mobile Navigation */}
     <ToggleMenu />
+    <Search placeholder='find desired food(s) / restaurant(s)'/>
     <main>
       <section aria-label="hero section">
         <div>Cadatech</div>
