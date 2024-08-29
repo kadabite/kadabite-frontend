@@ -4,8 +4,7 @@ import Link from 'next/link';
 import styles from '@/app/ui/home.module.css';
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image'
-import { Button } from '@/app/ui/button';
-import ToggleMenu from './ui/landing_page/ToggleMenu';
+import ToggleMenu, { Navigation } from '@/app/ui/landing_page/ToggleMenu';
 import { navItems } from '@/app/lib/utils';
 
 export default function Page() {
@@ -13,29 +12,7 @@ export default function Page() {
   return (
     <>
      {/* Desktop Navigation */}
-    <nav aria-label="header section" className='hidden md:flex flex-row justify-between shadow-md min-h-4 items-center p-4 bg-gray-50'>
-      <Image 
-        alt='company logo'
-        height={30}
-        width={70}
-        src='/logo.png'
-        className='cursor-pointer transition-transform transform hover:scale-105'
-      />
-      <div className='flex flex-row xl:space-x-10'>
-        { navItems.map(({ name, url }: { name: string, url: string}) => (
-              <Link key={name} href={url} className={`${lusitana.className} text-gray-800 md:leading-normal flex items-center gap-5 p-2 self-start rounded-md font-medium hover:text-white transition-colors hover:bg-orange-400 active:text-white active:bg-orange-400 focus:text-white focus:bg-orange-400`}>
-                {name}
-              </Link>
-            ))
-          }
-      </div>
-
-      <div className='flex flex-row space-x-2'>
-        <Button className='bg-orange-500'>Sign Up</Button>
-        <div className='mt-auto mb-auto'> -or- </div>
-        <Button className='hover:bg-orange-400 focus-visible:outline-orange-500 active:bg-orange-600'>Login</Button>
-      </div>
-    </nav>
+    <Navigation />
     {/* Mobile Navigation */}
     <ToggleMenu />
     <main>
