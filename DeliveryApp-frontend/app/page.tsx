@@ -17,17 +17,17 @@ export default function Page() {
     {/* Mobile Navigation */}
     <ToggleMenu />
     <Search placeholder='find desired food(s) / restaurant(s)'/>
-    <main>
-      <section aria-label="hero section" className='relative w-full p-10 bg-orange-50 shadow-md'>
-        <div className='text-orange-900 w-full md:text-7xl text-4xl tracking-wide leading-relaxed'>Healthy Eating. <br/>Better Living.</div>
-        <div className='text-gray-900 w-full text-xl tracking-wide leading-loose my-8'>
+    <main className='pt-5 md:pt-0'>
+      <section aria-label="hero section" className='relative w-full p-12 bg-orange-50 shadow-md bg-[url("/meal_mockup3.jpg")] bg-bottom bg-no-repeat bg-[length:100%_50%] md:bg-right md:bg-[length:65%_130%]'>
+        <div className='text-orange-900 w-full md:text-7xl text-4xl md:tracking-wide tracking-normal md:leading-relaxed leading-normal'>Healthy Eating. <br/>Better Living.</div>
+        <div className='text-gray-700 w-full md:text-xl text:sm md:tracking-wide leading-normal mb-10'>
           Accomplish your goals with convenient, <br />
           healthy meals delivered to your door.
         </div>
-        <div className='flex flex-row space-x-2'>
+        <div className='flex md:flex-row flex-col md:space-x-2 items-center mb-20'>
           <Button className='bg-orange-500'>Order Now</Button>
-          <div className='mt-auto mb-auto'> -or- </div>
-          <Button className='hover:bg-orange-400 focus-visible:outline-orange-500 active:bg-orange-600'>Find restaurant near you</Button>
+          <div className='mt-auto mb-auto text-gray-900 font-bold'> - or - </div>
+          <Button>Find restaurant near you</Button>
         </div>
       </section>
 
@@ -39,6 +39,14 @@ export default function Page() {
       <section aria-label="Customer Testimonials:" id='success_stories'></section>
     </main>
     <footer id='contact'>taptap</footer>
+    <div className='text-gray-700 w-full md:text-xl text:sm md:tracking-wide leading-normal mb-10'>
+          Accomplish your goals with convenient, <br />
+          healthy meals delivered to your door.
+        </div>
+        <div className='text-gray-700 w-full md:text-xl text:sm md:tracking-wide leading-normal mb-10'>
+          Accomplish your goals with convenient, <br />
+          healthy meals delivered to your door.
+        </div>
     </>
     // <main className="flex min-h-screen flex-col p-6">
     //   <div className={styles.shape} />
@@ -87,3 +95,4 @@ export default function Page() {
     // </main>
   );
 }
+

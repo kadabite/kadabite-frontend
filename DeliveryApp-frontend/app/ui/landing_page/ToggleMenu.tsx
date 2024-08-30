@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AppsIcon from '@mui/icons-material/Apps';
 import { orange } from '@mui/material/colors';
 import Image from 'next/image'
@@ -24,7 +24,7 @@ export default function ToggleMenu() {
 
   return (
     <>
-    <div className='md:hidden bg-gray-50 flex flex-row justify-between shadow-md h-15 px-3 w-full overflow-x-hidden relative'>
+    <div className='fixed top-0 left-0 md:hidden bg-gray-50 flex flex-row justify-between shadow-md h-15 px-3 w-full overflow-x-hidden z-50'>
       <Image 
         alt='company logo'
         height={30}
@@ -48,8 +48,8 @@ export default function ToggleMenu() {
         />
       </button>
     </div>
-    
-    <div className={`absolute left-0 w-full bg-white shadow-lg z-50 transition-transform transform ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+    <div className="h-24 w-full md:hidden md:flex flex-row relative"></div>
+    <div className={`fixed left-0 w-full bg-white shadow-lg z-50 transition-transform transform ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
       <div className='flex flex-col bg-orange-50'>
         { state.map(({ name, url }: { name: string, url: string}) => (
           <Link onClick={() => setIsOpen(!isOpen)} key={name} href={url} className={`${lusitana.className} pb-4 pt-4 pl-10 border-b text-xl text-gray-800 md:text-3xl md:leading-normal active:bg-orange-100 focus:bg-orange-100`}>{name}</Link>

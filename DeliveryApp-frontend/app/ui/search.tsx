@@ -15,7 +15,6 @@ export default function Search({ placeholder }: { placeholder: string }) {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState(searchParams.get('query')?.toString() || '');
 
-  // Debounce the search input so that it is only called after the user stops typing
   const handleSearch = useDebouncedCallback((term) => {
     setLoading(true);
     const params = new URLSearchParams(searchParams);
@@ -24,55 +23,65 @@ export default function Search({ placeholder }: { placeholder: string }) {
     if (term) {
       params.set('query', term);
       setState(true);
-      setInputValue(term);
     } else {
       params.delete('query');
-      setInputValue('')
       setState(false);
     }
     replace(`${pathname}?${params.toString()}`);
     // setLoading(false);
   }, 300);
 
+  const handleClear = () => {
+    setInputValue('');
+    handleSearch('');
+  };
+
   return (
     <>
-      <div className="relative flex flex-1 flex-shrink-0 ml-5 mr-5 mt-5 z-60">
+    <div className='fixed w-full z-40'>
+      <div className="relative flex flex-1 flex-shrink-0 ml-5 mr-5 mt-5">
         <label htmlFor="search" className="sr-only">
           Search
         </label>
         <input
-          className="caret-orange-500 peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+          className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 pr-10 text-sm outline-2 placeholder:text-gray-500"
           placeholder={placeholder}
+          value={inputValue}
           onChange={(e) => {
+            setInputValue(e.target.value);
             handleSearch(e.target.value);
           }}
-          defaultValue={searchParams.get('query')?.toString()}
         />
         <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
         {inputValue && (
           <XCircleIcon
-            className="absolute right-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-800 cursor-pointer"
-            onClick={() => handleSearch('')}
+            className="absolute right-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 hover:text-red-500 cursor-pointer"
+            onClick={handleClear}
           />
         )}
       </div>
       {state && (
-        <div className="absolute translate-y-1 flex flex-row items-center mx-auto pl-5 pr-5 h-14 w-full flex flex-row rounded-md border border-gray-200 text-sm outline-2 bg-white z-50">
+        <div className="absolute z-40 w-full">
+        <div className="flex flex-row items-center ml-5 mr-5 mt-2 h-14 rounded-md border border-gray-200 text-sm outline-2 bg-gray-50">
           {loading ? (
-              <CircularProgress sx={{ 
+            <CircularProgress
+              sx={{
                 color: orange[600],
                 fontSize: 30,
-                marginLeft:'auto',
-                marginRight:'auto'
-              }}/>
+                marginLeft: 'auto',
+                marginRight: 'auto',
+              }}
+            />
           ) : (
             <div>
               {/* Your search results will go here */}
             </div>
           )}
         </div>
+        </div>
       )}
       <div className="h-5 w-full hidden md:flex flex-row relative"></div>
+    </div>
     </>
   );
 }
