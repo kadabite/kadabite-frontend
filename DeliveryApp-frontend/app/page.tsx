@@ -7,6 +7,7 @@ import Image from 'next/image'
 import ToggleMenu, { Navigation } from '@/app/ui/landing_page/ToggleMenu';
 import Search from '@/app/ui/search';
 import { Button } from '@/app/ui/button';
+import Headline from './ui/landing_page/headlines';
 
 export default function Page() {
 
@@ -32,9 +33,42 @@ export default function Page() {
       </section>
 
       <section aria-label="how it works section" id='how_it_works'>
-        <div id="headline"></div>
+        <Headline className="md:text-7xl text-3xl font-medium text-slate-900">How it works</Headline>
+        {/* <div className='w-full p-5 md:p-12'> */}
+          <div className="w-full p-5 md:p-8 flex flex:col md:flex-row items-center">
+            <div className='flex flex-col md:w-1/3 w-full items-center justify-center p-5'>
+              <Image
+                src='/choose_meal.jpg'
+                width={400}
+                height={400}
+                alt='Choose food from your favorite restaurant'
+              />
+              <p className='text-xl text-gray-800 md:text-2xl md:leading-normal'>Choose your meal</p>
+            </div>
+            <div className='flex flex-col md:w-1/3 w-full items-center justify-center p-5'>
+              <Image
+                src='/place_order.jpg'
+                width={400}
+                height={400}
+                alt='Order food from your favorite restaurant'
+              />
+              <p className='text-xl text-gray-800 md:text-2xl md:leading-normal'>Place your Order</p>
+            </div>
+            <div className='flex flex-col md:w-1/3 w-full items-center justify-center p-5'>
+              <Image
+                src='/track_delivery.jpg'
+                width={400}
+                height={400}
+                alt='Track the delivery from your favorite restaurant'
+              />
+              <p className='text-xl text-gray-800 md:text-2xl md:leading-normal'>Track Delivery</p>
+            </div>
+          </div>
+        {/* </div> */}
       </section>
       <section aria-label="Featured Restaurants or Dishes"></section>
+      <section aria-label="Register business owners who sell any kind of food products"></section>
+
       <section aria-label="Why Choose Us Section"></section>
       <section aria-label="Customer Testimonials:" id='success_stories'></section>
     </main>
