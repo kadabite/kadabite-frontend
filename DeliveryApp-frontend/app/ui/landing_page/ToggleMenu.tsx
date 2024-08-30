@@ -29,7 +29,7 @@ export default function ToggleMenu() {
         alt='company logo'
         height={30}
         width={100}
-        src='/logo.png'
+        src='/landing_page/logo.png'
       />
       <button onClick={() => setIsOpen(!isOpen)} aria-label="Open Menu" className="cursor-pointer">
         <AppsIcon sx={{ 
@@ -82,7 +82,7 @@ export function Navigation() {
         alt='company logo'
         height={30}
         width={70}
-        src='/logo.png'
+        src='/landing_page/logo.png'
         className='cursor-pointer transition-transform transform hover:scale-105'
       />
       <div className='flex flex-row xl:space-x-10'>

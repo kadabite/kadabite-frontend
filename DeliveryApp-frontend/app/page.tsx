@@ -7,7 +7,7 @@ import Image from 'next/image'
 import ToggleMenu, { Navigation } from '@/app/ui/landing_page/ToggleMenu';
 import Search from '@/app/ui/search';
 import { Button } from '@/app/ui/button';
-import Headline from './ui/landing_page/headlines';
+import Headline from '@/app/ui/landing_page/headlines';
 
 export default function Page() {
 
@@ -19,7 +19,7 @@ export default function Page() {
     <ToggleMenu />
     <Search placeholder='find desired food(s) / restaurant(s)'/>
     <main className='pt-5 md:pt-0'>
-      <section aria-label="hero section" className='relative w-full p-12 bg-orange-50 shadow-md bg-[url("/meal_mockup3.jpg")] bg-bottom bg-no-repeat bg-[length:100%_50%] md:bg-right md:bg-[length:65%_130%]'>
+      <section aria-label="hero section" className='relative w-full p-12 bg-orange-50 shadow-md bg-[url("/landing_page/meal_mockup3.jpg")] bg-bottom bg-no-repeat bg-[length:100%_50%] md:bg-right md:bg-[length:65%_130%]'>
         <div className='text-orange-900 w-full md:text-7xl text-4xl md:tracking-wide tracking-normal md:leading-relaxed leading-normal'>Healthy Eating. <br/>Better Living.</div>
         <div className='text-gray-700 w-full md:text-xl text:sm md:tracking-wide leading-normal mb-10'>
           Accomplish your goals with convenient, <br />
@@ -35,10 +35,10 @@ export default function Page() {
       <section aria-label="how it works section" id='how_it_works'>
         <Headline className="md:text-7xl text-3xl font-medium text-slate-900">How it works</Headline>
         {/* <div className='w-full p-5 md:p-12'> */}
-          <div className="w-full p-5 md:p-8 flex flex:col md:flex-row items-center">
+          {/* <div className="w-full p-5 md:p-8 flex flex:col md:flex-row items-center">
             <div className='flex flex-col md:w-1/3 w-full items-center justify-center p-5'>
               <Image
-                src='/choose_meal.jpg'
+                src='/landing_page/choose_meal.jpg'
                 width={400}
                 height={400}
                 alt='Choose food from your favorite restaurant'
@@ -47,7 +47,7 @@ export default function Page() {
             </div>
             <div className='flex flex-col md:w-1/3 w-full items-center justify-center p-5'>
               <Image
-                src='/place_order.jpg'
+                src='/landing_page/place_order.jpg'
                 width={400}
                 height={400}
                 alt='Order food from your favorite restaurant'
@@ -56,14 +56,14 @@ export default function Page() {
             </div>
             <div className='flex flex-col md:w-1/3 w-full items-center justify-center p-5'>
               <Image
-                src='/track_delivery.jpg'
+                src='/landing_page/track_delivery.jpg'
                 width={400}
                 height={400}
                 alt='Track the delivery from your favorite restaurant'
               />
               <p className='text-xl text-gray-800 md:text-2xl md:leading-normal'>Track Delivery</p>
             </div>
-          </div>
+          </div> */}
         {/* </div> */}
       </section>
       <section aria-label="Featured Restaurants or Dishes"></section>
