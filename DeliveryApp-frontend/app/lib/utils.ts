@@ -192,6 +192,19 @@ export const chooseUs = [
   }
 ];
 
+export const testimonials = [
+  {
+    image: '/landing_page/testimonial1.png',
+    altText: 'image of the testifier',
+    message: 'I love the convenience of ordering my meals online. The food is always fresh and delicious.',
+  },
+  {
+    image: '/landing_page/testimonial2.png',
+    altText: 'image of the testifier',
+    message: 'I love the convenience of ordering my meals online. The food is always fresh and delicious.',
+  }
+]
+
 // import { useRef, useEffect } from 'react';
 // import Chart from 'chart.js';
 
