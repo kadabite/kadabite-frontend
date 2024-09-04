@@ -123,7 +123,7 @@ export default function Page() {
 
       <div className='flex flex-col items-center justify-between text-gray-900 w-full md:text-xl text-sm md:tracking-wide leading-normal mb-10'>
         <h3 className='w-full text-center text-orange-800 p-7'>Download app via ios or android</h3>
-        <div className='flex flex-row w-full justify-evenly p-7'>
+        <div className='flex flex-row w-full justify-evenly p-7 md:text-lg text-sm'>
           <Button className='bg-gray-700'>SignUp</Button>
           <Button className='bg-orange-600'>Order now</Button>
           <Button className='bg-gray-700'>Find your Restaurants</Button>
