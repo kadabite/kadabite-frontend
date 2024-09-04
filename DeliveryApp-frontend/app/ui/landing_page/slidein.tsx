@@ -3,7 +3,7 @@
 import clsx from 'clsx';
 import { useEffect, useRef } from 'react';
 
-export default function Headline({ children, className }: {children: React.ReactNode, className: string}) {
+export default function Slidein({ children, className }: {children: React.ReactNode, className: string}) {
   const headlineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function Headline({ children, className }: {children: React.React
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.2 }
     );
 
     if (headlineRef.current) {
@@ -31,7 +31,7 @@ export default function Headline({ children, className }: {children: React.React
 
   return (
     <div>
-      <div id="headline" ref={headlineRef} className={clsx('p-12', className)}>
+      <div id="headline" ref={headlineRef} className={clsx('md:pt-10 md:pl-10', className)}>
         {children}
       </div>
       {/* Other content */}

@@ -7,7 +7,9 @@ import Image from 'next/image'
 import ToggleMenu, { Navigation } from '@/app/ui/landing_page/ToggleMenu';
 import Search from '@/app/ui/search';
 import { Button } from '@/app/ui/button';
-import Headline from '@/app/ui/landing_page/headlines';
+import Slidein from '@/app/ui/landing_page/slidein';
+import { chooseUs, items, restaurant } from '@/app/lib/utils';
+import { orange } from '@mui/material/colors';
 
 export default function Page() {
 
@@ -33,43 +35,69 @@ export default function Page() {
       </section>
 
       <section aria-label="how it works section" id='how_it_works'>
-        <Headline className="md:text-7xl text-3xl font-medium text-slate-900">How it works</Headline>
-        {/* <div className='w-full p-5 md:p-12'> */}
-          {/* <div className="w-full p-5 md:p-8 flex flex:col md:flex-row items-center">
-            <div className='flex flex-col md:w-1/3 w-full items-center justify-center p-5'>
+        <Slidein className="md:text-7xl text-3xl font-medium text-slate-900 pt-10 text-center">How it works</Slidein>
+          <Slidein className="w-full p-5 md:p-8 flex flex-col md:flex-row md:items-center">
+            {items.map((item, idx) => { return (
+            <div className='flex flex-col md:w-1/3 w-full items-center justify-center p-6 rounded-xl cursor-pointer transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' key={idx}>
+              <p className='text-orange-900 text-2xl md:leading-normal mb-2 '>{item.header}</p>
               <Image
-                src='/landing_page/choose_meal.jpg'
-                width={400}
-                height={400}
-                alt='Choose food from your favorite restaurant'
+                src={`/landing_page/${item.name}`}
+                width={300}
+                height={300}
+                alt={item.altText}
+                className='rounded-xl shadow-md'
               />
-              <p className='text-xl text-gray-800 md:text-2xl md:leading-normal'>Choose your meal</p>
             </div>
-            <div className='flex flex-col md:w-1/3 w-full items-center justify-center p-5'>
-              <Image
-                src='/landing_page/place_order.jpg'
-                width={400}
-                height={400}
-                alt='Order food from your favorite restaurant'
-              />
-              <p className='text-xl text-gray-800 md:text-2xl md:leading-normal'>Place your Order</p>
-            </div>
-            <div className='flex flex-col md:w-1/3 w-full items-center justify-center p-5'>
-              <Image
-                src='/landing_page/track_delivery.jpg'
-                width={400}
-                height={400}
-                alt='Track the delivery from your favorite restaurant'
-              />
-              <p className='text-xl text-gray-800 md:text-2xl md:leading-normal'>Track Delivery</p>
-            </div>
-          </div> */}
-        {/* </div> */}
+          )})}
+          </Slidein>
       </section>
-      <section aria-label="Featured Restaurants or Dishes"></section>
+      <section aria-label="Featured Restaurants or Dishes" className='w-full bg-orange-100 shadow-2xl'>
+        <Slidein className="md:text-7xl text-3xl font-medium text-slate-900 pt-10 text-center">Popular restarants top dishes</Slidein>
+        <Slidein className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">
+          {restaurant.map((item, idx) => { return (
+          <div className='flex flex-col md:w-1/4 w-full justify-center p-6 rounded-xl transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' key={idx}>
+            <div className='shadow-lg rounded-xl p-5 bg-gray-50'>
+              <Link href={item.href}>
+                <Image
+                  src={`/landing_page/${item.image}`}
+                  width={300}
+                  height={200}
+                  alt={item.altText}
+                  className='rounded-t-xl cursor-pointer'
+                />
+              </Link>
+              <h1 className='text-xl text-slate-900 md:leading-normal pt-3 pb-3'>{item.name}</h1>
+              <p className='text-sm text-slate-500 md:leading-normal'>{item.briefDescription}</p>
+              <div className='flex flex-row p-5 flex flex-row justify-center'>
+                <Button className='bg-orange-500'>Order from here</Button>
+              </div>
+            </div>
+          </div>
+        )})}
+        </Slidein>
+      </section>
+      <section aria-label="Why Choose Us Section" className='w-full bg-slate-100 shadow-2xl'>
+        <Slidein className="md:text-7xl text-3xl font-medium text-orange-900 pt-10 text-center">Why Choose Us</Slidein>
+        <Slidein className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">
+          {chooseUs.map((item, idx) => { return (
+          <div className='flex flex-col md:w-1/4 w-full justify-center p-6 rounded-xl transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' key={idx}>
+            <div className='shadow-lg rounded-xl p-5 bg-gray-50 flex flex-col'>
+              <div className='text-center'>
+                <item.icon sx={{
+                fontSize: 50,
+                color: orange[900]
+                }}/>
+              </div>
+              <h1 className='text-xl text-blue-900 md:leading-normal pt-3 pb-3 text-center'>{item.header}</h1>
+              <p className='text-sm text-blue-500 md:leading-normal text-center'>{item.description}</p>
+            </div>
+          </div>
+        )})}
+        </Slidein>
+      </section>
+
       <section aria-label="Register business owners who sell any kind of food products"></section>
 
-      <section aria-label="Why Choose Us Section"></section>
       <section aria-label="Customer Testimonials:" id='success_stories'></section>
     </main>
     <footer id='contact'>taptap</footer>
