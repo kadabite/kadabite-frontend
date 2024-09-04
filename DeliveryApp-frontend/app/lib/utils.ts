@@ -194,12 +194,17 @@ export const chooseUs = [
 
 export const testimonials = [
   {
-    image: '/landing_page/testimonial1.png',
+    image: '/landing_page/testimonial1.jpg',
     altText: 'image of the testifier',
     message: 'I love the convenience of ordering my meals online. The food is always fresh and delicious.',
   },
   {
-    image: '/landing_page/testimonial2.png',
+    image: '/landing_page/testimonial2.jpg',
+    altText: 'image of the testifier',
+    message: 'I love the convenience of ordering my meals online. The food is always fresh and delicious.',
+  },
+  {
+    image: '/landing_page/testimonial2.jpg',
     altText: 'image of the testifier',
     message: 'I love the convenience of ordering my meals online. The food is always fresh and delicious.',
   }

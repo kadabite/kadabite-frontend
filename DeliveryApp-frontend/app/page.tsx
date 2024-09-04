@@ -102,7 +102,7 @@ export default function Page() {
         <Slidein className="md:text-5xl text-lg font-medium text-blue-900 pt-10 text-center">See What customers are saying</Slidein>
         <Slidein className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">
           {testimonials.map((item, idx) => { return (
-          <div className='flex flex-col md:w-1/4 w-full justify-center p-6 rounded-xl transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' key={idx}>
+          <div className='flex flex-col md:w-1/3 w-full justify-center p-6 rounded-xl transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' key={idx}>
             <div className='shadow-lg rounded-xl p-5 bg-gray-50 flex flex-col'>
               <div className='text-center'>
                 <Image
@@ -121,18 +121,17 @@ export default function Page() {
       </section>
     </main>
 
-    <div className='flex flex-col items-center justify-between text-gray-900 w-full md:text-xl text-sm md:tracking-wide leading-normal mb-10'>
-      <h3 className='w-full text-center text-orange-800 p-7'>Download app via ios or android</h3>
-      <div className='flex flex-row w-full justify-evenly p-7'>
-        <Button className='bg-gray-700'>SignUp</Button>
-        <Button className='bg-orange-600'>Order now</Button>
-        <Button className='bg-gray-700'>Find your Restaurants</Button>
+      <div className='flex flex-col items-center justify-between text-gray-900 w-full md:text-xl text-sm md:tracking-wide leading-normal mb-10'>
+        <h3 className='w-full text-center text-orange-800 p-7'>Download app via ios or android</h3>
+        <div className='flex flex-row w-full justify-evenly p-7'>
+          <Button className='bg-gray-700'>SignUp</Button>
+          <Button className='bg-orange-600'>Order now</Button>
+          <Button className='bg-gray-700'>Find your Restaurants</Button>
+        </div>
+        <div className='mt-auto mb-auto text-gray-900 font-bold p-7'> - or - </div>
+        <Button className='bg-orange-600 p-7'>Explore the market</Button>
       </div>
-      <div className='mt-auto mb-auto text-gray-900 font-bold p-7'> - or - </div>
-      <Button className='bg-orange-600 p-7'>Explore the market</Button>
-
-    </div>
-          <footer id='contact'>taptap</footer>
+      <footer id='contact'>taptap</footer>
     </>
     // <main className="flex min-h-screen flex-col p-6">
     //   <div className={styles.shape} />
