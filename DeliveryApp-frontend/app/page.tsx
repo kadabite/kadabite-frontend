@@ -1,5 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon, AtSymbolIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import styles from '@/app/ui/home.module.css';
 import { lusitana } from '@/app/ui/fonts';
@@ -9,7 +9,9 @@ import Search from '@/app/ui/search';
 import { Button } from '@/app/ui/button';
 import Slidein from '@/app/ui/landing_page/slidein';
 import { chooseUs, items, restaurant, testimonials } from '@/app/lib/utils';
-import { orange } from '@mui/material/colors';
+import { blue, orange } from '@mui/material/colors';
+import TextField from '@mui/material/TextField';
+import { Typography } from '@mui/material';
 
 export default function Page() {
 
@@ -130,9 +132,53 @@ export default function Page() {
           <Button className='bg-orange-600 m-3'>Explore the market</Button>
         </div>
       </div>
-      <footer id='contact' aria-label="" className='w-full h-[500px] bg-orange-700 shadow-2xl'>
+      <footer id='contact' aria-label="" className='w-full bg-orange-700 shadow-2xl flex flex-col md:flex-row p-5 pb-16'>
+        <div className='w-full md:w-3/4 flex flex-col md:flex-row justify-around items-center'>
+          <div className='flex flex-col text-slate-50'>
+            <Typography sx={{ mt: 2, color: blue[900], fontSize: 20 }}>Important Pages</Typography>
+            <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900'>home page</Link>
+            <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900'>about page</Link>
+            <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900'>app page</Link>
+            <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900'>market place</Link>
+          </div>
 
+          <div className='flex flex-col text-slate-50'>
+            <Typography sx={{ mt: 2, color: blue[900], fontSize: 20 }}>Important Pages</Typography>
+            <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900'>home page</Link>
+            <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900'>about page</Link>
+            <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900'>app page</Link>
+            <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900'>market place</Link>
+          </div>
 
+          <div className='flex flex-col text-slate-50'>
+            <Typography sx={{ mt: 2, color: blue[900], fontSize: 20 }}>Important Pages</Typography>
+            <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900'>home page</Link>
+            <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900'>about page</Link>
+            <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900'>app page</Link>
+            <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900'>market place</Link>
+          </div>
+        </div>
+        <div className="w-full md:w-1/4 flex flex-col justify-around">
+          <div>
+            <label
+              className="mb-3 mt-5 block text-lg font-medium text-slate-50"
+              htmlFor="email">
+              Subscribe to our Newsletter
+            </label>
+            <div className="relative mt-2 mb-3">
+              <input
+                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                id="email"
+                type="email"
+                name="email"
+                placeholder="Subscribe by entering your email"
+                required
+              />
+              <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+            <Button className='rounded-md'>Submit</Button>
+          </div>
+        </div>
       </footer>
     </>
     // <main className="flex min-h-screen flex-col p-6">
