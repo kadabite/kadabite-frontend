@@ -67,73 +67,76 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
-
+// Navigation Items
 export const navItems = [
-    { name: 'Home', url: '/' },
-    { name: 'About Us', url: '/#about_us' },
-    { name: 'Our foods', url: '/#our_foods' },
-    { name: 'How it works', url: '/#how_it_works' },
-    { name: 'Success stories', url: '/#success_stores' },
-    { name: 'Contact', url: '/#contact' },
-  ];
+  { name: 'Home', url: '/' },
+  { name: 'About Us', url: '/#about_us' },
+  { name: 'Popular restaurants', url: '/#popular_restaurants' },
+  { name: 'How It Works', url: '/#how_it_works' },
+  { name: 'Why Choose Us', url: '/#why_choose_us' },
+  { name: 'Success Stories', url: '/#success_stories' },
+  { name: 'Contact', url: '/#contact' },
+];
 
-
+// Carousel Items
 export const items = [
-    {
-      name: 'choose_meal.jpg',
-      altText: 'Choose food from your favorite restaurant',
-      header: 'Choose your meal'
-    },
-    {
-      name: 'place_order.jpg',
-      altText: 'Order food from your favorite restaurant',
-      header: 'Place your Order'
-    },
-    {
-      name: 'track_delivery.jpg',
-      altText: 'Track the delivery from your favorite restaurant',
-      header: 'Track Delivery'
-    },
-  ]
+  {
+    name: 'choose_meal.jpg',
+    altText: 'Choose food from your favorite restaurant',
+    header: 'Choose Your Meal',
+  },
+  {
+    name: 'place_order.jpg',
+    altText: 'Order food from your favorite restaurant',
+    header: 'Place Your Order',
+  },
+  {
+    name: 'track_delivery.jpg',
+    altText: 'Track the delivery from your favorite restaurant',
+    header: 'Track Your Delivery',
+  },
+];
 
+// Restaurant Details
 export const restaurant = [
-    {
-      name: 'morba chinons restaurant',
-      image: 'choose_meal.jpg',
-      href: '/',
-      altText: 'Choose food from your favorite restaurant',
-      briefDescription: 'Choose your meal Choose food from your favorite restaurant Choose food from your favorite restaurant'
-    },
-     {
-      name: 'morba chinons restaurant',
-      image: 'choose_meal.jpg',
-      href: '/',
-      altText: 'Choose food from your favorite restaurant',
-      briefDescription: 'Choose your meal Choose food from your favorite restaurant Choose food from your favorite restaurant'
-    },
-     {
-      name: 'morba chinons restaurant',
-      image: 'choose_meal.jpg',
-      href: '/',
-      altText: 'Choose food from your favorite restaurant',
-      briefDescription: 'Choose your meal Choose food from your favorite restaurant Choose food from your favorite restaurant'
-    },
-    {
-      name: 'morba chinons restaurant',
-      image: 'choose_meal.jpg',
-      href: '/',
-      altText: 'Choose food from your favorite restaurant',
-      briefDescription: 'Choose your meal Choose food from your favorite restaurant Choose food from your favorite restaurant'
-    },
-    {
-      name: 'morba chinons restaurant',
-      image: 'choose_meal.jpg',
-      href: '/',
-      altText: 'Choose food from your favorite restaurant',
-      briefDescription: 'Choose your meal Choose food from your favorite restaurant Choose food from your favorite restaurant'
-    },
-  ];
+  {
+    name: 'Morba Chinons Restaurant',
+    image: 'choose_meal.jpg',
+    href: '/',
+    altText: 'Choose food from Morba Chinons Restaurant',
+    briefDescription: 'Discover a variety of meals prepared with top-quality ingredients, carefully curated to meet your tastes.',
+  },
+  {
+    name: 'Taste of Africa',
+    image: 'place_order.jpg',
+    href: '/',
+    altText: 'Order food from Taste of Africa',
+    briefDescription: 'Authentic African meals crafted to deliver an unforgettable dining experience.',
+  },
+  {
+    name: 'Italian Feast',
+    image: 'track_delivery.jpg',
+    href: '/',
+    altText: 'Order Italian food from Italian Feast',
+    briefDescription: 'Enjoy classic Italian dishes with the finest ingredients and flavors.',
+  },
+  {
+    name: 'Asian Delights',
+    image: 'choose_meal.jpg',
+    href: '/',
+    altText: 'Asian meals at Asian Delights',
+    briefDescription: 'Taste the rich flavors of Asia with freshly made meals delivered to your doorstep.',
+  },
+  {
+    name: 'Healthy Bites',
+    image: 'place_order.jpg',
+    href: '/',
+    altText: 'Order healthy food from Healthy Bites',
+    briefDescription: 'Savor healthy, balanced meals that nourish your body and satisfy your taste buds.',
+  },
+];
 
+// Why Choose Us Section
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
@@ -148,67 +151,74 @@ export const chooseUs = [
   {
     icon: AcUnitIcon,
     header: 'Quality',
-    description: 'We only use the best ingredients for our meals.',
+    description: 'We use only the best ingredients for our meals.',
   },
   {
     icon: AccountBalanceIcon,
     header: 'Trust',
-    description: 'Our services are trusted by thousands of customers.',
+    description: 'Trusted by thousands of customers for reliable service.',
   },
   {
     icon: AddShoppingCartIcon,
     header: 'Convenience',
-    description: 'Easily order your meals online.',
+    description: 'Order meals easily from the comfort of your home.',
   },
   {
     icon: AddModeratorIcon,
     header: 'Security',
-    description: 'Your data is safe with us.',
+    description: 'Your data and transactions are securely handled.',
   },
   {
     icon: AddchartIcon,
     header: 'Performance',
-    description: 'Fast and reliable delivery service.',
+    description: 'Experience fast and efficient food delivery every time.',
   },
   {
     icon: ApartmentIcon,
     header: 'Variety',
-    description: 'A wide range of meals to choose from.',
+    description: 'A wide selection of meals to cater to every preference.',
   },
   {
     icon: AssessmentIcon,
     header: 'Feedback',
-    description: 'We value your feedback to improve our services.',
+    description: 'We value your input to improve and adapt our services.',
   },
   {
     icon: AssuredWorkloadIcon,
     header: 'Compliance',
-    description: 'We adhere to all food safety regulations.',
+    description: 'Our services meet all food safety and delivery regulations.',
   },
   {
     icon: BreakfastDiningIcon,
     header: 'Delicious',
-    description: 'Enjoy delicious meals every time.',
-  }
+    description: 'Indulge in mouth-watering dishes every time you order.',
+  },
 ];
 
+// Testimonials
 export const testimonials = [
   {
+    name: 'Jane Doe',
     image: '/landing_page/testimonial1.jpg',
-    altText: 'image of the testifier',
-    message: 'I love the convenience of ordering my meals online. The food is always fresh and delicious.',
+    altText: 'Photo of satisfied customer Jane Doe',
+    message: 'The food is always fresh and the delivery is on point. Highly recommend!',
+    location: 'New York, NY',
   },
   {
+    name: 'John Smith',
     image: '/landing_page/testimonial2.jpg',
-    altText: 'image of the testifier',
-    message: 'I love the convenience of ordering my meals online. The food is always fresh and delicious.',
+    altText: 'Photo of happy customer John Smith',
+    message: 'Incredible service and delicious meals! I order every week.',
+    location: 'Los Angeles, CA',
   },
   {
+    name: 'Anna Lee',
     image: '/landing_page/testimonial2.jpg',
-    altText: 'image of the testifier',
-    message: 'I love the convenience of ordering my meals online. The food is always fresh and delicious.',
-  }
-]
+    altText: 'Photo of regular customer Anna Lee',
+    message: 'Amazing variety of meals and the app is so easy to use!',
+    location: 'Chicago, IL',
+  },
+];
 
 // import { useRef, useEffect } from 'react';
 // import Chart from 'chart.js';
