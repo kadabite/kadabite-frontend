@@ -21,7 +21,7 @@ export default function Page() {
     <Navigation />
     {/* Mobile Navigation */}
     <ToggleMenu />
-    <Search placeholder='find desired food(s) / restaurant(s)'/>
+    <Search placeholder='find desired food(s), snack(s), fruit(s), drink(s), dessert(s), and more'/>
     <main className='pt-5 md:pt-0'>
       <section aria-labelledby="hero-heading" className='relative w-full p-12 bg-orange-50 shadow-md bg-[url("/landing_page/meal_mockup3.jpg")] bg-bottom bg-no-repeat bg-[length:100%_50%] md:bg-right md:bg-[length:65%_130%]'>
         <div className="sr-only" id="hero-heading">Healthy Meals Delivered to You</div>
@@ -40,7 +40,7 @@ export default function Page() {
 
       <section aria-labelledby="how-it-works-heading" id="how_it_works" className="pt-10">
         <h2 id="how-it-works-heading" className="md:text-7xl text-3xl font-medium text-slate-900 text-center">
-          How it works
+          <Slidein className=''> How it works</Slidein>
         </h2>
         <div className="w-full p-5 md:p-8 flex flex-col md:flex-row md:items-center">
           {items.map((item, idx) => (
@@ -66,7 +66,7 @@ export default function Page() {
 
       <section aria-labelledby="featured-restaurants-heading" className="w-full bg-orange-100 shadow-2xl" id="popular_restaurants">
         <h2 id="featured-restaurants-heading" className="md:text-7xl text-3xl font-medium text-slate-900 pt-10 text-center">
-          Popular Restaurants & Top Dishes
+          <Slidein className=''>Popular Restaurants & Top Dishes</Slidein>
         </h2>
         <div className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">
           {restaurant.map((item, idx) => (
@@ -103,7 +103,7 @@ export default function Page() {
 
       <section aria-labelledby="why-choose-us-heading" className="w-full bg-slate-100 shadow-2xl" id="why_choose_us">
         <h2 id="why-choose-us-heading" className="md:text-7xl text-3xl font-medium text-orange-900 pt-10 text-center">
-          Why Choose Us
+          <Slidein className=''>Why Choose Us</Slidein>
         </h2>
         <div className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">
           {chooseUs.map((item, idx) => (
@@ -136,7 +136,7 @@ export default function Page() {
 
       <section aria-labelledby="customer-testimonials-heading" id="success_stories" className="w-full bg-blue-100 shadow-lg">
         <h2 id="customer-testimonials-heading" className="md:text-5xl text-lg font-medium text-blue-900 pt-10 text-center">
-          See What Our Customers Are Saying
+          <Slidein className=''>See What Our Customers Are Saying</Slidein>
         </h2>
         <div className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">
           {testimonials.map((item, idx) => (
