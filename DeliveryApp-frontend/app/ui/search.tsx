@@ -6,14 +6,44 @@ import { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import CircularProgress from '@mui/material/CircularProgress';
 import { orange } from '@mui/material/colors';
+import { gql, useQuery } from '@apollo/client';
+import { Restaurant } from '@/lib/graphql-types';
 
 export default function Search({ placeholder }: { placeholder: string }) {
+
+  const GET_DATA = gql`
+    query findFoods($productName: String!) {
+      findFoods(productName: $productName) {
+        foodsData {
+          businessDescription
+          createdAt
+          currency
+          description
+          phoneNumber
+          price
+          products
+          name
+          username
+          userId
+          email
+        }
+        message
+        ok
+        statusCode
+      }
+    }
+  `;
+
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
   const [state, setState] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loadings, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState(searchParams.get('query')?.toString() || '');
+  const [productName, setProductName] = useState('yam and egg');
+  const { loading, error, data } = useQuery(GET_DATA, {
+    variables: { productName },
+  });
 
   const handleSearch = useDebouncedCallback((term) => {
     setLoading(true);
@@ -28,7 +58,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
       setState(false);
     }
     replace(`${pathname}?${params.toString()}`);
-    // setLoading(false);
+    if (!loading) setLoading(false);
   }, 300);
 
   const handleClear = () => {
@@ -37,7 +67,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
   };
 
   return (
-    <>
+  <>
     <div className='fixed w-full z-40'>
       <div className="relative flex flex-1 flex-shrink-0 ml-5 mr-5 mt-5">
         <label htmlFor="search" className="sr-only">
@@ -62,26 +92,33 @@ export default function Search({ placeholder }: { placeholder: string }) {
       </div>
       {state && (
         <div className="absolute z-40 w-full">
-        <div className="flex flex-row items-center ml-5 mr-5 mt-2 h-14 rounded-md border border-gray-200 text-sm outline-2 bg-gray-50">
-          {loading ? (
-            <CircularProgress
-              sx={{
-                color: orange[600],
-                fontSize: 30,
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              }}
-            />
-          ) : (
-            <div>
-              {/* Your search results will go here */}
-            </div>
-          )}
-        </div>
+          <div className="flex flex-row items-center ml-5 mr-5 mt-2 h-1/2 rounded-md border border-gray-200 text-sm outline-2 bg-gray-50 overflow-y-auto p-4">
+            {loadings ? (
+              <CircularProgress
+                sx={{
+                  color: orange[600],
+                  fontSize: 30,
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                }}
+              />
+            ) : (
+              <div className='flex flex-col w-full h-full justify-center items-center'>
+                {data?.findFoods?.foodsData?.map((food: Restaurant, index: number) => (
+                  <div key={index} className="overflow-x-auto p-4 m-2 bg-white border border-gray-200 rounded-md shadow-sm w-full">
+                    <p className="font-semibold">{food.username}</p>
+                    <p className="text-gray-600">{food.description}</p>
+                    <p className="text-gray-600">{food.phoneNumber}</p>
+                    <p className="text-gray-600">{food.price}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
       <div className="h-5 w-full hidden md:flex flex-row relative"></div>
     </div>
-    </>
+  </>
   );
 }

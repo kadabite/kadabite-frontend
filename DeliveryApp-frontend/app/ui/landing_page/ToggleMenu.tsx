@@ -81,7 +81,7 @@ export function Navigation() {
       <Image 
         alt='company logo'
         height={30}
-        width={70}
+        width={60}
         src='/landing_page/logo.png'
         className='cursor-pointer transition-transform transform hover:scale-105'
       />
