@@ -8,6 +8,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { orange } from '@mui/material/colors';
 import { gql, useQuery } from '@apollo/client';
 import { Restaurant } from '@/lib/graphql-types';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Search({ placeholder }: { placeholder: string }) {
 
@@ -26,6 +28,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
           username
           userId
           email
+          photo
         }
         message
         ok
@@ -105,12 +108,21 @@ export default function Search({ placeholder }: { placeholder: string }) {
             ) : (
               <div className='flex flex-col w-full h-full justify-center items-center'>
                 {data?.findFoods?.foodsData?.map((food: Restaurant, index: number) => (
-                  <div key={index} className="overflow-x-auto p-4 m-2 bg-white border border-gray-200 rounded-md shadow-sm w-full">
-                    <p className="font-semibold">{food.username}</p>
-                    <p className="text-gray-600">{food.description}</p>
-                    <p className="text-gray-600">{food.phoneNumber}</p>
-                    <p className="text-gray-600">{food.price}</p>
-                  </div>
+                  <Link href={food.userId} key={index} className="flex flex-row items-center space-x-4 overflow-x-auto p-4 m-2 bg-white border border-gray-200 rounded-md shadow-sm w-full cursor-pointer hover:bg-gray-100 focus:bg-gray-100 active:bg-gray-200">
+                    <Image 
+                      src={food.photo || '/landing_page/meal_mockup3.jpg'}
+                      width={100}
+                      height={100}
+                      alt={`Visual representation of ${food.name}`}
+                      className="rounded-xl shadow-md"
+                      />
+                    <div>
+                      <p className="font-semibold">{food.username}</p>
+                      <p className="text-gray-600">{food.description}</p>
+                      <p className="text-gray-600">{food.phoneNumber}</p>
+                      <p className="text-gray-600">{food.price}</p>
+                    </div>
+                  </Link>
                 ))}
               </div>
             )}
