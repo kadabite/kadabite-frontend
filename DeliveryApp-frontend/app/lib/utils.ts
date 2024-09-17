@@ -78,131 +78,59 @@ export const navItems = [
   { name: 'Contact', url: '/#contact' },
 ];
 
-// Carousel Items
-export const items = [
-  {
-    name: 'choose_meal.jpg',
-    altText: 'Choose food from your favorite restaurant',
-    header: 'Choose Your Meal',
-  },
-  {
-    name: 'place_order.jpg',
-    altText: 'Order food from your favorite restaurant',
-    header: 'Place Your Order',
-  },
-  {
-    name: 'track_delivery.jpg',
-    altText: 'Track the delivery from your favorite restaurant',
-    header: 'Track Your Delivery',
-  },
-];
 
-// Restaurant Details
-export const restaurant = [
+export const team = [
   {
-    name: 'Morba Chinons Restaurant',
-    image: 'choose_meal.jpg',
-    href: '/',
-    // altText: 'Choose food from Morba Chinons Restaurant',
-    briefDescription: 'Discover a variety of meals prepared with top-quality ingredients, carefully curated to meet your tastes.',
+    name: 'Alice Johnson',
+    position: 'CEO & Founder',
+    description: 'Alice leads our vision, ensuring quality and innovation in every delivery.',
+    linkedIn: 'https://www.linkedin.com/in/chinonsomorba/',
+    x: 'https://x.com/Cadatech1/',
+    image: '/landing_page/testimonial1.jpg'
   },
   {
-    name: 'Taste of Africa',
-    image: 'place_order.jpg',
-    href: '/',
-    // altText: 'Order food from Taste of Africa',
-    briefDescription: 'Authentic African meals crafted to deliver an unforgettable dining experience.',
+    name: 'Mark Smith',
+    position: 'CTO',
+    description: 'Mark drives our technology strategy, enhancing user experience and operationsl efficiency.',
+    linkedIn: 'https://www.linkedin.com/in/chinonsomorba/',
+    x: 'https://x.com/Cadatech1/',
+    image: '/landing_page/testimonial1.jpg'
   },
   {
-    name: 'Italian Feast',
-    image: 'track_delivery.jpg',
-    href: '/',
-    // altText: 'Order Italian food from Italian Feast',
-    briefDescription: 'Enjoy classic Italian dishes with the finest ingredients and flavors.',
+    name: 'Sarah Lee',
+    position: 'Marketing Director',
+    description: 'Sarah crafts our brand story, connecting with customers and food vendors alike.',
+    linkedIn: 'https://www.linkedin.com/in/chinonsomorba/',
+    x: 'https://x.com/Cadatech1/',
+    image: '/landing_page/testimonial1.jpg'
   },
   {
-    name: 'Asian Delights',
-    image: 'choose_meal.jpg',
-    href: '/',
-    // altText: 'Asian meals at Asian Delights',
-    briefDescription: 'Taste the rich flavors of Asia with freshly made meals delivered to your doorstep.',
-  },
-  {
-    name: 'Healthy Bites',
-    image: 'place_order.jpg',
-    href: '/',
-    // altText: 'Order healthy food from Healthy Bites',
-    briefDescription: 'Savor healthy, balanced meals that nourish your body and satisfy your taste buds.',
-  },
-];
-
-// Why Choose Us Section
-import AcUnitIcon from '@mui/icons-material/AcUnit';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import AddModeratorIcon from '@mui/icons-material/AddModerator';
-import AddchartIcon from '@mui/icons-material/Addchart';
-import ApartmentIcon from '@mui/icons-material/Apartment';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
-import BreakfastDiningIcon from '@mui/icons-material/BreakfastDining';
-
-export const chooseUs = [
-  {
-    icon: AcUnitIcon,
-    header: 'Quality',
-    description: 'We use only the best ingredients for our meals.',
-  },
-  {
-    icon: AccountBalanceIcon,
-    header: 'Trust',
-    description: 'Trusted by thousands of customers for reliable service.',
-  },
-  {
-    icon: AddShoppingCartIcon,
-    header: 'Convenience',
-    description: 'Order meals easily from the comfort of your home.',
-  },
-  {
-    icon: AddModeratorIcon,
-    header: 'Security',
-    description: 'Your data and transactions are securely handled.',
-  },
-  {
-    icon: AddchartIcon,
-    header: 'Performance',
-    description: 'Experience fast and efficient food delivery every time.',
-  },
-  {
-    icon: ApartmentIcon,
-    header: 'Variety',
-    description: 'A wide selection of meals to cater to every preference.',
-  },
-  {
-    icon: AssessmentIcon,
-    header: 'Feedback',
-    description: 'We value your input to improve and adapt our services.',
-  },
-  {
-    icon: AssuredWorkloadIcon,
-    header: 'Compliance',
-    description: 'Our services meet all food safety and delivery regulations.',
-  },
-  {
-    icon: BreakfastDiningIcon,
-    header: 'Delicious',
-    description: 'Indulge in mouth-watering dishes every time you order.',
+    name: 'James Brown',
+    position: 'Operations Manager',
+    description: 'James ensures smooth operations, optimizing logistics for timely deliveries.',
+    linkedIn: 'https://www.linkedin.com/in/chinonsomorba/',
+    x: 'https://x.com/Cadatech1/',
+    image: '/landing_page/testimonial1.jpg'
   },
 ];
 
 // Testimonials
 export const testimonials = [
   {
+    name: 'Sarah Johnson',
+    image: '/landing_page/testimonial1.jpg',
+    altText: 'Photo of satisfied customer Jane Doe',
+    message: 'Linux Kitchens has completely changed the way I order food. The convenience and variety they offer are unmatched!',
+    location: 'New York, NY',
+    star: '⭐⭐⭐⭐⭐'
+  },
+  {
     name: 'Jane Doe',
     image: '/landing_page/testimonial1.jpg',
     altText: 'Photo of satisfied customer Jane Doe',
     message: 'The food is always fresh and the delivery is on point. Highly recommend!',
     location: 'New York, NY',
+    star: '⭐⭐⭐⭐⭐'
   },
   {
     name: 'John Smith',
@@ -210,6 +138,7 @@ export const testimonials = [
     altText: 'Photo of happy customer John Smith',
     message: 'Incredible service and delicious meals! I order every week.',
     location: 'Los Angeles, CA',
+    star: '⭐⭐⭐⭐⭐'
   },
   {
     name: 'Anna Lee',
@@ -217,6 +146,7 @@ export const testimonials = [
     altText: 'Photo of regular customer Anna Lee',
     message: 'Amazing variety of meals and the app is so easy to use!',
     location: 'Chicago, IL',
+    star: '⭐⭐⭐⭐⭐'
   },
 ];
 

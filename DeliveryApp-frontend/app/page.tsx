@@ -8,7 +8,7 @@ import ToggleMenu, { Navigation } from '@/app/ui/landing_page/ToggleMenu';
 import Search from '@/app/ui/search';
 import { Button } from '@/app/ui/button';
 import Slidein from '@/app/ui/landing_page/slidein';
-import { chooseUs, items, restaurant, testimonials } from '@/app/lib/utils';
+import { team, testimonials } from '@/app/lib/utils';
 import { blue, orange } from '@mui/material/colors';
 import TextField from '@mui/material/TextField';
 import { Typography } from '@mui/material';
@@ -61,7 +61,9 @@ export default function Page() {
       </Imagetext>
 
       <section className='relative md:p-28 p-7 space-y-7 flex flex-col justify-center items-center bg-gradient-to-l from-blue-300 to-orange-200 w-full'>
-        <h1 className='md:w-1/2 w-full text-center md:text-5xl text-2xl text-orange-900 font-semibold'>Savor the Flavor, Delivered to Your Door</h1>
+        <h1 className='md:w-1/2 w-full text-center md:text-5xl text-2xl text-orange-900 font-semibold'>
+          Savor the Flavor, Delivered to Your Door
+        </h1>
         <p className='md:w-1/2 w-full text-center text-slate-700 text-md'>At Linux Kitchens, we connect you with your favorite local restaurants and food vendors,
           making ordering food a breeze. Experience the convenience of our LinuXapp and enjoy delicious
           meals delivered right to you.
@@ -72,7 +74,7 @@ export default function Page() {
         </div>
       </section>
 
-      <Imagetext ariaLabelledby='feature_section_app' imageUrl='/landing_page/meal_mockup3.jpg' className='bg-orange-50'>
+      <Imagetext ariaLabelledby='feature_section_app' imageUrl='/landing_page/meal_mockup3.jpg' className='bg-orange-200'>
         <div className='md:w-1/2 w-full flex flex-col justify-center space-y-4' id='feature_section_app'>
           <AddchartIcon 
             sx={{ fontSize: 50, color: orange[900] }} 
@@ -126,7 +128,7 @@ export default function Page() {
         </div>
       </Imagetext>
 
-      <Imagetext ariaLabelledby='feature_section_dispatcher' imageUrl='/landing_page/meal_mockup3.jpg' className='bg-orange-50'>
+      <Imagetext ariaLabelledby='feature_section_dispatcher' imageUrl='/landing_page/meal_mockup3.jpg' className='bg-blue-100'>
         <div className='md:w-1/2 w-full flex flex-col justify-center space-y-7' id='feature_section_dispatcher'>
           <h2 className='md:text-5xl text-2xl text-gray-700 font-semibold'>
             Empowering Dispatch Riders for Flexible Work and Efficient Deliveries
@@ -163,7 +165,7 @@ export default function Page() {
         </div>
       </Imagetext>
 
-      <section aria-labelledby='discovery' className='md:p-10 p-5 space-y-10'>
+      <section aria-labelledby='discovery' className='md:p-10 p-5 space-y-10 bg-orange-200'>
         <div className='flex md:flex-row flex-col md:space-x-10 md:space-y-0 space-y-5'>
           <h1 className='md:text-4xl text-2xl text-orange-700 font-semibold md:w-1/2 w-full md:tracking-wide tracking-normal md:leading-tight leading-normal' id='discovery'>
             Discover the Best Local Restaurants and Enjoy Seamless Food Delivery
@@ -177,7 +179,7 @@ export default function Page() {
         </div>
 
         <div className='flex md:flex-row flex-col md:space-x-5 md:space-y-0 space-y-10'>
-          <div className='flex flex-col space-y-2 justify-between'>
+          <div className='flex flex-col space-y-2 justify-between shadow-lg p-3 rounded-xl'>
             <AcUnitIcon 
               sx={{ fontSize: 25, color: orange[900] }} 
               aria-hidden="true"
@@ -188,7 +190,7 @@ export default function Page() {
             </p>
             <Link href='/' className='text-slate-700 hover:text-orange-900 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>Order &nbsp; &gt;</Link>
           </div>
-          <div className='flex flex-col space-y-2 justify-between'>
+          <div className='flex flex-col space-y-2 justify-between shadow-lg p-3 rounded-xl'>
             <AddShoppingCartIcon 
               sx={{ fontSize: 25, color: orange[900] }} 
               aria-hidden="true"
@@ -204,7 +206,7 @@ export default function Page() {
             </Link>
 
           </div>
-          <div className='flex flex-col space-y-2 justify-between'>
+          <div className='flex flex-col space-y-2 justify-between shadow-lg p-3 rounded-xl'>
             <AddShoppingCartIcon 
               sx={{ fontSize: 25, color: orange[900] }} 
               aria-hidden="true"
@@ -282,130 +284,235 @@ export default function Page() {
         </div>
       </Imagetext>
 
-      <section aria-labelledby="how-it-works-heading" id="how_it_works" className="pt-10">
-        <h2 id="how-it-works-heading" className="md:text-7xl text-3xl font-medium text-slate-900 text-center">
-          <Slidein className=''> How it works</Slidein>
-        </h2>
-        <div className="w-full p-5 md:p-8 flex flex-col md:flex-row md:items-center">
-          {items.map((item, idx) => (
-            <div 
-              className="flex flex-col md:w-1/3 w-full items-center justify-center p-6 rounded-xl cursor-pointer transition-transform transform hover:-translate-y-1 hover:scale-110 duration-300 focus:outline-none focus:ring-4 focus:ring-orange-200"
-              key={idx}
-              role="button" 
-              tabIndex={0} 
-              aria-label={`Learn more about ${item.header}`}
-            >
-              <p className="text-orange-900 text-2xl md:leading-normal mb-2">{item.header}</p>
-              <Image
-                src={`/landing_page/${item.name}`}
-                width={300}
-                height={300}
-                alt={`Visual representation of ${item.header}`}
-                className="rounded-xl shadow-md"
-              />
-            </div>
-          ))}
-        </div>
-      </section>
+      <section className='shadow-2xl relative md:p-28 p-7 space-y-7 flex flex-col justify-center items-center bg-gradient-to-l from-orange-300 to-blue-200 w-full'>
+        <h6 className='text-sm text-slate-800'>Discover</h6>
+        <h1 className='md:w-3/7 w-full text-center md:text-5xl text-2xl text-orange-900 font-semibold'>
+        Explore the Amazing Featues of LinuXapp
+        </h1>
+        <p className='md:w-1/2 w-full text-center text-slate-700 text-md'>
+          LinuXapp offers a user-friendly interface that makes ordering food a breeze.
+          Enjoy real-time tracking and a diverse selection of food options right at your fingertips.
+        </p>
 
-      <section aria-labelledby="featured-restaurants-heading" className="w-full bg-orange-100 shadow-2xl" id="popular_restaurants">
-        <h2 id="featured-restaurants-heading" className="md:text-7xl text-3xl font-medium text-slate-900 pt-10 text-center">
-          <Slidein className=''>Popular Restaurants & Top Dishes</Slidein>
-        </h2>
         <div className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">
-          {restaurant.map((item, idx) => (
             <div 
-              className="flex flex-col md:w-1/4 w-full justify-center p-6 rounded-xl transition-transform transform hover:-translate-y-1 hover:scale-110 duration-300 focus:outline-none focus:ring-4 focus:ring-orange-200"
-              key={idx}
+              className="flex flex-col md:w-1/3 w-full justify-center p-6 rounded-xl transition-transform transform hover:-translate-y-1 hover:scale-110 duration-300 focus:outline-none focus:ring-4 focus:ring-orange-200"
               tabIndex={0}
-              aria-label={`Learn more about ${item.name}`}
+              aria-label={`Learn more about user our user friendly interface.`}
             >
               <div className="shadow-lg rounded-xl p-5 bg-gray-50">
-                <Link href={item.href} aria-label={`Order from ${item.name}`}>
+                <Link href='/'>
                   <Image
-                    src={`/landing_page/${item.image}`}
+                    src={`/landing_page/place_order.jpg`}
                     width={300}
                     height={200}
-                    alt={`Image of popular dish at ${item.name}`}
+                    alt={`Image of user friendliness`}
                     className="rounded-t-xl cursor-pointer"
                   />
                 </Link>
                 <h3 className="text-xl text-slate-900 md:leading-normal pt-3 pb-3">
-                  {item.name}
+                  User-Friendly Interface for Effortless Ordering
                 </h3>
                 <p className="text-sm text-slate-500 md:leading-normal">
-                  {item.briefDescription}
+                  Navigate our platform with ease and convenience.
                 </p>
-                <div className="flex flex-row justify-center p-5">
-                  <Button className="bg-orange-500" aria-label={`Order from ${item.name}`}>Order from here</Button>
-                </div>
               </div>
             </div>
-          ))}
+
+            <div 
+              className="flex flex-col md:w-1/3 w-full justify-center p-6 rounded-xl transition-transform transform hover:-translate-y-1 hover:scale-110 duration-300 focus:outline-none focus:ring-4 focus:ring-orange-200"
+              tabIndex={0}
+              aria-label={`Learn more about our real time tracking.`}
+            >
+              <div className="shadow-lg rounded-xl p-5 bg-gray-50">
+                <Link href='/'>
+                  <Image
+                    src={`/landing_page/place_order.jpg`}
+                    width={300}
+                    height={200}
+                    alt={`Image of real time tracking`}
+                    className="rounded-t-xl cursor-pointer"
+                  />
+                </Link>
+                <h3 className="text-xl text-slate-900 md:leading-normal pt-3 pb-3">
+                  Real-Time Tracking for Your Deliveries
+                </h3>
+                <p className="text-sm text-slate-500 md:leading-normal">
+                  Stay updated on your order's journey in real-time
+                </p>
+              </div>
+            </div>
+
+            <div 
+              className="flex flex-col md:w-1/3 w-full justify-center p-6 rounded-xl transition-transform transform hover:-translate-y-1 hover:scale-110 duration-300 focus:outline-none focus:ring-4 focus:ring-orange-200"
+              tabIndex={0}
+              aria-label={`Learn more about food variety options.`}
+            >
+              <div className="shadow-lg rounded-xl p-5 bg-gray-50">
+                <Link href='/'>
+                  <Image
+                    src={`/landing_page/place_order.jpg`}
+                    width={300}
+                    height={200}
+                    alt={`Image of real time tracking`}
+                    className="rounded-t-xl cursor-pointer"
+                  />
+                </Link>
+                <h3 className="text-xl text-slate-900 md:leading-normal pt-3 pb-3">
+                  A Wide Variety of Food Options
+                </h3>
+                <p className="text-sm text-slate-500 md:leading-normal">
+                  Choose from an extensive range of cuisines.
+                </p>
+              </div>
+            </div>
+            
+        </div>
+        <div className='flex flex-row space-x-5'>
+            <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+            <Link href='/' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
+              Sign Up &nbsp; &gt;
+            </Link>
         </div>
       </section>
 
-      <section aria-labelledby="why-choose-us-heading" className="w-full bg-slate-200 shadow-2xl" id="why_choose_us">
-        <h2 id="why-choose-us-heading" className="md:text-7xl text-3xl font-medium text-orange-900 pt-10 text-center">
-          <Slidein className=''>Why Choose Us</Slidein>
-        </h2>
+
+      <section className="w-full shadow-2xl flex md:flex-row flex-col p-20 mt-5">
+        <div className='flex space-y-5 flex-col'>
+          <h6 className='text-sm text-slate-800'>Connect</h6>
+          <h1 className='md:text-5xl text-2xl text-orange-900 font-semibold'>Experience the future of Food Delivery</h1>
+        </div>
+        <div className='flex space-y-10 flex-col'>
+          <h6 className='text-sm text-slate-800'>
+            Linux Kitchens bridges the gap between customers and local food vendors.
+            Enjoy a seamless ordering experience while supporting your community.
+          </h6>
+          <div className='flex md:flex-row flex-col md:space-x-5 md:space-y-0 space-y-4'>
+            <div className='flex flex-col space-y-2 shadow-lg bg-blue-100 p-3 rounded-md h-full'>
+              <AcUnitIcon 
+                sx={{ fontSize: 25, color: orange[900] }} 
+                aria-hidden="true"
+              />
+              <h3 className='font-semibold text-lg text-orange-900'>For Customers</h3>
+              <p className='text-sm text-slate-900'>
+                Access a diverse range of cuisines at your fingertips  
+              </p>
+            </div>
+            <div className='flex flex-col space-y-2 shadow-lg bg-blue-100 p-3 rounded-md h-full'>
+              <AddShoppingCartIcon 
+                sx={{ fontSize: 25, color: orange[900] }} 
+                aria-hidden="true"
+              />
+              <h3 className='font-semibold text-lg text-orange-900'>For Restaurants</h3>
+              <p className='text-sm text-slate-900'>
+                Expand your reach and grow your customer base effortlessly.
+              </p>
+            </div>
+          </div>
+          <div className='flex flex-row space-x-5'>
+            <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+            <Link href='/' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
+              Sign Up &nbsp; &gt;
+            </Link>
+        </div>
+        </div>
+      </section>
+      <Image
+        src={`/landing_page/place_order.jpg`}
+          width={1300}
+          height={300}
+          alt={`Image of real time tracking`}
+          className="rounded-t-xl cursor-pointer"
+        />
+
+      <section className='shadow-2xl relative md:p-28 p-7 space-y-7 flex flex-col justify-center items-center bg-gradient-to-l from-orange-300 to-blue-200 w-full'>
+        <h6 className='text-sm text-slate-800'>Team</h6>
+        <h1 className='md:w-3/7 w-full text-center md:text-5xl text-2xl text-orange-900 font-semibold'>
+          Our Team
+        </h1>
+        <p className='md:w-1/2 w-full text-center text-slate-700 text-md'>
+          Meet the passionate individuals driving Linux Kitchens forward.
+        </p>
+      
         <div className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">
-          {chooseUs.map((item, idx) => (
-            <div 
-              className="flex flex-col md:w-1/4 w-full justify-center p-6 rounded-xl transition-transform transform hover:-translate-y-1 hover:scale-110 duration-300 focus:outline-none focus:ring-4 focus:ring-orange-200"
+          {team.map((item, idx) => (
+             <div
               key={idx}
+              className="flex flex-col md:w-1/3 w-full justify-center p-6 rounded-xl transition-transform transform hover:-translate-y-1 hover:scale-110 duration-300 focus:outline-none focus:ring-4 focus:ring-orange-200"
               tabIndex={0}
-              aria-label={`Learn more about why you should choose us for ${item.header}`}
-            >
-              <div className="shadow-lg rounded-xl p-5 bg-gray-50 flex flex-col items-center">
-                <div className="text-center">
-                  <item.icon 
-                    sx={{ fontSize: 50, color: orange[900] }} 
-                    aria-hidden="true"
+              aria-label={`Learn more about food variety options.`}>
+              <div className="shadow-lg rounded-xl p-5 bg-gray-50 flex flex-col items-center space-y-2">
+                <Link href='/'>
+                  <Image
+                    src={item.image}
+                    width={300}
+                    height={200}
+                    alt={`Image of ${item.name}`}
+                    className="rounded-t-xl cursor-pointer"
                   />
-                </div>
-                <h3 className="text-xl text-blue-900 md:leading-normal pt-3 pb-3 text-center">
-                  {item.header}
+                </Link>
+                <h3 className="text-md text-slate-900 md:leading-normal">
+                  {item.name}
                 </h3>
-                <p className="text-sm text-blue-500 md:leading-normal text-center">
+                <h3 className="text-md text-slate-700 md:leading-normal">
+                  {item.position}
+                </h3>
+                <p className="text-sm text-slate-500 md:leading-normal text-center">
                   {item.description}
                 </p>
+                <div className='flex flex-row space-x-5'>
+                <Link href={item.linkedIn}>
+                  <Image 
+                    src='/landing_page/linkedIn.png'
+                    width={20}
+                    height={20}
+                    alt='linkedIn logo'
+                    />
+                </Link>
+                <Link href={item.x}>
+                  <Image 
+                    src='/landing_page/x.png'
+                    width={20}
+                    height={20}
+                    alt='X logo'
+                    />
+                </Link>
+              </div>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      <section aria-label="Register business owners who sell any kind of food products"></section>
-
       <section aria-labelledby="customer-testimonials-heading" id="success_stories" className="w-full bg-blue-100 shadow-lg">
-        <h2 id="customer-testimonials-heading" className="md:text-5xl text-lg font-medium text-blue-900 pt-10 text-center">
-          <Slidein className=''>See What Our Customers Are Saying</Slidein>
-        </h2>
-        <div className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">
+        <div className="w-full p-5 md:p-8 flex flex-col md:flex-row md:items-center">
           {testimonials.map((item, idx) => (
             <div 
-              className="flex flex-col md:w-1/3 w-full justify-center p-6 rounded-xl transition-transform transform hover:-translate-y-1 hover:scale-110 duration-300 focus:outline-none focus:ring-4 focus:ring-blue-200"
+              className="flex flex-col md:w-1/2 w-full justify-center p-6 items-center"
               key={idx}
               tabIndex={0}
               aria-label={`Customer testimonial from ${item.name}`}
             >
-              <div className="shadow-lg rounded-xl p-5 bg-gray-50 flex flex-col items-center">
-                <div className="text-center">
-                  <Image
-                    src={item.image}
-                    width={300}
-                    height={300}
-                    alt={item.altText}
-                    className="rounded-t-xl"
-                  />
+              <p aria-label={`${item.name}'s rating of our system`}>{item.star}</p>
+              <blockquote className='w-full text-center text-md font-semibold text-gray-800 md:leading-normal'>
+                {item.message}
+              </blockquote>
+              <div className="flex flex-row items-center p-4 justify-center space-x-3">
+                <Image
+                  src={item.image}
+                  width={30}
+                  height={30}
+                  alt={item.altText}
+                  className="rounded-full"
+                />
+                <div className='flex flex-col space-y-2 '>
+                  <p className="text-sm text-gray-600 md:leading-normal text-left pt-3" aria-labelledby={`testimonial-${idx}`}>
+                    {item.name}
+                  </p>
+                  <footer className="text-xs text-gray-500 mt-2 text-left">
+                    {item.location}
+                  </footer>
                 </div>
-                <blockquote className="text-sm text-gray-600 md:leading-normal text-center pt-3" aria-labelledby={`testimonial-${idx}`}>
-                  {item.message}
-                </blockquote>
-                <footer className="text-xs text-gray-500 mt-2 text-center">
-                  - {item.name}, {item.location}
-                </footer>
               </div>
             </div>
           ))}
