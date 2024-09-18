@@ -19,6 +19,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import AddModeratorIcon from '@mui/icons-material/AddModerator';
 import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
+import Carousel from '@/app/ui/landing_page/carausel';
 
 
 export default function Page() {
@@ -484,11 +485,11 @@ export default function Page() {
         </div>
       </section>
 
-      <section aria-labelledby="customer-testimonials-heading" id="success_stories" className="w-full bg-blue-100 shadow-lg">
-        <div className="w-full p-5 md:p-8 flex flex-col md:flex-row md:items-center">
+      <section aria-labelledby="customer-testimonials-heading" id="success_stories" className="md:p-28 w-full bg-blue-100 shadow-lg">
+        <Carousel>
           {testimonials.map((item, idx) => (
             <div 
-              className="flex flex-col md:w-1/2 w-full justify-center p-6 items-center"
+              className="flex flex-col w-full justify-center p-6 items-center md:space-y-5"
               key={idx}
               tabIndex={0}
               aria-label={`Customer testimonial from ${item.name}`}
@@ -516,7 +517,7 @@ export default function Page() {
               </div>
             </div>
           ))}
-        </div>
+        </Carousel>
       </section>
 
     </main>
