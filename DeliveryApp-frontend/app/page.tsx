@@ -8,7 +8,7 @@ import ToggleMenu, { Navigation } from '@/app/ui/landing_page/ToggleMenu';
 import Search from '@/app/ui/search';
 import { Button } from '@/app/ui/button';
 import Slidein from '@/app/ui/landing_page/slidein';
-import { team, testimonials } from '@/app/lib/utils';
+import { team, testimonials, connect, connect2 } from '@/app/lib/utils';
 import { blue, orange } from '@mui/material/colors';
 import TextField from '@mui/material/TextField';
 import { Typography } from '@mui/material';
@@ -518,6 +518,109 @@ export default function Page() {
             </div>
           ))}
         </Carousel>
+      </section>
+
+      <section className='shadow-2xl relative md:p-28 p-7 space-y-7 flex flex-col justify-center items-center bg-gradient-to-l from-orange-300 to-blue-200 w-full'>
+        <h6 className='text-sm text-slate-800'>Connect</h6>
+        <h1 className='md:w-3/7 w-full text-center md:text-5xl text-2xl text-orange-900 font-semibold'>
+          Discover How LinuXapp Transforms Food Delivery
+        </h1>
+        <p className='md:w-1/2 w-full text-center text-slate-700 text-md'>
+          LinuXapp revolutionizes the way we order food. Our platform seamlessly connects Customers
+          with local food vendors, ensuring a delightful experience from start to finish.  
+        </p>
+        <div className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">
+          { connect.map((item, index) => (
+            <div
+              key={index}
+              className="flex flex-col md:w-1/3 w-full justify-center p-6 rounded-xl transition-transform transform hover:-translate-y-1 hover:scale-110 duration-300 focus:outline-none focus:ring-4 focus:ring-orange-200"
+              tabIndex={0}
+              aria-label={item.accessibilityText}
+            >
+              <div className="shadow-lg rounded-xl p-5 bg-gray-50">
+                <Link href='/'>
+                  <Image
+                    src={item.image}
+                    width={300}
+                    height={200}
+                    alt={item.altImage}
+                    className="rounded-t-xl cursor-pointer"
+                  />
+                </Link>
+                <h3 className="text-xl text-slate-900 md:leading-normal pt-3 pb-3">
+                  {item.header}
+                </h3>
+                <p className="text-sm text-slate-500 md:leading-normal">
+                  {item.paragraph}
+                </p>
+              </div>
+            </div>
+            
+          ))}
+            
+        </div>
+        <div className='flex flex-row space-x-5'>
+            <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+            <Link href='/' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
+              Sign Up &nbsp; &gt;
+            </Link>
+        </div>
+      </section>
+
+      <section className='shadow-2xl relative md:p-28 p-7 space-y-7 flex flex-col justify-center items-center bg-gradient-to-l from-orange-300 to-grey-200 w-full'>
+        <h6 className='text-sm text-slate-800'>Connect</h6>
+        <h1 className='md:w-3/7 w-full text-center md:text-5xl text-2xl text-orange-900 font-semibold'>
+          Discover How LinuXapp Transforms Food Delivery
+        </h1>
+        <p className='md:w-1/2 w-full text-center text-slate-700 text-md'>
+          With LinuXapp, ordering your favorite meals is simple and fast. Experience a seamless connection
+          between you and local restaurants. 
+        </p>
+        <div className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">
+          { connect2.map((item, index) => (
+            <div
+              key={index}
+              className="flex flex-col md:w-1/3 w-full justify-center items-center p-6 rounded-xl transition-transform transform hover:-translate-y-1 hover:scale-110 duration-300 focus:outline-none focus:ring-4 focus:ring-orange-200"
+              tabIndex={0}
+              aria-label={item.accessibilityText}
+            >
+              <div className="shadow-lg rounded-xl p-5 bg-gray-50 flex flex-col justify-center">
+                <div className='text-center'><item.logo
+                  sx={{ fontSize: 25, color: orange[900] }} 
+                  aria-hidden="true"
+                /></div>
+                <h3 className="text-xl text-center text-slate-900 md:leading-normal pt-3 pb-3">
+                  {item.header}
+                </h3>
+                <p className="text-sm text-center text-slate-500 md:leading-normal">
+                  {item.paragraph}
+                </p>
+              </div>
+            </div>
+          ))}
+            
+        </div>
+        <div className='flex flex-row space-x-5'>
+            <Button aria-label="Learn more about how we operate" className='rounded-lg'>Order</Button>
+            <Link href='/' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
+              Learn More &nbsp; &gt;
+            </Link>
+        </div>
+      </section>
+
+      <section className='flex flex-col justify-center items-center md:p-24 p-16 space-y-5'>
+        <h1 className='md:w-3/7 w-full text-center md:text-5xl text-2xl text-orange-900 font-semibold'>
+          Join the Food Revolution Today
+        </h1>
+        <p className='md:w-1/2 w-full text-center text-slate-700 text-md'>
+          Download LinuXapp now or sign up as a vendor or rider to get started!
+        </p>
+        <div className='flex flex-row space-x-5'>
+            <Button aria-label="Learn more about how we operate" className='rounded-lg'>Download</Button>
+            <Link href='/' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
+              Learn More &nbsp; &gt;
+            </Link>
+        </div>
       </section>
 
     </main>

@@ -78,6 +78,55 @@ export const navItems = [
   { name: 'Contact', url: '/#contact' },
 ];
 
+export const connect = [
+  {
+    header: 'For Customers: Easy Ordering Process',
+    paragraph: 'Browse menus, place orders, and track deliveries effortlessly.',
+    image: '/landing_page/place_order.jpg',
+    altImage: 'image of easy ordering',
+    accessibilityText: 'it shows how easy it is to order the food'
+  },
+  {
+    header: 'For Food Vendors: Expand Your Reach',
+    paragraph: 'Join LinXapp to connect with more customers and increase sales.',
+    image: '/landing_page/place_order.jpg',
+    altImage: 'image of vendors expanding their reach',
+    accessibilityText: 'it shows how vendors expand their reach'
+  },
+  {
+    header: 'For Dispatch Riders: Flexible Job Opportunities',
+    paragraph: 'Become a dispatch rider and earn on your schedule',
+    image: '/landing_page/place_order.jpg',
+    altImage: 'image of flexible job opportunity',
+    accessibilityText: 'a description of flexible job opportunity'
+  }
+];
+
+import ApartmentIcon from '@mui/icons-material/Apartment';
+import AddModeratorIcon from '@mui/icons-material/AddModerator';
+import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
+
+export const connect2 = [
+  {
+    header: 'Step 1: Place Your Order',
+    paragraph: 'Browse our extensive menu and select your favorites.',
+    image: '/landing_page/place_order.jpg',
+    logo: ApartmentIcon,
+    accessibilityText: 'it shows how easy it is to order the food'
+  },
+  {
+    header: 'Step 2: Restaurant Prepares Your Meal',
+    paragraph: 'Our partner restaurants prepare your order with care.',
+    logo: AddModeratorIcon,
+    accessibilityText: 'it shows how vendors expand their reach'
+  },
+  {
+    header: 'Step 3: Fast Delivery to Your Doorstep',
+    paragraph: 'Become a dispatch rider and earn on your schedule',
+    logo: AssuredWorkloadIcon,
+    accessibilityText: 'a description of flexible job opportunity'
+  }
+]
 
 export const team = [
   {
