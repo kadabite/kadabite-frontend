@@ -20,6 +20,7 @@ import ApartmentIcon from '@mui/icons-material/Apartment';
 import AddModeratorIcon from '@mui/icons-material/AddModerator';
 import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import Carousel from '@/app/ui/landing_page/carausel';
+import NewsletterForm from '@/app/ui/newsletterForm';
 
 
 export default function Page() {
@@ -418,13 +419,6 @@ export default function Page() {
         </div>
         </div>
       </section>
-      <Image
-        src={`/landing_page/place_order.jpg`}
-          width={1300}
-          height={300}
-          alt={`Image of real time tracking`}
-          className="rounded-t-xl cursor-pointer"
-        />
 
       <section className='shadow-2xl relative md:p-28 p-7 space-y-7 flex flex-col justify-center items-center bg-gradient-to-l from-orange-300 to-blue-200 w-full'>
         <h6 className='text-sm text-slate-800'>Team</h6>
@@ -625,89 +619,82 @@ export default function Page() {
 
     </main>
 
-    <section aria-labelledby="download-app-heading" className="w-full bg-gray-100 p-8">
-      <h3 id="download-app-heading" className="text-center text-2xl font-semibold text-orange-800 mb-6">
-        <Link href="/" className="text-blue-700 hover:underline">Download Our App</Link> on iOS or Android
-      </h3>
-      <div className="flex flex-col items-center text-gray-900 md:text-xl text-sm md:tracking-wide leading-normal mb-10">
-        <div className="flex flex-row flex-wrap w-full justify-around p-7 md:text-lg text-sm">
-          <Button 
-            className="bg-gray-700 text-white m-3 hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-200"
-            aria-label="Sign up for our service"
-          >
-            Sign Up
-          </Button>
-          <Button 
-            className="bg-orange-600 text-white m-3 hover:bg-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-200"
-            aria-label="Order now"
-          >
-            Order Now
-          </Button>
-          <Button 
-            className="bg-gray-700 text-white m-3 hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-200"
-            aria-label="Find restaurants near you"
-          >
-            Find Your Restaurants
-          </Button>
-          <Button 
-            className="bg-orange-600 text-white m-3 hover:bg-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-200"
-            aria-label="Explore the market"
-          >
-            Explore the Market
-          </Button>
-        </div>
+    <section aria-labelledby="download-app-bottom" className="w-full bg-gray-100 md:p-20 p-8 space-y-5">
+      <div className="flex flex-col text-gray-900 md:tracking-wide leading-normal mb-10 space-y-5">
+        <h2 className='md:text-3xl text-xl font-semibold'>Order or Sell Food Today </h2>
+        <p className='text-sm text-slate-500'>
+          Download LinuXapp now to explore delicious food options or
+          start your own food business!
+        </p>
       </div>
+      <div className='flex flex-row space-x-2 items-center mb-20'>
+        <Button className='bg-orange-500 text-white rounded-lg' aria-label="download the app">Download</Button>
+        <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+      </div>
+
+      <hr className='bg-orange-800 h-1 w-full' />
     </section>
+
+    <section aria-labelledby="download-app-bottom" className="w-full bg-gray-100 md:p-20 p-8 space-y-5">
+      <div className="flex flex-col text-gray-900 md:tracking-wide leading-normal mb-10 space-y-5">
+        <h2 className='md:text-3xl text-xl font-semibold'>Stay Updated with Linux Kitchens </h2>
+        <p className='text-sm text-slate-500'>
+          Subscribe to our newsletter for the latest updates,
+          promotions, and exclusive offers from Linux Kitchens.
+        </p>
+      </div>
+      <NewsletterForm />
+      <footer className='text-sm text-slate-500'>
+          By clicking Join Now, you agree to our Terms and Conditions.
+      </footer>
+  
+    </section>
+
     <footer id="contact" aria-labelledby="footer-heading" className='w-full bg-orange-700 shadow-2xl flex flex-col md:flex-row p-5 pb-16'>
       <h2 id="footer-heading" className="sr-only">Footer Navigation</h2>
       <div className='w-full md:w-3/4 flex flex-col md:flex-row justify-around items-center'>
         <div className='flex flex-col text-slate-50'>
-          <Typography sx={{ mt: 2, color: "black", fontSize: 20 }}>Important Pages</Typography>
-          <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to home page">home page</Link>
-          <Link href='/about' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to about page">about page</Link>
-          <Link href='/app' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to app page">app page</Link>
-          <Link href='/marketplace' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to marketplace">market place</Link>
+          <Image 
+            alt='company logo'
+            height={30}
+            width={100}
+            src='/landing_page/logo.png'
+          />
+        </div>
+        <div className='flex flex-col text-slate-50'>
+          <Typography sx={{ mt: 2, color: "black", fontSize: 20 }}>Quick Links</Typography>
+          <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to home page">About Us</Link>
+          <Link href='/about' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to about page">Contact Us</Link>
+          <Link href='/app' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to app page">Our Services</Link>
+          <Link href='/marketplace' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to marketplace">FAQ</Link>
+          <Link href='/marketplace' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to marketplace">Blog</Link>
         </div>
 
         <div className='flex flex-col text-slate-50'>
-          <Typography sx={{ mt: 2, color: "black", fontSize: 20 }}>Important Pages</Typography>
-          <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to home page">home page</Link>
-          <Link href='/about' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to about page">about page</Link>
-          <Link href='/app' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to app page">app page</Link>
-          <Link href='/marketplace' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to marketplace">market place</Link>
+          <Typography sx={{ mt: 2, color: "black", fontSize: 20 }}>Follow Us</Typography>
+          <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to home page">Facebook</Link>
+          <Link href='/about' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to about page">Twitter</Link>
+          <Link href='/app' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to app page">LinkedIn</Link>
+          <Link href='/marketplace' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to marketplace">YouTube</Link>
         </div>
 
         <div className='flex flex-col text-slate-50'>
-          <Typography sx={{ mt: 2, color: "black", fontSize: 20 }}>Important Pages</Typography>
-          <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to home page">home page</Link>
-          <Link href='/about' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to about page">about page</Link>
-          <Link href='/app' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to app page">app page</Link>
-          <Link href='/marketplace' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to marketplace">market place</Link>
-        </div>
-      </div>
-      <div className="w-full md:w-1/4 flex flex-col justify-around">
-        <div>
-          <label
-            className="mb-3 mt-5 block text-lg font-medium text-slate-50"
-            htmlFor="email">
-            Subscribe to our Newsletter
-          </label>
-          <div className="relative mt-2 mb-3">
-            <input
-              className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-              id="email"
-              type="email"
-              name="email"
-              placeholder="Subscribe by entering your email"
-              required
-              aria-required="true"
-            />
-            <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-          </div>
-          <Button className='rounded-md' aria-label="Submit email subscription">Submit</Button>
+          <Typography sx={{ mt: 2, color: "black", fontSize: 20 }}>Newsletter</Typography>
+          <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to home page">Sign Up</Link>
+          <Link href='/about' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to about page">Latest News</Link>
+          <Link href='/app' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to app page">Events</Link>
+          <Link href='/marketplace' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to marketplace">Partnerships</Link>
         </div>
       </div>
     </footer>
+      <div 
+        className='flex flex-col md:flex-row justify-around items-center text-slate-50 md:space-x-5 md:space-y-0 space-y-5 w-full bg-orange-700 p-5'
+      >
+        <p>&copy; 2024 Linux Kitchens. All rights reserved.</p>
+        <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to home page">Privacy Policy</Link>
+        <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to about page">Terms of Use</Link>
+        <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to app page">Cookie Settings</Link>
+      </div>
   </>
   );
 }
