@@ -1,4 +1,84 @@
 import { Revenue } from './definitions';
+import multer, { StorageEngine } from 'multer';
+
+import winston, { Logger } from 'winston';
+import { TransformableInfo } from 'logform';
+import { NextApiRequest, NextApiResponse } from 'next';
+
+// Define the type for the next function
+type NextHandler = (err?: any) => void;
+
+// Define the logger
+// this is the logger that will be used to log all requests
+export const myLogger: Logger = (() => {
+  if (process.env.NODE_ENV === 'test') {
+    return winston.createLogger({
+      transports: [
+        new winston.transports.Console({
+          silent: true,
+        }),
+      ],
+    });
+  }
+
+  return winston.createLogger({
+    level: 'info',
+    format: winston.format.combine(
+      winston.format.timestamp({
+        format: 'YYYY-MM-DD HH:mm:ss',
+      }),
+      winston.format.printf((info: TransformableInfo) => `${info.timestamp} ${info.level}: ${info.message}`)
+    ),
+    transports: [
+      new winston.transports.File({ filename: 'logs/request.log', level: 'info' }),
+      new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+    ],
+  });
+})();
+
+
+
+// Define the allowed extensions and MIME types
+const allowedExtensionsList = ['png', 'jpg', 'jpeg', 'gif', 'image/png', 'image/jpeg', 'image/gif'];
+
+// Check if the file extension for a file upload is allowed
+export function allowedExtensions(filename: string, mimetype: string): boolean {
+  const nameParts = filename.split('.');
+  const extension = nameParts[nameParts.length - 1].toLowerCase();
+  const mimeTypeLower = mimetype.toLowerCase();
+
+  return allowedExtensionsList.includes(extension) || allowedExtensionsList.includes(mimeTypeLower);
+}
+
+// Setup storage for file uploads
+const storage: StorageEngine = multer.diskStorage({
+  destination: function (req: any, file: any, cb: (arg0: null, arg1: string) => void) {
+    cb(null, './static/uploads');
+  },
+  filename: function (req: any, file: { originalname: string; mimetype: string; }, cb: (arg0: Error | null, arg1: string) => void) {
+    if (allowedExtensions(file.originalname, file.mimetype)) {
+      const uniquePrefix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, `${uniquePrefix}-${file.originalname}`);
+    } else {
+      cb(new Error('File type not allowed'), '');
+    }
+  }
+});
+
+// Initialize multer with the storage configuration
+const upload = multer({ storage });
+
+// Custom middleware to wrap multer
+export const multerMiddleware = upload.single('file');
+
+export const useMulter = (req: NextApiRequest, res: NextApiResponse, next: NextHandler) => {
+  multerMiddleware(req as any, res as any, (err: any) => {
+    if (err) {
+      return next(err);
+    }
+    next();
+  });
+};
 
 export const formatCurrency = (amount: number) => {
   return (amount / 100).toLocaleString('en-US', {
