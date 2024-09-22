@@ -86,3 +86,10 @@ export type InvoiceForm = {
   amount: number;
   status: 'pending' | 'paid';
 };
+
+export interface MailArgs {
+  to: string;
+  subject: string;
+  token: string;
+  uri?: string;
+}
