@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema, Model } from 'mongoose';
 import bcrypt from 'bcrypt';
+import { IProduct } from '@/models/product';
 
 // Define the interface for the User document
 interface IUser extends Document {
@@ -22,7 +23,7 @@ interface IUser extends Document {
   dispatcherStatus: 'available' | 'busy' | 'null';
   buyerStatus: 'available' | 'busy' | 'null';
   photo?: string;
-  products: mongoose.Types.ObjectId[];
+  products: mongoose.Types.ObjectId[] | IProduct[];
   addressSeller?: mongoose.Types.ObjectId;
   addressBuyer?: mongoose.Types.ObjectId;
   addressDispatcher?: mongoose.Types.ObjectId;

@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema, Model } from 'mongoose';
 import { IProduct, Product } from '@/models/product';
 import { IOrderItem, OrderItem } from '@/models/orderItem';
+import { IPayment } from '@/models/payment';
 
 // Define the interface for the Order document
 interface IOrder extends Document {
@@ -15,8 +16,8 @@ interface IOrder extends Document {
   currency: string;
   totalAmount: number;
   status: 'completed' | 'incomplete' | 'pending';
-  orderItems: mongoose.Types.ObjectId[];
-  payment: mongoose.Types.ObjectId[];
+  orderItems: mongoose.Types.ObjectId[] | IOrderItem[];
+  payment: mongoose.Types.ObjectId[] | IPayment[];
 }
 
 // Define the schema for the Order model
