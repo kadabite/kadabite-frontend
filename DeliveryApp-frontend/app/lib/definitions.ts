@@ -93,3 +93,17 @@ export interface MailArgs {
   token: string;
   uri?: string;
 }
+
+export interface NewArgs {
+  firstName?: any;
+  lastName?: any;
+  username?: any;
+  email?: any;
+  phoneNumber?: any;
+  lgaId?: any;
+  vehicleNumber?: any;
+  userType?: any;
+  buyerStatus?: any;
+  sellerStatus?: any;
+  dispatcherStatus?: any;
+}
