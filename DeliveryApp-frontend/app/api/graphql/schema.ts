@@ -1,9 +1,8 @@
-import { buildSchema } from 'graphql';
 import { gql } from 'apollo-server-micro';
-import { makeExecutableSchema } from '@graphql-tools/schema';
-import { resolvers } from '@/app/api/graphql/_resolvers/resolvers';
+// import { makeExecutableSchema } from '@graphql-tools/schema';
+// import { resolvers } from '@/app/api/graphql/_resolvers/resolvers';
 
-const typeDefs = gql`
+const typeDefs = `#graphql
 
 input OrderItem2 {
   id: ID!
@@ -271,7 +270,9 @@ type ThirdPartyUser {
 }
 `;
 
-export const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
+// export const schema = {
+//   typeDefs,
+//   resolvers,
+// };
+
+export default typeDefs;
