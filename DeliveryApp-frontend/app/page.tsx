@@ -7,10 +7,8 @@ import Image from 'next/image'
 import ToggleMenu, { Navigation } from '@/app/ui/landing_page/ToggleMenu';
 import Search from '@/app/ui/search';
 import { Button } from '@/app/ui/button';
-import Slidein from '@/app/ui/landing_page/slidein';
 import { team, testimonials, connect, connect2 } from '@/app/lib/utils';
-import { blue, orange } from '@mui/material/colors';
-import TextField from '@mui/material/TextField';
+import { orange } from '@mui/material/colors';
 import { Typography } from '@mui/material';
 import Imagetext from '@/app/ui/image-text'
 import AddchartIcon from '@mui/icons-material/Addchart';
