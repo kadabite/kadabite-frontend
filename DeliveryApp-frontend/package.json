@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.11.8",
+    "@apollo/server": "^4.11.0",
+    "@as-integrations/next": "^3.1.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@graphql-tools/schema": "^10.0.6",
@@ -19,10 +21,12 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/lodash": "^4.17.7",
     "@types/multer": "^1.4.12",
+    "@types/node-fetch": "^2.6.11",
     "@types/nodemailer": "^6.4.16",
     "@types/pg": "^8.11.6",
     "@types/uuid": "^10.0.0",
     "@vercel/postgres": "^0.8.0",
+    "apollo-datasource-mongodb": "^0.6.0",
     "apollo-server-micro": "^3.13.0",
     "autoprefixer": "10.4.19",
     "bcrypt": "^5.1.1",
@@ -31,6 +35,7 @@
     "dotenv": "^16.4.5",
     "fs": "0.0.1-security",
     "graphql": "^16.9.0",
+    "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "logform": "^2.6.1",
@@ -45,7 +50,6 @@
     "react-dom": "19.0.0-rc-f38c22b244-20240704",
     "styled-components": "^6.1.12",
     "tailwindcss": "3.4.4",
-    "typescript": "5.5.2",
     "use-debounce": "^10.0.1",
     "uuid": "^10.0.0",
     "winston": "^3.14.2",
@@ -59,7 +63,11 @@
     "@types/mongoose": "^5.11.97",
     "@types/node": "20.14.8",
     "@types/react": "18.3.3",
-    "@types/react-dom": "18.3.0"
+    "@types/react-dom": "18.3.0",
+    "typescript": "5.5.2"
+  },
+  "resolutions": {
+    "graphql": "16.9.0"
   },
   "engines": {
     "node": ">=20.12.0"
