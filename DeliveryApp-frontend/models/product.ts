@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Model } from 'mongoose';
-import { currency } from '../../configPayment.json';
+import { currency } from '@/app/lib/definitions';
 
 // Define the interface for the Product document
 interface IProduct extends Document {

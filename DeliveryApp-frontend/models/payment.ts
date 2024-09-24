@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Model } from 'mongoose';
-import { paymentStatus, paymentMethods, currency } from '../../configPayment.json';
+import { paymentStatus, paymentMethods, currency } from '@/app/lib/definitions';
 
 // Define the interface for the Payment document
 interface IPayment extends Document {
