@@ -1,49 +1,5 @@
 import { Revenue } from './definitions';
 
-import { myLogger } from '@/app/api/upload/logger';
-import { OrderItem } from '@/models/orderItem';
-
-export const deleteOrderItems = async (createdItem) => {
-  for (const id of createdItem) {
-    try {
-      await OrderItem.findByIdAndDelete(id.toString());
-    } catch (error) {
-      myLogger.error(`Error deleting order item with id ${id}: ` + error.message);
-    }
-  }
-}
-
-
-export const paymentMethods =  ["transfer", "cash", "pos"];
-export const currency = ["Naira", "Dollar"];
-export const paymentStatus = ["inprocess", "unpaid", "paid"];
-
-
-import fetch from 'node-fetch';
-// check if the file extension for a file upload is allowed
-export async function authRequest(reqHeader) {
-  // Login logic using the RESTful API (already implemented)
-  return await fetch(`${process.env.DELIVER_URL}/api/authenticateAndAuthorize`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'authorization': reqHeader
-    },
-  });
-};
-
-export async function loginMe(email, password) {
-  return await fetch(`${process.env.DELIVER_URL}/api/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  });
-};
-
-
-
-
-
 export const formatCurrency = (amount: number) => {
   return (amount / 100).toLocaleString('en-US', {
     style: 'currency',

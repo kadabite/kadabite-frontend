@@ -107,3 +107,18 @@ export interface NewArgs {
   sellerStatus?: any;
   dispatcherStatus?: any;
 }
+
+// Define types for the functions
+type PaymentMethod = "transfer" | "cash" | "pos";
+type Currency = "Naira" | "Dollar";
+type PaymentStatus = "inprocess" | "unpaid" | "paid";
+
+// Define the type for request headers
+export interface AuthRequestHeaders {
+  'Content-Type': string;
+  'authorization': string;
+}
+// Define constants with specific types
+export const paymentMethods: PaymentMethod[] = ["transfer", "cash", "pos"];
+export const currency: Currency[] = ["Naira", "Dollar"];
+export const paymentStatus: PaymentStatus[] = ["inprocess", "unpaid", "paid"];
