@@ -5,7 +5,7 @@ import { Product } from '@/models/product';
 import Category from '@/models/category';
 import Bull from 'bull';
 import { myLogger } from '@/app/api/upload/logger';
-import { authRequest, loginMe } from '@/app/lib/utils';
+import { authRequest, loginMe } from '@/app/api/graphql/utils';
 import _, { rest } from 'lodash';
 import { NewArgs } from '@/app/lib/definitions';
 

@@ -2,7 +2,7 @@ import { myLogger } from '@/app/api/upload/logger';
 import { IProduct, Product } from '@/models/product';
 import Category from '@/models/category';
 import { User } from '@/models/user';
-import { authRequest } from '@/app/lib/utils';
+import { authRequest } from '@/app/api/graphql/utils';
 import _ from 'lodash';
 import mongoose from 'mongoose';
 

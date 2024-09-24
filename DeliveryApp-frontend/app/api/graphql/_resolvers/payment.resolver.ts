@@ -1,7 +1,8 @@
 import { myLogger } from '@/app/api/upload/logger';
 import { Payment } from '@/models/payment';
 import Order from '@/models/order';
-import { authRequest, paymentMethods, currency } from '@/app/lib/utils';
+import { paymentMethods, currency } from '@/app/lib/definitions';
+import { authRequest } from '@/app/api/graphql/utils';
 
 const availableCurrency = currency;
 

@@ -3,7 +3,7 @@ import Order from '@/models/order';
 import { OrderItem } from '@/models/orderItem';
 import { User } from '@/models/user';
 import { Product } from '@/models/product'
-import { deleteOrderItems, authRequest } from '@/app/lib/utils';
+import { deleteOrderItems, authRequest } from '@/app/api/graphql/utils';
 import _ from 'lodash';
 import mongoose from 'mongoose';
 import { IPayment } from '@/models/payment';
@@ -391,7 +391,7 @@ export const ordersMutationResolver = {
 
         const item = new OrderItem(data);
         await item.save();
-        createdItems.push(item._id);
+        createdItems.push(item.id);
       }
 
       // create the order
