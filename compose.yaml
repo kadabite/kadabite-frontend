@@ -2,7 +2,7 @@ services:
   mongodb:
     image: mongodb/mongodb-community-server
     env_file:
-      - ./DeliveryApp-frontend/mongodb.env
+      - ./Next_fullStack_food_Delivery_app/mongodb.env
     ports:
       - "27017:27017"
     volumes:
