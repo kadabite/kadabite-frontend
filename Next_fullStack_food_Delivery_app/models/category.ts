@@ -14,3 +14,4 @@ const categorySchema: Schema<ICategory> = new Schema({
 const Category: Model<ICategory> = mongoose.model<ICategory>('Category', categorySchema);
 
 export default Category;
+export type { ICategory };

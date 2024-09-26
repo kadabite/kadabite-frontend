@@ -1,5 +1,0 @@
-{
-  "paymentMethods": ["transfer", "cash", "pos"],
-  "currency": ["Naira", "Dollar"],
-  "paymentStatus": ["inprocess", "unpaid", "paid"]
-}

@@ -258,7 +258,7 @@ export const userMutationResolvers = {
     }
   },
 
-  createUser: async (_parent: any, args: { username: any; email: any; passwordHash: any; phoneNumber: any; userType: any; status: any; firstName: any; lastName: any; lgaId: any; vehicleNumber: any; }) => {
+  createUser: async (_parent: any, args: { username: string; email: string; passwordHash: string; phoneNumber: any; userType: string; status: string; firstName: string; lastName: string; lgaId: string; vehicleNumber: any; }) => {
     try {
       const {
         username,

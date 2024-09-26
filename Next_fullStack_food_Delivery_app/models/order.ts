@@ -2,6 +2,7 @@ import mongoose, { Document, Schema, Model } from 'mongoose';
 import { IProduct, Product } from '@/models/product';
 import { IOrderItem, OrderItem } from '@/models/orderItem';
 import { IPayment } from '@/models/payment';
+import exp from 'constants';
 
 // Define the interface for the Order document
 interface IOrder extends Document {
@@ -58,5 +59,5 @@ orderSchema.pre<IOrder>('save', async function (next) {
 
 // Create the Order model
 const Order: Model<IOrder> = mongoose.model<IOrder>('Order', orderSchema);
-
 export default Order;
+export type { IOrder };

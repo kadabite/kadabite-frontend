@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 
 
 export const productQueryResolver = {
-  getProduct: async (_parent: any, { id }: any) => {
+  getProduct: async (_parent: any, { id }: any, p0: { req: { headers: { authorization: string; }; }; }) => {
     try {
       const productData = await Product.findById(id);
       if (!productData) return { message: 'No product was found!', statusCode: 404, ok: false }
