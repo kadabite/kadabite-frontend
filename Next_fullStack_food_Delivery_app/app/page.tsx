@@ -21,6 +21,12 @@ import Carousel from '@/app/ui/landing_page/carausel';
 import NewsletterForm from '@/app/ui/newsletterForm';
 
 
+import { Metadata } from 'next';
+ 
+export const metadata: Metadata = {
+  title: 'Invoices',
+};
+
 export default function Page() {
 
   return (

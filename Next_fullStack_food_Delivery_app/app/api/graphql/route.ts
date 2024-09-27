@@ -3,22 +3,9 @@ import { ApolloServer } from '@apollo/server';
 import { NextRequest } from 'next/server';
 import typeDefs from '@/app/api/graphql/schema';
 import resolvers from '@/app/api/graphql/resolvers';
-import mongoose from 'mongoose';
+import '@/lib/dbConnect';
 
-const uri = process.env.NEXT_PUBLIC_MONGODB_URI;
-const connectDB = async () => {
-  try {
-    if (uri) {
-      await mongoose.connect(uri);
-      console.log("connected to database successfully");
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
-connectDB();
-
-const apolloServer = new ApolloServer({
+const apolloServer = new ApolloServer<{}>({
   typeDefs,
   resolvers,
 });
@@ -29,8 +16,6 @@ const handler = startServerAndCreateNextHandler<NextRequest>(apolloServer, {
     res,
   }),
 });
-
-// const startServer = apolloServer.start();
 
 export async function POST(request: NextRequest) {
   return handler(request);

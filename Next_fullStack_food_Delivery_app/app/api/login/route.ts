@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { connectToDatabase } from '@/lib/mongoose';
 import { User } from '@/models/user';
 import { myLogger } from '@/app/api/upload/logger';
 
@@ -15,8 +14,6 @@ export async function POST(req: NextRequest) {
     if (email === '' || password === '') {
       return NextResponse.json({ message: 'Provide more information' }, { status: 401 });
     }
-
-    await connectToDatabase();
 
     // Find the user based on the email and return error if the user does not exist
     const user = await User.findOne({ email });

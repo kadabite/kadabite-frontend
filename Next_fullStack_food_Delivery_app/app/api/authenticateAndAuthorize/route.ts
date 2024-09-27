@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
-import { connectToDatabase } from '@/lib/mongoose';
 import { User } from '@/models/user';
-
+ 
 export async function GET(req: NextRequest) {
   try {
-    await connectToDatabase();
 
     // Check the authorization header of the user and return error if missing or invalid
     const reqHeader = req.headers.get('authorization');

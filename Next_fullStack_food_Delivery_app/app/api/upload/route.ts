@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongoose';
 import { User } from '@/models/user';
 import { myLogger } from '@/app/api/upload/logger';
 import fs from 'fs/promises'; // Use promises API for async/await
@@ -69,9 +68,6 @@ export async function POST(req: NextRequest) {
       await removeFile(file.name);
       return NextResponse.json({ message: 'Invalid file type!' }, { status: 400 });
     }
-
-    // Connect to the database
-    await connectToDatabase();
 
     // Find the user and check for an existing photo
     const user = await User.findById(id);
