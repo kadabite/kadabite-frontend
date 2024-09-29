@@ -6,36 +6,13 @@ import { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import CircularProgress from '@mui/material/CircularProgress';
 import { orange } from '@mui/material/colors';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { Restaurant } from '@/lib/graphql-types';
 import Image from 'next/image';
 import Link from 'next/link';
+import { GET_DATA } from '@/app/query/user.query';
 
 export default function Search({ placeholder }: { placeholder: string }) {
-
-  const GET_DATA = gql`
-    query findFoods($productName: String!) {
-      findFoods(productName: $productName) {
-        foodsData {
-          businessDescription
-          createdAt
-          currency
-          description
-          phoneNumber
-          price
-          products
-          name
-          username
-          userId
-          email
-          photo
-        }
-        message
-        ok
-        statusCode
-      }
-    }
-  `;
 
   const searchParams = useSearchParams();
   const pathname = usePathname();

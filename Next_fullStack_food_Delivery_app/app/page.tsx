@@ -283,7 +283,7 @@ export default function Page() {
           </div>
           <div className='flex flex-row space-x-5'>
             <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
-            <Link href='/' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
+            <Link href='/signup' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
               Sign Up &nbsp; &gt;
             </Link>
           </div>
@@ -376,7 +376,7 @@ export default function Page() {
         </div>
         <div className='flex flex-row space-x-5'>
             <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
-            <Link href='/' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
+            <Link href='/signup' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
               Sign Up &nbsp; &gt;
             </Link>
         </div>
@@ -417,7 +417,7 @@ export default function Page() {
           </div>
           <div className='flex flex-row space-x-5'>
             <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
-            <Link href='/' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
+            <Link href='/signup' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
               Sign Up &nbsp; &gt;
             </Link>
         </div>
@@ -559,7 +559,7 @@ export default function Page() {
         </div>
         <div className='flex flex-row space-x-5'>
             <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
-            <Link href='/' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
+            <Link href='/signup' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
               Sign Up &nbsp; &gt;
             </Link>
         </div>
@@ -684,7 +684,7 @@ export default function Page() {
 
         <div className='flex flex-col text-slate-50'>
           <Typography sx={{ mt: 2, color: "black", fontSize: 20 }}>Newsletter</Typography>
-          <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to home page">Sign Up</Link>
+          <Link href='/signup' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to home page">Sign Up</Link>
           <Link href='/about' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to about page">Latest News</Link>
           <Link href='/app' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to app page">Events</Link>
           <Link href='/marketplace' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to marketplace">Partnerships</Link>

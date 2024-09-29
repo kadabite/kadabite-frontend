@@ -1,9 +1,12 @@
-// 'use server';
+'use server';
 
-// import { z } from 'zod';
+import { z } from 'zod';
 // import { sql } from '@vercel/postgres';
-// import { revalidatePath } from 'next/cache';
-// import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { myRequest } from '@/app/api/graphql/utils';
+import { LOGIN } from '@/app/query/user.query';
+import { Message } from '@/lib/graphql-types';
 // import { signIn } from '@/auth';
 // import { AuthError } from 'next-auth';
 
@@ -17,20 +20,20 @@
 //   message?: string | null;
 // };
 
-// const FormSchema = z.object({
-//   id: z.string(),
-//   customerId: z.string({
-//     invalid_type_error: 'Please select a customer.',
-//   }),
-//   amount: z.coerce
-//     .number()
-//     .gt(0, { message: 'Please enter an amount greater than $0.' }),
+const FormSchema = z.object({
+  id: z.string(),
+  customerId: z.string({
+    invalid_type_error: 'Please select a customer.',
+  }),
+  amount: z.coerce
+    .number()
+    .gt(0, { message: 'Please enter an amount greater than $0.' }),
 
-//   status: z.enum(['pending', 'paid'], {
-//     invalid_type_error: 'Please select an invoice status.',
-//   }),
-//   date: z.string(),
-// });
+  status: z.enum(['pending', 'paid'], {
+    invalid_type_error: 'Please select an invoice status.',
+  }),
+  date: z.string(),
+});
 
 // const CreateInvoice = FormSchema.omit({ id: true, date: true });
 // const UpdateInvoice = FormSchema.omit({ id: true, date: true });
@@ -112,21 +115,27 @@
 // }
 
 
-// export async function authenticate(
-//   prevState: string | undefined,
-//   formData: FormData,
-// ) {
-//   try {
-//     await signIn('credentials', formData);
-//   } catch (error) {
-//     if (error instanceof AuthError) {
-//       switch (error.type) {
-//         case 'CredentialsSignin':
-//           return 'Invalid credentials.';
-//         default:
-//           return 'Something went wrong.';
-//       }
-//     }
-//     throw error;
-//   }
-// }
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  let data;
+  try {
+    const variables = {
+      email: formData.get('email'),
+      password: formData.get('password'),
+    };
+
+    const response = await myRequest(LOGIN, variables);
+    data = response.login;
+
+    if (!data.ok) return data;
+
+    // Handle successful authentication (e.g., store token, redirect, etc.)
+    return data;
+
+  } catch (error) {
+    data.message = 'An error occurred during authentication.';
+    return data;
+  }
+}
