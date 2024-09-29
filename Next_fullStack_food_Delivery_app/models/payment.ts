@@ -30,7 +30,7 @@ const paymentSchema: Schema<IPayment> = new Schema({
 });
 
 // Create the Payment model
-const Payment: Model<IPayment> = mongoose.model<IPayment>('Payment', paymentSchema);
+const Payment: Model<IPayment> = mongoose.models.Payment || mongoose.model<IPayment>('Payment', paymentSchema);
 
 export { paymentSchema, Payment };
 export type { IPayment };

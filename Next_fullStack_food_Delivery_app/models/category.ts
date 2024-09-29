@@ -11,7 +11,7 @@ const categorySchema: Schema<ICategory> = new Schema({
 });
 
 // Create the Category model
-const Category: Model<ICategory> = mongoose.model<ICategory>('Category', categorySchema);
+const Category: Model<ICategory> = mongoose.models.Category || mongoose.model<ICategory>('Category', categorySchema);
 
 export default Category;
 export type { ICategory };

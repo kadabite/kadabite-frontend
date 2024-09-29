@@ -17,7 +17,8 @@ const orderItemSchema: Schema<IOrderItem> = new Schema({
 });
 
 // Create the OrderItem model
-const OrderItem: Model<IOrderItem> = mongoose.model<IOrderItem>('OrderItem', orderItemSchema);
+// const OrderItem: Model<IOrderItem> = mongoose.model<IOrderItem>('OrderItem', orderItemSchema);
+const OrderItem: Model<IOrderItem> = mongoose.models.OrderItem || mongoose.model<IOrderItem>('OrderItem', orderItemSchema);
 
 export { orderItemSchema, OrderItem };
 export type { IOrderItem };

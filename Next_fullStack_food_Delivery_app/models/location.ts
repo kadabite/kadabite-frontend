@@ -43,7 +43,7 @@ const countrySchema: Schema<ICountry> = new Schema({
 });
 
 // Create models with type annotations
-export const Location: Model<ILocation> = mongoose.model<ILocation>('Location', locationSchema);
-export const Lga: Model<ILga> = mongoose.model<ILga>('Lga', lgaSchema);
-export const State: Model<IState> = mongoose.model<IState>('State', stateSchema);
-export const Country: Model<ICountry> = mongoose.model<ICountry>('Country', countrySchema);
+export const Location: Model<ILocation> = mongoose.models.Location || mongoose.model<ILocation>('Location', locationSchema);
+export const Lga: Model<ILga> = mongoose.models.Lga || mongoose.model<ILga>('Lga', lgaSchema);
+export const State: Model<IState> = mongoose.models.State || mongoose.model<IState>('State', stateSchema);
+export const Country: Model<ICountry> = mongoose.models.Country || mongoose.model<ICountry>('Country', countrySchema);
