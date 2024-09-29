@@ -5,7 +5,8 @@ import { Product } from '@/models/product';
 import Category from '@/models/category';
 import Bull from 'bull';
 import { myLogger } from '@/app/api/upload/logger';
-import { authRequest, loginMe } from '@/app/api/graphql/utils';
+import { authRequest } from '@/app/api/graphql/utils';
+import { loginMe } from '@/app/api/datasource/user.data';
 import _, { rest } from 'lodash';
 import { NewArgs } from '@/app/lib/definitions';
 
@@ -293,17 +294,15 @@ export const userMutationResolvers = {
     }
   },
 
-  login: async (_parent: any, args: { email: any; password: any; }) => {
+  login: async (_parent: any, args: { email: string; password: string; }) => {
     const { email, password } = args;
     // Login logic using the RESTful API (already implemented)
     const loginResponse = await loginMe(email, password);
     if (!loginResponse.ok) {
-      const message = await loginResponse.json();
-      return { statusCode: loginResponse.status, message: message.message, ok: loginResponse.ok };
+      return { statusCode: loginResponse.statusCode, message: loginResponse.message, ok: loginResponse.ok };
     }
 
-    const loginData = await loginResponse.json();
-    const token = loginData.token;
+    const token = loginResponse.token;
 
     return { message: 'User logged in successfully', token, statusCode: 200, ok: true };
   },

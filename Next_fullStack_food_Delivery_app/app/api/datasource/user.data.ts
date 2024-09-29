@@ -1,24 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { myLogger } from '@/app/api/upload/logger';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { User } from '@/models/user';
-import { myLogger } from '@/app/api/upload/logger';
+import { Message } from '@/lib/graphql-types';
 
-export async function POST(req: NextRequest) {
+// Login function
+export async function loginMe(email: string, password: string): Promise<Message> {
   try {
-    const body = await req.json();
-    const email = body.email || '';
-    const password = body.password || '';
 
     // Verify if the email and password are authentic
     if (email === '' || password === '') {
-      return NextResponse.json({ message: 'Provide more information' }, { status: 401 });
+      return Promise.resolve({ message: 'Provide more information', statusCode: 401, ok: false });
     }
 
     // Find the user based on the email and return error if the user does not exist
     const user = await User.findOne({ email });
     if (!user || !bcrypt.compareSync(password, user.passwordHash)) {
-      return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
+      return Promise.resolve({ message: 'Invalid credentials', statusCode: 401, ok: false });
     }
 
     // Update user information to be loggedIn
@@ -29,9 +27,9 @@ export async function POST(req: NextRequest) {
       expiresIn: '24h',
     });
 
-    return NextResponse.json({ token });
+    return Promise.resolve({ token, ok: true, statusCode: 200 });
   } catch (error) {
     myLogger.error('Error logging in user: ' + (error as Error).message);
-    return NextResponse.json({ message: 'An error occurred!' }, { status: 400 });
+    return Promise.resolve({ message: 'An error occurred!', statusCode: 400, ok: false });
   }
 }

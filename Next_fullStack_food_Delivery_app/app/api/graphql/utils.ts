@@ -4,6 +4,7 @@ import fetch, { Response } from 'node-fetch';
 import { AuthRequestHeaders } from '@/app/lib/definitions';
 import mongoose from 'mongoose';
 
+
 export const deleteOrderItems = async (createdItem: mongoose.Types.ObjectId[] | IOrderItem[]): Promise<void> => {
   if (!createdItem) return;
   for (const id of createdItem) {
@@ -28,11 +29,27 @@ export async function authRequest(reqHeader: AuthRequestHeaders): Promise<Respon
   });
 }
 
-// Login function
-export async function loginMe(email: string, password: string): Promise<Response> {
-  return await fetch(`${process.env.DELIVER_URL}/api/login`, {
+// Graphql request
+export async function myRequest(query: any, variables: Record<string, any>): Promise<any> {
+  const response = await fetch(`${process.env.DELIVER_URL}/api/graphql`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: query.loc?.source.body,
+      variables,
+    }),
   });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const responseData = await response.json();
+  if (responseData.errors) {
+    throw new Error(`GraphQL error: ${responseData.errors.map((error: any) => error.message).join(', ')}`);
+  }
+
+  return responseData.data;
 }
