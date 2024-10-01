@@ -1,4 +1,5 @@
 import AcmeLogo from '@/app/ui/acme-logo';
+import dotenv from 'dotenv';
 import { ArrowRightIcon, AtSymbolIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import styles from '@/app/ui/home.module.css';
@@ -20,6 +21,7 @@ import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import Carousel from '@/app/ui/landing_page/carausel';
 import NewsletterForm from '@/app/ui/newsletterForm';
 
+dotenv.config();
 
 import { Metadata } from 'next';
  

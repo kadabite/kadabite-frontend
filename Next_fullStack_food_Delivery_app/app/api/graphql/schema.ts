@@ -260,6 +260,7 @@ type Users {
   lastName: String!
   username: String!
   email: String!
+  role: String!
 }
 
 type ThirdPartyUser {

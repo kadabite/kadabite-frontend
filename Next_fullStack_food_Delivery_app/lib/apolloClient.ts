@@ -1,17 +1,17 @@
 // lib/apolloClient.ts
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
-import dotenv from 'dotenv';
 import { setContext } from '@apollo/client/link/context';
-
-dotenv.config();
+import Cookies from 'js-cookie';
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:3000/api/graphql',
+  // uri: 'http://localhost:3000/api/graphql',
+  uri: process.env.NEXT_PUBLIC_SERVER_GRAPHQL_URL,
 });
 
 const authLink = setContext((_, { headers }) => {
   // Get the authentication token from local storage if it exists
-  const token = localStorage.getItem('token');
+  const token = Cookies.get('authToken');
+
   // Return the headers to the context so httpLink can read them
   return {
     headers: {

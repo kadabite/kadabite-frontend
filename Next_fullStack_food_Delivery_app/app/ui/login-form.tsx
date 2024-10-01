@@ -7,9 +7,11 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { Button } from './button';
-import { useActionState } from 'react';
+import { Button } from '@/app/ui/button';
+import { useRouter } from 'next/navigation';
+import { useActionState, useEffect } from 'react';
 import { authenticate } from '@/app/lib/actions';
+import Cookies from 'js-cookie';
 
 
 export default function LoginForm() {
@@ -18,7 +20,19 @@ export default function LoginForm() {
     authenticate,
     undefined,
   );
+  const router = useRouter();
 
+  useEffect(() => {
+    if (data && data.token) {
+      
+      // Store the token in a cookie
+      Cookies.set('authToken', data.token, { expires: 1, sameSite: 'strict' });
+      
+      // Landing page
+      // Redirect to a protected page
+      router.push('/dashboard');
+    }
+  }, [data, router]);
 
   return (
     <form className="space-y-3" action={formAction}>
