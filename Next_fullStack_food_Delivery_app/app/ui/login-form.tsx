@@ -22,12 +22,14 @@ export default function LoginForm() {
   );
   const router = useRouter();
 
+
   useEffect(() => {
     if (data && data.token) {
-      
+      // remove old cookies
+      Cookies.remove('authToken');
+
       // Store the token in a cookie
-      Cookies.set('authToken', data.token, { expires: 1, sameSite: 'strict' });
-      
+      Cookies.set('authToken', data.token, { expires: 1, sameSite: 'strict', secure: true });
       // Landing page
       // Redirect to a protected page
       router.push('/dashboard');
