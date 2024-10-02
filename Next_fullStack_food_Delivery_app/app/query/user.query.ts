@@ -9,6 +9,7 @@ export const GET_USERS = gql`
         lastName
         username
         email
+        role
       }
       statusCode
       ok
