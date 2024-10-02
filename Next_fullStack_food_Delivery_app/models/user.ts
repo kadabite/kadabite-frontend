@@ -28,6 +28,7 @@ interface IUser extends Document {
   addressBuyer?: mongoose.Types.ObjectId;
   addressDispatcher?: mongoose.Types.ObjectId;
   businessDescription?: string;
+  refreshToken?: string;
 }
 
 // Define the schema for the User model
@@ -56,6 +57,7 @@ const userSchema: Schema<IUser> = new Schema({
   addressBuyer: { type: mongoose.Schema.Types.ObjectId, ref: 'Location' },
   addressDispatcher: { type: mongoose.Schema.Types.ObjectId, ref: 'Location' },
   businessDescription: { type: String, maxlength: 300 },
+  refreshToken: { type: String },
 });
 
 // Pre-save hook to hash the password
