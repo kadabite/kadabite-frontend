@@ -4,6 +4,14 @@ import fetch, { Response } from 'node-fetch';
 import { AuthRequestHeaders } from '@/app/lib/definitions';
 import mongoose from 'mongoose';
 
+export class HttpError extends Error {
+  statusCode: number;
+
+  constructor(message: string, statusCode: number) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}
 
 export const deleteOrderItems = async (createdItem: mongoose.Types.ObjectId[] | IOrderItem[]): Promise<void> => {
   if (!createdItem) return;
@@ -18,16 +26,16 @@ export const deleteOrderItems = async (createdItem: mongoose.Types.ObjectId[] | 
   }
 }
 
-// Authenticate and authorize request
-export async function authRequest(reqHeader: AuthRequestHeaders): Promise<Response> {
-  return await fetch(`${process.env.DELIVER_URL}/api/authenticateAndAuthorize`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'authorization': reqHeader['authorization']
-    },
-  });
-}
+// // Authenticate and authorize request
+// export async function authRequest(reqHeader: string): Promise<Response> {
+//   return await fetch(`${process.env.DELIVER_URL}/api/authenticateAndAuthorize`, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'authorization': reqHeader
+//     },
+//   });
+// }
 
 // Graphql request
 export async function myRequest(query: any, variables: Record<string, any>): Promise<any> {
