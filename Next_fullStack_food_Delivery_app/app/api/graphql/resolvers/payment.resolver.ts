@@ -2,28 +2,27 @@ import { myLogger } from '@/app/api/upload/logger';
 import { Payment } from '@/models/payment';
 import Order from '@/models/order';
 import { paymentMethods, currency } from '@/app/lib/definitions';
-import { authRequest } from '@/app/api/graphql/utils';
+import { authRequest } from '@/app/api/datasource/user.data';
+import { ObjectId } from 'mongoose';
 
 const availableCurrency = currency;
 
 export const paymentQueryResolver = {
   getMyPayment: async (_parent: any, { orderId }: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
-    if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
-    }
-    const { user } = await response.json();
-    // Uses the user._id as a string instead of object
-    user.id = user._id.toString();
+    const response = await authRequest(req.headers.get('authorization'));
 
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };    // Uses the user._id as a string instead of object
     try {
       const order = await Order.findById(orderId).populate('payment');
       if (!order) return { message: 'Order was not found!', statusCode: 401, ok: false };
-      if (!(order.buyerId.toString() === user.id ||
-        order.sellerId.toString() === user.id ||
-          order.dispatcherId.toString() === user.id)) {
+      if (!(order.buyerId.toString() === (user._id as ObjectId).toString() ||
+        order.sellerId.toString() === (user._id as ObjectId).toString() ||
+          order.dispatcherId.toString() === (user._id as ObjectId).toString())) {
             return { message: 'You are may not be the right user!', statusCode: 401, ok: false };
       }
       return { paymentsData: order.payment, statusCode: 200, ok: true };
@@ -40,23 +39,22 @@ export const paymentMutationResolver = {
     status
       }: any, { req }: any) => {
 
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
-    const { user } = await response.json();
-    // Uses the user._id as a string instead of object
-    user.id = user._id.toString();
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };    // Uses the user._id as a string instead of object
   
     try {
       const pay = await Payment.findById(paymentId);
       if (!pay) return {'message': 'Payment not found', statusCode: 404, ok: false };
       const order = await Order.findById(pay.orderId);
       if (!order) return {'message': 'Order not found', statusCode: 404, ok: false };
-      if (order.sellerId.toString() === user.id) {
+      if (order.sellerId.toString() === (user._id as ObjectId).toString()) {
         pay.sellerPaymentStatus = status;
-      } else if (order.dispatcherId.toString() === user.id) {
+      } else if (order.dispatcherId.toString() === (user._id as ObjectId).toString()) {
         pay.dispatcherPaymentStatus = status;
       } else {
         return {'message': 'Unauthorized', statusCode: 401, ok: false };
@@ -85,18 +83,18 @@ export const paymentMutationResolver = {
     sellerAmount,
     dispatcherAmount,
       }: any, { req }: any) => {
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
-    let { user } = await response.json();
-    user.id = user._id.toString();
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
 
     try {
       const order = await Order.findById(orderId)
       if (!order) return {'message': 'Order not found'};
-      if (order.buyerId.toString() !== user.id) return {'message': 'Unauthorized', statusCode: 401, ok: false };
+      if (order.buyerId.toString() !== (user._id as ObjectId).toString()) return {'message': 'Unauthorized', statusCode: 401, ok: false };
       if (!paymentMethods.includes(paymentMethod)) return {'message': 'payment method is not allowed', statusCode: 401, ok: false };
       if (!availableCurrency.includes(currency)) return {'message': 'currency not available for transaction', statusCode: 400, ok: false };
       if (sellerAmount < 0 || dispatcherAmount < 0) return {'message': 'Invalid amount', statusCode: 400, ok: false };

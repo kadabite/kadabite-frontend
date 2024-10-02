@@ -5,19 +5,20 @@ import { Product } from '@/models/product';
 import Category from '@/models/category';
 import Bull from 'bull';
 import { myLogger } from '@/app/api/upload/logger';
-import { authRequest } from '@/app/api/graphql/utils';
+import { authRequest } from '@/app/api/datasource/user.data';
 import { loginMe } from '@/app/api/datasource/user.data';
 import _, { rest } from 'lodash';
 import { NewArgs } from '@/app/lib/definitions';
+import { ObjectId } from 'mongoose';
 
 
 export const userQueryResolvers = {
   users: async (_parent: any, _: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
     const { isAdmin } = await response.json();
     if (!isAdmin) return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
@@ -77,14 +78,15 @@ export const userQueryResolvers = {
   },
   user: async (_parent: any, _: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
-    const { user } = await response.json();
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     try {
-      const userData = await User.findById(user._id);
+      const userData = await User.findById((user._id as ObjectId).toString());
       return { userData, statusCode: response.status, ok: true };
     } catch (error) {
       myLogger.error('Error fetching user: ' + (error as Error).message);
@@ -94,10 +96,10 @@ export const userQueryResolvers = {
 
   category: async (_parent: any, { id }: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
     try {
       const categoryData = await Category.findById(id);
@@ -110,10 +112,10 @@ export const userQueryResolvers = {
 
   categories: async (_parent: any, _: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
     try {
       const categoriesData = await Category.find();
@@ -128,10 +130,10 @@ export const userQueryResolvers = {
 export const userMutationResolvers = {
   createCategory: async (_parent: any, { name }: any, { req }: any) => {
     // authenticate user who must be an admin
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
     const { isAdmin } = await response.json();
     if (!isAdmin) return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
@@ -179,10 +181,10 @@ export const userMutationResolvers = {
 
   createCategories: async (_parent: any, { name }: any, { req }: any) => {
     // authenticate user who must be an admin
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
     const { isAdmin } = await response.json();
     if (!isAdmin) return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
@@ -238,10 +240,10 @@ export const userMutationResolvers = {
 
   deleteCategory: async (_parent: any, { id }: any, { req }: any) => {
     // authenticate user who must be an admin
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
     const { isAdmin } = await response.json();
     if (!isAdmin) return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
@@ -309,15 +311,17 @@ export const userMutationResolvers = {
 
   logout: async (_parent: any, _: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
-    const { user } = await response.json();
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
+  
     try {
       // Update the user information to be logged out
-      const updated = await User.findByIdAndUpdate(user._id, { isLoggedIn: false });
+      const updated = await User.findByIdAndUpdate((user._id as ObjectId).toString(), { isLoggedIn: false });
       if (updated) return { 'message': 'Logged out successfully', statusCode: 200, ok: true };
       else return { 'message': 'Unable to logout user!', statusCode: 400, ok: false };
     } catch (error) {
@@ -328,12 +332,13 @@ export const userMutationResolvers = {
 
   updateUser: async (_parent: any, args: { firstName: any; lastName: any; username: any; email: any; phoneNumber: any; lgaId: any; vehicleNumber: any; userType: any; buyerStatus: any; sellerStatus: any; dispatcherStatus: any; }, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
-    const { user } = await response.json();
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     try {
       const {
         firstName,
@@ -371,7 +376,7 @@ export const userMutationResolvers = {
         return acc;
       }, {});
 
-      const updated = await User.findByIdAndUpdate(user._id, filteredArgs);
+      const updated = await User.findByIdAndUpdate((user._id as ObjectId).toString(), filteredArgs);
       if (updated) return { message: 'Updated successfully', statusCode: 200, ok: true };
       else return { message: 'An error occurred!', statusCode: 500, ok: false };
     } catch (error) {
@@ -439,15 +444,15 @@ export const userMutationResolvers = {
 
   deleteUser: async (_parent: any, _: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
-    let { user } = await response.json();
-    user.id = user._id.toString();
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     try {
-      const delUser = await User.findByIdAndUpdate(user.id, { isDeleted: true });
+      const delUser = await User.findByIdAndUpdate((user._id as ObjectId).toString(), { isDeleted: true });
       if (!delUser) return { message: 'Could not delete user!', statusCode: 500, ok: false }
     } catch (error) {
       myLogger.error('Error deleting user: ' + (error as Error).message);

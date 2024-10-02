@@ -3,18 +3,19 @@ import Order from '@/models/order';
 import { OrderItem } from '@/models/orderItem';
 import { User } from '@/models/user';
 import { Product } from '@/models/product'
-import { deleteOrderItems, authRequest } from '@/app/api/graphql/utils';
+import { deleteOrderItems } from '@/app/api/graphql/utils';
+import { authRequest } from '@/app/api/datasource/user.data';
 import _ from 'lodash';
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import { IPayment } from '@/models/payment';
 
 export const ordersQueryResolver = {
   getAllOrders: async (_parent: any, _: any, { req }: any) => {
     // authenticate user as admin
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
     const { isAdmin } = await response.json();
     if (!isAdmin) return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
@@ -29,17 +30,18 @@ export const ordersQueryResolver = {
 
   getMyOrders: async (_parent: any, _: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
 
-    const { user } = await response.json();
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     // This endpoint will get all the users orders as a buyer
     try {
       const ordersData = await Order.find({
-        buyerId: user._id,
+        buyerId: (user._id as ObjectId).toString(),
       });
       return { ordersData, statusCode: 200, ok: true };
     } catch (error) {
@@ -51,23 +53,23 @@ export const ordersQueryResolver = {
 
   getMyOrderItems: async (_parent: any, { orderId }: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
 
-    const { user } = await response.json();
-
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     // This endpoint will get all the order items of the users order
     // In this endpoint, we are find a single order with id = orderId where the user is 
     // either a seller, buyer or dispatcher.
     try {
       const order = await Order.find({
         $or: [
-          { buyerId: user._id },
-          { sellerId: user._id },
-          { dispatcherId: user._id },
+          { buyerId: (user._id as ObjectId).toString() },
+          { sellerId: (user._id as ObjectId).toString() },
+          { dispatcherId: (user._id as ObjectId).toString() },
         ],
         _id: orderId,
       });
@@ -82,18 +84,18 @@ export const ordersQueryResolver = {
 
   getTheOrderAsSeller: async (_parent: any, _: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
 
-    const { user } = await response.json();
-
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     // This endpoint retrieves a sellers order
     try {
       const ordersData = await Order.find({
-        sellerId: user._id,
+        sellerId: (user._id as ObjectId).toString(),
       });
       return { ordersData, statusCode: 200, ok: true };
     } catch (error) {
@@ -105,18 +107,18 @@ export const ordersQueryResolver = {
 
   getTheOrderAsDispatcher: async (_parent: any, _: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
 
-    const { user } = await response.json();
-
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     // This endpoint retrieves a dispatchers order
     try {
       const ordersData = await Order.find({
-        dispatcherId: user._id
+        dispatcherId: (user._id as ObjectId).toString()
       });
       return { ordersData, statusCode: 200, ok: true };
     } catch (error) {
@@ -134,18 +136,17 @@ export const ordersQueryResolver = {
 export const ordersMutationResolver = {
   updateOrderItems: async (_parent: any, { orderId, orderItems }: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
-    const { user } = await response.json();
-    // Uses the user._id as a string instead of object
-    user.id = user._id.toString();
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };    // Uses the user._id as a string instead of object
     try {
       const order = await Order.findById(orderId).populate('payment');
       if (!order) return { message: 'Order does not exist!', statusCode: 404, ok: false };
-      if (!(order.buyerId.toString() === user.id)) return { message: 'You are not authorized to update this order item!', statusCode: 401, ok: false };
+      if (!(order.buyerId.toString() === (user._id as ObjectId).toString())) return { message: 'You are not authorized to update this order item!', statusCode: 401, ok: false };
       if (!orderItems) return { message: 'Order items must be provided!', statusCode: 400, ok: false };
       if (!Array.isArray(orderItems)) return { message: 'Order items must be an array!', statusCode: 400, ok: false };
 
@@ -176,17 +177,17 @@ export const ordersMutationResolver = {
 
   deleteAnOrderItem: async (_parent: any, { orderId, orderItemId }: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
-    if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
-    }
-    const { user } = await response.json();
+    const response = await authRequest(req.headers.get('authorization'));
 
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     try {
       const order = await Order.findById(orderId).populate('payment');
       if (!order) return { message: 'Order does not exist!', statusCode: 404, ok: false };
-      if (!(order.buyerId.toString() === user._id.toString() || order.sellerId.toString() === user._id.toString())) {
+      if (!(order.buyerId.toString() === (user._id as ObjectId).toString() || order.sellerId.toString() === (user._id as ObjectId).toString())) {
         return { message: 'You are not authorized to delete this order item!', statusCode: 401, ok: false };
       }
 
@@ -227,17 +228,17 @@ export const ordersMutationResolver = {
     // This endpoint will delete an order
 
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
-    if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
-    }
-    const { user } = await response.json();
+    const response = await authRequest(req.headers.get('authorization'));
 
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     try {
       const order = await Order.findById(orderId).populate('payment');
       if (!order) return { message: 'Order does not exist!', statusCode: 404, ok: false };
-      if (!(order.buyerId.toString() === user._id.toString() || order.sellerId.toString() === user._id.toString())) {
+      if (!(order.buyerId.toString() === (user._id as ObjectId).toString() || order.sellerId.toString() === (user._id as ObjectId).toString())) {
         return { message: 'You are not authorized to delete this order!', statusCode: 401, ok: false };
       }
 
@@ -282,16 +283,17 @@ export const ordersMutationResolver = {
     // Only the buyer should be able to update the delivery address
     // NO TEST WAS WRITTEN FOR THIS METHOD
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
-    if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
-    }
-    const { user } = await response.json();
+    const response = await authRequest(req.headers.get('authorization'));
 
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
+    let userId = (user._id as ObjectId).toString();
     const order = await Order.findById(orderId);
     if (!order) return { 'message': 'Order does not exist!', statusCode: 404, ok: false };
-    if (!(order.buyerId == user._id || order.dispatcherId == user._id)) {
+    if (!(order.buyerId.toString() == userId || order.dispatcherId.toString() == userId)) {
       return {
         'message': 'You are not authorized to update this order!',
         statusCode: 401,
@@ -301,9 +303,9 @@ export const ordersMutationResolver = {
 
     if (deliveryAddress) {
       order.deliveryAddress = _.trim(deliveryAddress);
-    } else if (recievedByBuyer && order.buyerId == user._id) {
+    } else if (recievedByBuyer && order.buyerId.toString() == (user._id as ObjectId).toString()) {
       order.recievedByBuyer = true;
-    } else if (deliveredByDispatcher && order.dispatcherId == user._id) {
+    } else if (deliveredByDispatcher && order.dispatcherId.toString() == (user._id as ObjectId).toString()) {
       order.deliveredByDispatcher = true;
     } else {
       return {
@@ -334,10 +336,10 @@ export const ordersMutationResolver = {
     // This is an admin route or endpoint
 
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
+    const response = await authRequest(req.headers.get('authorization'));
+
     if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
+      throw new Error(response.statusText)
     }
     deleteOrderItems(ids);
     return { 'message': 'Order items may have been deleted successfully!', statusCode: 200, ok: true };
@@ -346,20 +348,20 @@ export const ordersMutationResolver = {
   createOrder: async (_parent: any, args: { sellerId: any; dispatcherId: any; deliveryAddress: any; orderItems: any; }, { req }: any) => {
 
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
-    if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
-    }
-    const { user } = await response.json();
+    const response = await authRequest(req.headers.get('authorization'));
 
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     const {
       sellerId,
       dispatcherId,
       deliveryAddress,
       orderItems,
     } = args;
-    const buyerId = user._id;
+    const buyerId = (user._id as ObjectId).toString();
     let createdItems = [];
     try {
 

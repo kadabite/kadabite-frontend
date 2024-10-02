@@ -2,9 +2,9 @@ import { myLogger } from '@/app/api/upload/logger';
 import { IProduct, Product } from '@/models/product';
 import Category from '@/models/category';
 import { User } from '@/models/user';
-import { authRequest } from '@/app/api/graphql/utils';
+import { authRequest } from '@/app/api/datasource/user.data';
 import _ from 'lodash';
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 
 
 export const productQueryResolver = {
@@ -21,15 +21,15 @@ export const productQueryResolver = {
 
   getUserProducts: async (_parent: any, _: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
-    if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
-    }
-    const { user } = await response.json();
+    const response = await authRequest(req.headers.get('authorization'));
 
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     try {
-      const userMe = await User.findById(user._id).populate('products');
+      const userMe = await User.findById((user._id as ObjectId).toString()).populate('products');
       if (!userMe) {
         return { message: 'User not found!', statusCode: 404, ok: false };
       }
@@ -54,15 +54,15 @@ export const productQueryResolver = {
 
   getAllProductsOfUsersByCategory: async (_parent: any, { categoryId }: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
-    if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
-    }
-    const { user } = await response.json();
+    const response = await authRequest(req.headers.get('authorization'));
 
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     try {
-      const userMe = await User.findById(user._id).populate('products');
+      const userMe = await User.findById((user._id as ObjectId).toString()).populate('products');
       if (!userMe) {
         return { message: 'User not found!', statusCode: 404, ok: false };
       }
@@ -87,13 +87,13 @@ export const productQueryResolver = {
 export const productMutationResolver = {
   createProduct: async (_parent: any, args: { name: any; description: any; price: any; currency: any; categoryId: any; }, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
-    if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
-    }
-    const { user } = await response.json();
+    const response = await authRequest(req.headers.get('authorization'));
 
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     try {
 
       let { name, description, price, currency, categoryId } = args;
@@ -106,7 +106,7 @@ export const productMutationResolver = {
       const category = await Category.findById(categoryId);
       if (!category) return { 'message': 'The product category ID must be specified!', statusCode: 400, ok: false };
       // check if product name already exist for the user
-      const userMe = await User.findById(user._id).populate('products');
+      const userMe = await User.findById((user._id as ObjectId).toString()).populate('products');
       if (!userMe) {
         return { message: 'User not found!', statusCode: 404, ok: false };
       }
@@ -134,15 +134,15 @@ export const productMutationResolver = {
 
   deleteProduct: async (_parent: any, { id }: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
-    if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
-    }
-    const { user } = await response.json();
+    const response = await authRequest(req.headers.get('authorization'));
 
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     try {
-      const userData = await User.findById(user._id).populate('products');
+      const userData = await User.findById((user._id as ObjectId).toString()).populate('products');
       if (!userData) return { 'message': 'User not found!', statusCode: 404, ok: false };
       const index = userData.products.map(item => item.toString()).indexOf(id);
       if (index == -1) return { 'message': 'This Product does not exist for this user!', statusCode: 404, ok: false };
@@ -160,13 +160,13 @@ export const productMutationResolver = {
 
   updateProduct: async (_parent: any, { id, product, categoryId }: any, { req }: any) => {
     // authenticate user
-    const response = await authRequest(req.headers.authorization);
-    if (!response.ok) {
-      const message = await response.json();
-      return { statusCode: response.status, message: message.message, ok: response.ok };
-    }
-    const { user } = await response.json();
+    const response = await authRequest(req.headers.get('authorization'));
 
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
     try {
       // Sanitize users input
       const keys = Object.keys(product);
@@ -182,7 +182,7 @@ export const productMutationResolver = {
         }, {} as Record<string, any>);
 
       // Get the user data
-      const userData = await User.findById(user._id).populate('products');
+      const userData = await User.findById((user._id as ObjectId).toString()).populate('products');
       if (!userData) return { 'message': 'User not found!', statusCode: 404, ok: false };
       const index = userData.products.map(item => item.toString()).indexOf(id);
       if (index == -1) return { 'message': 'This Product does not exist for this user!', statusCode: 404, ok: false };
