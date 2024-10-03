@@ -50,6 +50,7 @@ export type Message = {
   productsData?: Maybe<Array<Maybe<Product>>>;
   statusCode: Scalars['Int']['output'];
   token?: Maybe<Scalars['String']['output']>;
+  refreshToken?: Maybe<Scalars['String']['output']>;
   userData?: Maybe<User>;
   usersData?: Maybe<Array<Maybe<Users>>>;
 };
@@ -314,6 +315,7 @@ export type Query = {
   getMyOrderItems: Message;
   getMyOrders: Message;
   getMyPayment: Message;
+  getNewAccessToken: Message;
   getProduct: Message;
   getTheOrderAsDispatcher: Message;
   getTheOrderAsSeller: Message;
@@ -355,6 +357,10 @@ export type QueryGetMyOrderItemsArgs = {
 
 export type QueryGetMyPaymentArgs = {
   orderId: Scalars['ID']['input'];
+};
+
+export type QueryGetNewAccessTokenArgs = {
+  refreshToken: Scalars['String']['input'];
 };
 
 
