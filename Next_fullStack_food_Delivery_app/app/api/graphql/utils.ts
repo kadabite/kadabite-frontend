@@ -58,6 +58,5 @@ export async function myRequest(query: any, variables: Record<string, any>): Pro
   if (responseData.errors) {
     throw new Error(`GraphQL error: ${responseData.errors.map((error: any) => error.message).join(', ')}`);
   }
-
   return responseData.data;
 }

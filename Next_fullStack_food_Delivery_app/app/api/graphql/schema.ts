@@ -59,6 +59,7 @@ type Message {
   locationData: Location
   statusCode: Int!
   ok: Boolean!
+  refreshToken: String
 }
 
 type Mutation {
@@ -204,6 +205,7 @@ type Query {
   getMyOrderItems(orderId: ID!): Message!
   getMyOrders: Message!
   getMyPayment(orderId: ID!): Message!
+  getNewAccessToken(refreshToken: String!): Message!
   getProduct(id: ID!): Message!
   getTheOrderAsDispatcher: Message!
   getTheOrderAsSeller: Message!

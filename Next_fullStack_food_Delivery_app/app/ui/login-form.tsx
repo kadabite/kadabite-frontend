@@ -21,18 +21,18 @@ export default function LoginForm() {
     undefined,
   );
   const router = useRouter();
-
-
   useEffect(() => {
     if (data && data.token) {
       // remove old cookies
       Cookies.remove('authToken');
-
       // Store the token in a cookie
-      Cookies.set('authToken', data.token, { expires: 1, sameSite: 'strict', secure: true });
-      // Landing page
+      Cookies.set('authToken', data.token, { expires: Number(process.env.NEXT_PUBLIC_ACCESS_TOKEN_EXPIRES_IN), sameSite: 'strict', secure: true });
+
+      localStorage.setItem('refreshToken', data.refreshToken);
       // Redirect to a protected page
       router.push('/dashboard');
+    } else {
+      console.log(data);
     }
   }, [data, router]);
 

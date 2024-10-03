@@ -128,7 +128,6 @@ export async function authenticate(
 
     const response = await myRequest(LOGIN, variables);
     data = response.login;
-
     if (!data.ok) return data;
 
     // Handle successful authentication (e.g., store token, redirect, etc.)

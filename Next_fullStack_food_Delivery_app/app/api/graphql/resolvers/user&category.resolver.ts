@@ -10,23 +10,39 @@ import { loginMe } from '@/app/api/datasource/user.data';
 import _, { rest } from 'lodash';
 import { NewArgs } from '@/app/lib/definitions';
 import { ObjectId } from 'mongoose';
+import jwt  from 'jsonwebtoken';
+import { QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
 
 
 export const userQueryResolvers = {
-  users: async (_parent: any, _: any, { req }: any) => {
+  category: async (_parent: any, { id }: any, { req }: any) => {
     // authenticate user
     const response = await authRequest(req.headers.get('authorization'));
 
     if (!response.ok) {
       throw new Error(response.statusText)
     }
-    const { isAdmin } = await response.json();
-    if (!isAdmin) return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
     try {
-      const usersData = await User.find();
-      return { usersData, statusCode: 200, ok: true };
+      const categoryData = await Category.findById(id);
+      return { categoryData, statusCode: response.status, ok: true };
     } catch (error) {
-      myLogger.error('Error fetching users: ' + (error as Error).message);
+      myLogger.error('Error fetching category: ' + (error as Error).message);
+      return { message: 'An error occurred!', statusCode: 500, ok: false };
+    }
+  },
+
+  categories: async (_parent: any, _: any, { req }: any) => {
+    // authenticate user
+    const response = await authRequest(req.headers.get('authorization'));
+
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    try {
+      const categoriesData = await Category.find();
+      return { categoriesData, statusCode: response.status, ok: true };
+    } catch (error) {
+      myLogger.error('Error fetching category: ' + (error as Error).message);
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
@@ -76,6 +92,30 @@ export const userQueryResolvers = {
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
+
+  getNewAccessToken: async (_parent: any, { refreshToken }: QueryGetNewAccessTokenArgs ) => {
+    try {
+      if (!refreshToken) {
+        return { message: 'Refresh token is missing!', statusCode: 401, ok: false };
+      }
+      const verified = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_KEY as string);
+      if (!verified) {
+        return { message: 'Refresh token is invalid!', statusCode: 401, ok: false };
+      }
+      const user = await User.findById((verified as any).userId);
+      if (!user) {
+        return { message: 'User not found!', statusCode: 404, ok: false };
+      }
+      if (!user.isLoggedIn) {
+        return { message: 'User is not logged in!', statusCode: 401, ok: false };
+      }
+      const accessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_TOKEN_SECRET_KEY as string, { expiresIn: `${process.env.NEXT_PUBLIC_ACCESS_TOKEN_EXPIRES_IN}d` });
+      return { token: accessToken, ok: true, statusCode: 200 };
+    } catch (error) {
+      myLogger.error('Error getting new access token: ' + (error as Error).message);
+      return { message: 'An error occurred!', statusCode: 500, ok: false };
+    }
+  },
   user: async (_parent: any, _: any, { req }: any) => {
     // authenticate user
     const response = await authRequest(req.headers.get('authorization'));
@@ -93,38 +133,24 @@ export const userQueryResolvers = {
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
-
-  category: async (_parent: any, { id }: any, { req }: any) => {
+  users: async (_parent: any, _: any, { req }: any) => {
     // authenticate user
     const response = await authRequest(req.headers.get('authorization'));
 
     if (!response.ok) {
       throw new Error(response.statusText)
     }
+    const { isAdmin } = await response.json();
+    if (!isAdmin) return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
     try {
-      const categoryData = await Category.findById(id);
-      return { categoryData, statusCode: response.status, ok: true };
+      const usersData = await User.find();
+      return { usersData, statusCode: 200, ok: true };
     } catch (error) {
-      myLogger.error('Error fetching category: ' + (error as Error).message);
+      myLogger.error('Error fetching users: ' + (error as Error).message);
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
 
-  categories: async (_parent: any, _: any, { req }: any) => {
-    // authenticate user
-    const response = await authRequest(req.headers.get('authorization'));
-
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    try {
-      const categoriesData = await Category.find();
-      return { categoriesData, statusCode: response.status, ok: true };
-    } catch (error) {
-      myLogger.error('Error fetching category: ' + (error as Error).message);
-      return { message: 'An error occurred!', statusCode: 500, ok: false };
-    }
-  },
 }
 
 export const userMutationResolvers = {
@@ -305,8 +331,9 @@ export const userMutationResolvers = {
     }
 
     const token = loginResponse.token;
-
-    return { message: 'User logged in successfully', token, statusCode: 200, ok: true };
+    const refreshToken = loginResponse.refreshToken;
+    
+    return { message: 'User logged in successfully', token, statusCode: 200, ok: true, refreshToken };
   },
 
   logout: async (_parent: any, _: any, { req }: any) => {
