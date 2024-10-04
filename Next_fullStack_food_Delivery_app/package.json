@@ -3,7 +3,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "start": "next start",
+    "start": "pm2 start ecosystem.config.js",
     "lint": "next lint"
   },
   "dependencies": {
@@ -22,7 +22,6 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/lodash": "^4.17.7",
     "@types/node-fetch": "^2.6.11",
-    "@types/nodemailer": "^6.4.16",
     "@types/uuid": "^10.0.0",
     "apollo-datasource-mongodb": "^0.6.0",
     "apollo-server-micro": "^3.13.0",
@@ -44,6 +43,7 @@
     "next-auth": "5.0.0-beta.20",
     "node-fetch": "2",
     "nodemailer": "^6.9.15",
+    "pm2": "^5.4.2",
     "postcss": "8.4.38",
     "react": "19.0.0-rc-f38c22b244-20240704",
     "react-dom": "19.0.0-rc-f38c22b244-20240704",
@@ -61,8 +61,10 @@
     "@types/bcrypt": "^5.0.2",
     "@types/mongoose": "^5.11.97",
     "@types/node": "20.14.8",
+    "@types/nodemailer": "^6.4.16",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
+    "concurrently": "^9.0.1",
     "ts-node": "^10.9.2",
     "typescript": "5.5.2"
   },

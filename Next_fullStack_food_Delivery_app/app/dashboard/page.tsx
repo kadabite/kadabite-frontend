@@ -5,6 +5,7 @@ import withAuth from '@/app/hoc/withAuth';
 import { GET_USERS } from '@/app/query/user.query';
 import CircularProgress from '@mui/material/CircularProgress';
 import { orange } from '@mui/material/colors';
+import LogoutButton from '@/app/ui/logout-button';
 
 interface User { 
     firstName: string;
@@ -67,6 +68,7 @@ const Dashboard = () => {
           ))}
         </tbody>
       </table>
+      <LogoutButton />
     </div>
   );
 };

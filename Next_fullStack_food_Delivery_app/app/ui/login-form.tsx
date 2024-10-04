@@ -12,15 +12,16 @@ import { useRouter } from 'next/navigation';
 import { useActionState, useEffect } from 'react';
 import { authenticate } from '@/app/lib/actions';
 import Cookies from 'js-cookie';
-
+import CircularProgress from '@mui/material/CircularProgress';
+import Link from 'next/link';
 
 export default function LoginForm() {
-
   const [data, formAction, isPending] = useActionState(
     authenticate,
     undefined,
   );
   const router = useRouter();
+
   useEffect(() => {
     if (data && data.token) {
       // remove old cookies
@@ -83,9 +84,20 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <Button className="mt-4 w-full" aria-disabled={isPending}>
-          Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        <Button className="mt-4 w-full bg-orange-500 flex justify-center items-center" aria-disabled={isPending}>
+          {isPending ? (
+            <CircularProgress size={24} className="text-gray-50" />
+          ) : (
+            <>
+              Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+            </>
+          )}
         </Button>
+        <div className="flex justify-between items-center mt-4">
+          <Link href="/forgot-password" className="text-sm text-blue-500 hover:underline">
+            Forgot Password?
+          </Link>
+        </div>
         <div className="flex h-8 items-end space-x-1">
           {data && (!data?.ok && (
             <>

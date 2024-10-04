@@ -21,8 +21,6 @@ import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import Carousel from '@/app/ui/landing_page/carausel';
 import NewsletterForm from '@/app/ui/newsletterForm';
 
-dotenv.config();
-
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
