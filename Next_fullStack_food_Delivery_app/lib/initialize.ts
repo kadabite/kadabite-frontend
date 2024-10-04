@@ -71,3 +71,4 @@ async function shutdown() {
 // Handle process signals for graceful shutdown
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
+export { queue };
