@@ -11,7 +11,8 @@ import _, { rest } from 'lodash';
 import { NewArgs } from '@/app/lib/definitions';
 import { ObjectId } from 'mongoose';
 import jwt  from 'jsonwebtoken';
-import { QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
+import { MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
+import { queue } from '@/lib/initialize';
 
 
 export const userQueryResolvers = {
@@ -412,62 +413,76 @@ export const userMutationResolvers = {
     }
   },
 
-  forgotPassword: async (_parent: any, { email }: any) => {
-    try {
-      email = _.trim(email);
-      const user = await User.find({ email });
-      if (!user[0]) return { 'message': 'User was not found!', statusCode: 404, ok: true };
-      const expiryDate = new Date();
-      const duration = expiryDate.getHours() + 1;
-      expiryDate.setHours(duration);
-      const token = uuidv4() + uuidv4();
-      const resetPasswordToken = token + ' ' + expiryDate.toISOString();
-      await User.findByIdAndUpdate(user[0].id, { resetPasswordToken });
-      const user_data = {
-        to: email,
-        subject: "Reset token for forgot password",
-        token,
-        uri: undefined
-      };
-      // Define the queue name
-      const queue = new Bull('user_data_queue');
-      // Add data to the queue
-      await queue.add(user_data);
-      return { 'message': 'Get the reset token from your email', statusCode: 200, ok: true };
-    } catch (error) {
-      myLogger.error('Error changing password: ' + (error as Error).message);
-      return { 'message': 'An error occurred!', statusCode: 500, ok: true };
-    }
-  },
+  forgotPassword: async (_parent: any, { email }: MutationForgotPasswordArgs) => {
+      try {
+        email = _.trim(email);
+        const user = await User.findOne({ email });
+        if (!user) {
+          return { message: 'User was not found!', statusCode: 404, ok: true };
+        }
 
-  updatePassword: async (_parent: any, { email, password, token }: any) => {
-    try {
-      email = _.trim(email);
-      const user = await User.find({ email });
-      if (!user || user.length === 0) {
-        return { message: 'An error occurred!', statusCode: 401, ok: false };
+        const expiryDate = new Date();
+        expiryDate.setHours(expiryDate.getHours() + 1);
+        const token = uuidv4() + uuidv4();
+        const resetPasswordToken = `${token} ${expiryDate.toISOString()}`;
+
+        const updated = await User.findByIdAndUpdate(user.id, { resetPasswordToken });
+        if (!updated) {
+          return { message: 'Could not update user!', statusCode: 500, ok: true };
+        }
+        const user_data = {
+          to: email,
+          subject: "Reset token for forgot password",
+          token,
+          uri: undefined,
+        };
+
+        // Add data to the queue
+        await queue.add(user_data);
+
+        return { message: 'Get the reset token from your email', statusCode: 200, ok: true };
+      } catch (error) {
+        myLogger.error('Error changing password: ' + (error as Error).message);
+        return { message: 'An error occurred!', statusCode: 500, ok: true };
       }
+    },
 
-      const resetPasswordToken = user[0].resetPasswordToken;
-      if (!resetPasswordToken) {
-        return { message: 'Reset password token is missing!', statusCode: 401, ok: false };
+  updatePassword: async (_parent: any, { email, password, token }: MutationUpdatePasswordArgs) => {
+      try {
+        email = _.trim(email);
+        const user = await User.findOne({ email });
+        if (!user) {
+          return { message: 'User was not found!', statusCode: 404, ok: false };
+        }
+
+        const resetPasswordToken = user.resetPasswordToken;
+        if (!resetPasswordToken) {
+          return { message: 'Reset password token is missing!', statusCode: 401, ok: false };
+        }
+
+        const [storedToken, expiryDateStr] = resetPasswordToken.split(' ');
+        const expiryDate = new Date(expiryDateStr);
+        const presentDate = new Date();
+
+        if (expiryDate <= presentDate) {
+          return { message: 'Reset password token has expired!', statusCode: 401, ok: false };
+        }
+
+        if (token !== storedToken) {
+          return { message: 'Invalid reset password token!', statusCode: 401, ok: false };
+        }
+
+        const salt = await bcrypt.genSalt();
+        const passwordHash = await bcrypt.hash(password, salt);
+
+        await User.findByIdAndUpdate(user.id, { passwordHash, resetPasswordToken: null });
+
+        return { message: 'Password updated successfully', statusCode: 200, ok: true };
+      } catch (error) {
+        myLogger.error('Error updating password: ' + (error as Error).message);
+        return { message: 'An error occurred!', statusCode: 500, ok: false };
       }
-
-      const tokenParts = resetPasswordToken.split(' ');
-      const token = tokenParts[0];
-      const expiryDate = new Date(tokenParts[1]);
-      const presentDate = new Date();
-      if (expiryDate <= presentDate) return { 'message': 'An error occurred!', statusCode: 401, ok: false };
-      if (token != resetPasswordToken) return { 'message': 'An error occurred!', statusCode: 401, ok: false };
-      const salt = await bcrypt.genSalt();
-      const passwordHash = await bcrypt.hash(password, salt);
-      await User.findByIdAndUpdate(user[0].id, { passwordHash });
-      return { 'message': 'Password updated successfully', statusCode: 200, ok: true };
-    } catch (error) {
-      myLogger.error('Error updating password: ' + (error as Error).message);
-      return { 'message': 'An error occurred!', statusCode: 500, ok: false };
-    }
-  },
+    },
 
   deleteUser: async (_parent: any, _: any, { req }: any) => {
     // authenticate user

@@ -94,7 +94,7 @@ export default function LoginForm() {
           )}
         </Button>
         <div className="flex justify-between items-center mt-4">
-          <Link href="/forgot-password" className="text-sm text-blue-500 hover:underline">
+          <Link href="/forgotPassword" className="text-sm text-blue-500 hover:underline">
             Forgot Password?
           </Link>
         </div>

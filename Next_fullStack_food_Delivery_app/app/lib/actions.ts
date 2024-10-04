@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { myRequest } from '@/app/api/graphql/utils';
-import { LOGIN } from '@/app/query/user.query';
+import { FORGOT_PASSWORD, LOGIN, RESET_PASSWORD } from '@/app/query/user.query';
 import { Message } from '@/lib/graphql-types';
 // import { signIn } from '@/auth';
 // import { AuthError } from 'next-auth';
@@ -114,6 +114,45 @@ const FormSchema = z.object({
 //   }
 // }
 
+export async function updatePassword(
+  prevState: string | undefined,
+  formData: FormData
+) {
+  let data;
+  try {
+    const variables = {
+      email: formData.get('email'),
+      token: formData.get('token'),
+      password: formData.get('password'),
+    };
+
+    const response = await myRequest(RESET_PASSWORD, variables);
+    data = response.updatePassword;
+    return data;
+  } catch (error) {
+    data.message = 'An error occurred during password reset.';
+    return data;
+  }
+}
+
+
+export async function sendPasswordResetEmail(
+  prevState: string | undefined,
+  formData: FormData
+) {
+  let data;
+  try {
+    const variable = {
+      email: formData.get('email'),
+    };
+    const response = await myRequest(FORGOT_PASSWORD, variable);
+    data = response.forgotPassword;
+      return data;
+    } catch (error) {
+      data.message = 'An error occurred during password reset.';
+      return data;
+  }
+}
 
 export async function authenticate(
   prevState: string | undefined,
