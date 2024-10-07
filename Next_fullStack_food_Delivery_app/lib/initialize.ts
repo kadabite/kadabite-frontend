@@ -30,7 +30,7 @@ export async function startConsumerProcess() {
 
 // Function to initialize the database connection
 export async function initializeDbConnection() {
-  const uri = process.env.NEXT_PUBLIC_MONGODB_URI || '';
+  const uri = process.env.MONGODB_URI || '';
 
   if (!uri) {
     throw new Error('Please define the NEXT_PUBLIC_MONGODB_URI environment variable inside .env.local');
