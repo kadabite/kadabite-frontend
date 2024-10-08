@@ -1,3 +1,4 @@
 .vscode
 database_mongo
 .pytest_cache
+redis-enterprise-data

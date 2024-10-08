@@ -102,9 +102,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }
-
-// export const config = {
-//   api: {
-//     bodyParser: false, // Disable the default bodyParser as we are handling file uploads
-//   },
-// };
