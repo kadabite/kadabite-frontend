@@ -103,8 +103,8 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export const config = {
-  api: {
-    bodyParser: false, // Disable the default bodyParser as we are handling file uploads
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: false, // Disable the default bodyParser as we are handling file uploads
+//   },
+// };
