@@ -173,7 +173,8 @@ export async function authenticate(
     return data;
 
   } catch (error) {
-    data.message = 'An error occurred during authentication.';
+    if (data) data.message = 'An error occurred during authentication.';
+    else data = { message: 'An error occurred during authentication.' };
     return data;
   }
 }

@@ -89,6 +89,9 @@ importers:
       graphql-tag:
         specifier: ^2.12.6
         version: 2.12.6(graphql@16.9.0)
+      ioredis:
+        specifier: ^5.4.1
+        version: 5.4.1
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5

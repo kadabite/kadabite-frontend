@@ -7,3 +7,6 @@ henticationDatabase admin --db deliver_db --out /data/dump
 
 
 mongorestore --uri="mongodb+srv://chinonsodomnic:gNN7FtKjiRyBXg44@linuxkitchencluster.pzdh7.mongodb.net/?retryWrites=true&w=majority&appName=linuxKitchenCluster" --db deliver_db ./dump/deliver_db
+
+
+docker run -d --cap-add sys_resource --name RE -p 8443:8443 -p 9443:9443 -p 12000:12000 redislabs/redis

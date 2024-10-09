@@ -9,7 +9,19 @@ let isInitialized = false;
 
 export async function startConsumerProcess() {
   if (isInitialized) return;
-  queue = new Bull<UserData>('user_data_queue');
+  
+  // // Redis connection options
+  const redisOptions = {
+    host: process.env.REDIS_HOST || 'localhost',
+  //   port: parseInt(process.env.REDIS_PORT as string, 10) || 6379,
+  //   password: process.env.REDIS_PASSWORD,
+  //   retryStrategy: (times: number) => Math.min(times * 50, 2000), // Retry strategy
+  //   connectTimeout: 10000, // Connection timeout in milliseconds
+  };
+
+  queue = new Bull<UserData>('user_data_queue', {
+    redis: redisOptions,
+  });
 
   queue.on('error', (err: Error) => console.error('Bull queue error:', err));
 
@@ -41,7 +53,9 @@ export async function initializeDbConnection() {
   }
 
   try {
-    await mongoose.connect(uri);
+    await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 10000, // Increase timeout to 10 seconds
+    });
     isConnected = true; // Set the connection status to true
     console.log('MongoDB successfully connected');
   } catch (error) {
