@@ -22,20 +22,24 @@ import Carousel from '@/app/ui/landing_page/carausel';
 import NewsletterForm from '@/app/ui/newsletterForm';
 
 import { Metadata } from 'next';
+import { Suspense } from 'react';
+import { SearchSkeleton } from '@/app/ui/skeletons';
  
 export const metadata: Metadata = {
   title: 'Invoices',
 };
 
 export default function Page() {
-
+  const placeholder='find desired food(s), snack(s), fruit(s), drink(s), dessert(s), and more';
   return (
     <>
      {/* Desktop Navigation */}
     <Navigation />
     {/* Mobile Navigation */}
     <ToggleMenu />
-    <Search placeholder='find desired food(s), snack(s), fruit(s), drink(s), dessert(s), and more'/>
+    <Suspense fallback={<SearchSkeleton placeholder={placeholder} />}>
+      <Search placeholder={placeholder}/>
+    </Suspense>
     <main className='pt-5 md:pt-0'>
       <section aria-labelledby="hero-heading" className='relative w-full p-12 bg-orange-50 shadow-md bg-[url("/landing_page/meal_mockup3.jpg")] bg-bottom bg-no-repeat bg-[length:100%_50%] md:bg-right md:bg-[length:65%_130%]'>
         <div className="sr-only" id="hero-heading">Healthy Meals Delivered to You</div>
