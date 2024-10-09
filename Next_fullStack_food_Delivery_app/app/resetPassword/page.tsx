@@ -1,17 +1,19 @@
 'use client';
 
+import React, { Suspense, useEffect } from 'react';
 import { lusitana } from '@/app/ui/fonts';
 import { AtSymbolIcon, ExclamationCircleIcon, CheckCircleIcon, KeyIcon } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import AcmeLogo from '@/app/ui/acme-logo';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useActionState, useEffect } from 'react';
+import { useActionState } from 'react';
 import { updatePassword } from '@/app/lib/actions';
 import CircularProgress from '@mui/material/CircularProgress';
 import Link from 'next/link';
+import Loading from '@/app/ui/loading';
 
-export default function UpdatePasswordPage() {
+function UpdatePasswordForm() {
   const [data, formAction, isPending] = useActionState(
     updatePassword,
     undefined,
@@ -122,5 +124,13 @@ export default function UpdatePasswordPage() {
         </form>
       </div>
     </main>
+  );
+}
+
+export default function UpdatePasswordPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <UpdatePasswordForm />
+    </Suspense>
   );
 }

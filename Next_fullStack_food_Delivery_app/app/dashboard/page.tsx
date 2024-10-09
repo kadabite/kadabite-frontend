@@ -3,9 +3,8 @@
 import { useQuery } from '@apollo/client';
 import withAuth from '@/app/hoc/withAuth';
 import { GET_USERS } from '@/app/query/user.query';
-import CircularProgress from '@mui/material/CircularProgress';
-import { orange } from '@mui/material/colors';
 import LogoutButton from '@/app/ui/logout-button';
+import Loading from '@/app/ui/loading'
 
 interface User { 
     firstName: string;
@@ -18,16 +17,7 @@ interface User {
 const Dashboard = () => {
   const { loading, error, data } = useQuery(GET_USERS);
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <CircularProgress
-          sx={{
-            color: orange[600],
-            fontSize: 30,
-          }}
-        />
-      </div>
-    );
+    return (<Loading />);
   }
 
   if (error) {
