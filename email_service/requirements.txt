@@ -1,0 +1,4 @@
+redis==4.0.2
+rq==1.10
+python-dotenv==0.19.2
+tenacity==8.0.1
