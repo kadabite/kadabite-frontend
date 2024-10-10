@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { User } from '@/models/user';
 import { Product } from '@/models/product';
 import Category from '@/models/category';
-import Bull from 'bull';
+import { redisClient } from '@/lib/initialize';
 import { myLogger } from '@/app/api/upload/logger';
 import { authRequest } from '@/app/api/datasource/user.data';
 import { loginMe } from '@/app/api/datasource/user.data';
@@ -12,7 +12,6 @@ import { NewArgs } from '@/app/lib/definitions';
 import { ObjectId } from 'mongoose';
 import jwt  from 'jsonwebtoken';
 import { MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
-import { queue } from '@/lib/initialize';
 
 
 export const userQueryResolvers = {
@@ -438,7 +437,7 @@ export const userMutationResolvers = {
         };
 
         // Add data to the queue
-        await queue.add(user_data);
+        redisClient.publish('user_data_queue', JSON.stringify(user_data));
 
         return { message: 'Get the reset token from your email', statusCode: 200, ok: true };
       } catch (error) {

@@ -3,3 +3,5 @@ database_mongo
 .pytest_cache
 redis-enterprise-data
 redis-data
+./email_service/venv
+venv

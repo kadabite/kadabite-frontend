@@ -48,6 +48,7 @@
     "postcss": "8.4.38",
     "react": "19.0.0-rc-f38c22b244-20240704",
     "react-dom": "19.0.0-rc-f38c22b244-20240704",
+    "redis": "^4.7.0",
     "styled-components": "^6.1.12",
     "tailwindcss": "3.4.4",
     "use-debounce": "^10.0.1",

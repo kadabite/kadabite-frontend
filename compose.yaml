@@ -9,6 +9,13 @@ services:
         source: ./redis-data
         target: /data
     restart: always
+
+  worker:
+    build: .
+    container_name: worker
+    command: python worker.py
+    depends_on:
+      - redis
   # mongodb:
   #   image: mongodb/mongodb-community-server
   #   env_file:
