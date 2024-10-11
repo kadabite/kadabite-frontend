@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
-import { createClient } from 'redis';
+import { createClient, RedisClientType } from 'redis';
 
 let isConnected = false;
+let redisClient: RedisClientType;
 
 // Function to initialize the database connection
 export async function initializeDbConnection() {
@@ -23,20 +24,37 @@ export async function initializeDbConnection() {
     console.log('MongoDB successfully connected');
   } catch (error) {
     console.error('MongoDB connection error:', error);
-    throw error; // Throw error to ensure any issues are caught during initialization
+  }
+}
+
+// Function to initialize the Redis client
+export async function initializeRedisClient() {
+  if (!redisClient) {
+    redisClient = createClient({
+      url: 'redis://localhost:6379'
+    });
+
+    redisClient.on('error', (err) => console.error('Redis Client Error', err));
+
+    await redisClient.connect();
+    console.log('Redis client successfully connected');
   }
 }
 
 // Function to initialize all necessary components
 export async function initialize() {
   await initializeDbConnection();
+  await initializeRedisClient();
 }
 
 // Function to gracefully shut down the application
 async function shutdown() {
   console.log('Shutting down gracefully...');
   await mongoose.disconnect();
-  console.log('MongoDB disconnected');
+  if (redisClient) {
+    await redisClient.quit();
+  }
+  console.log('MongoDB and Redis disconnected');
   process.exit(0);
 }
 
@@ -44,15 +62,4 @@ async function shutdown() {
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
 
-// Create Redis client
-let redisClient;
-redisClient = createClient({
-  url: 'redis://redis:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-(async () => {
-  await redisClient.connect();
-})();
 export { redisClient };

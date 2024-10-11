@@ -430,6 +430,7 @@ export const userMutationResolvers = {
           return { message: 'Could not update user!', statusCode: 500, ok: true };
         }
         const user_data = {
+          id: user.id,
           to: email,
           subject: "Reset token for forgot password",
           token,
@@ -437,8 +438,7 @@ export const userMutationResolvers = {
         };
 
         // Add data to the queue
-        redisClient.publish('user_data_queue', JSON.stringify(user_data));
-
+        redisClient.lPush('user_data_queue', JSON.stringify(user_data));
         return { message: 'Get the reset token from your email', statusCode: 200, ok: true };
       } catch (error) {
         myLogger.error('Error changing password: ' + (error as Error).message);
