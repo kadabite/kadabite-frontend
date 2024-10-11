@@ -5,3 +5,5 @@ redis-enterprise-data
 redis-data
 ./email_service/venv
 venv
+.env
+email.log

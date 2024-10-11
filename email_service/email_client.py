@@ -16,82 +16,72 @@ from tenacity import retry, stop_after_attempt, after_log
 import logging
 
 # Configure logging
-logging.basicConfig(filename='consumer.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='email.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 @retry(stop=stop_after_attempt(3), after=after_log(logger, logging.DEBUG))
-async def send_mail(sen, pas, addr, port, rec, message):
+async def send_mail(sender, app_password, reciever, message):
     """
-    Send an email using the specified SMTP server.
-
+    Send an email using the provided SMTP server.
+    
     Args:
-        sen (str): Sender's email address.
-        pas (str): Sender's email password.
-        addr (str): SMTP server address.
-        port (int): SMTP server port.
-        rec (str): Recipient's email address.
-        message (str): The email message to send.
-
+        sender (str): Sender's email address.
+        app_password (str): Sender's email password.
+        reciever (str): Recipient's email address.
+        message (str): Email message content.
+        
     Returns:
         None
     """
-    server = smtplib.SMTP_SSL(addr, port)
-    server.login(sen, pas)
-    server.sendmail(sen, rec, message)
+    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    server.login(sender, app_password)
+    server.sendmail(sender, reciever, message)
     server.quit()
     
-
-async def mailSender(id=None, subj=None, mess=None, addr="smtp.gmail.com", pas=None, 
-                     sen=None, rec=None, port=465):
+async def mailSender(**data):
     """
-    Prepare and send an email.
-
+    Send an email using the provided SMTP server.
+    
     Args:
-        id (str, optional): User ID (not used in this function but kept for compatibility).
-        subj (str, optional): Subject of the email.
-        mess (str, optional): Message content of the email.
-        addr (str): SMTP server address. Default is "smtp.gmail.com".
-        pas (str, optional): Sender's email password. If not provided, it is loaded from environment variables.
-        sen (str, optional): Sender's email address.
-        rec (str, optional): Recipient's email address.
-        port (int): SMTP server port. Default is 465.
-
+        data (dict): A dictionary containing the email data.
+        
     Returns:
         None
     """
-    if sen is None or rec is None:
-        return
-    
-    # Load environmental variables
-    load_dotenv()
 
-    # Get the environmental variable which has the password or use argument password
-    if pas is None:
-        pas = os.getenv("GTP")
+    try:
+        sender = data.get('sender', None) or 'chinonsodomnic@gmail.com'
+        reciever = data.get( 'to', None)
+        subject = data.get('subject', None)
+        uri = data.get('uri', None)
+        token = data.get('token', None)
+        if sender is None or reciever is None:
+            logger.debug(f"Sender with job id={data.get('id', None)} or reciever is None")
+            raise ValueError("Sender or reciever is None")
 
-    # Prepare the email message
-    message = MIMEMultipart()
-    message['From'] = sen
-    message['To'] = rec
-    message['Subject'] = subj if subj else "Email communication"
-    
-    if mess is None:
-        mess = "Software engineering is good, but also has some disadvantages."
-    
-    url = "https://provisionspall-hwvs.onrender.com/dashboard"
-    html_content = f"""<html>
-<body>
-    <h1 style="color: blue;">Delivery - Business Application</h1>
-    <br>
-    <p>Copy this token and paste it in the
-        <a href={url}>reset password page</a></p>
-    <code>{mess}</code>
-    <h1>OR</h1>
-    <p>Directly update your password <a href="{url}?token={mess}">here</a>.</p>
-</body>
-</html>
-"""
-    message.attach(MIMEText(html_content, "html"))
+        # Load environmental variables
+        load_dotenv()
 
-    # Send the email
-    await send_mail(sen, pas, addr, port, rec, message.as_string())
+        # Get the environmental variable which has the password or use argument password
+        app_password = os.getenv("GTP")
+        # Prepare the email message
+        message = MIMEMultipart()
+        message['From'] = sender
+        message['To'] = reciever
+        message['Subject'] = subject or "Email communication"
+
+        html_content = f"""<html>
+                            <body>
+                                <h1 style="color: blue;">Delivery - Business Application</h1>
+                                <br>
+                                <h3> Click the link <a href="{uri}?token={token}">here</a> to reset your password</h3>
+                            </body>
+                            </html>
+                        """
+        message.attach(MIMEText(html_content, "html"))
+
+        # Send the email
+        await send_mail(sender, app_password, reciever, message.as_string())
+    except Exception as e:
+        logger.error(f"Failed to send email: {e}")
+        raise e
