@@ -32,8 +32,6 @@ export default function LoginForm() {
       localStorage.setItem('refreshToken', data.refreshToken);
       // Redirect to a protected page
       router.push('/dashboard');
-    } else {
-      console.log(data);
     }
   }, [data, router]);
 

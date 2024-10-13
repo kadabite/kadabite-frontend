@@ -129,7 +129,7 @@ export type MutationCreateUserArgs = {
   passwordHash: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
   sellerStatus?: InputMaybe<Scalars['String']['input']>;
-  userType?: InputMaybe<Scalars['String']['input']>;
+  userType: InputMaybe<Scalars['String']['input']>;
   username: Scalars['String']['input'];
   vehicleNumber?: InputMaybe<Scalars['String']['input']>;
 };

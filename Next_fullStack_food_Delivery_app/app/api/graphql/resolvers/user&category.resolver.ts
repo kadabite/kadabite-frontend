@@ -11,7 +11,7 @@ import _, { rest } from 'lodash';
 import { NewArgs } from '@/app/lib/definitions';
 import { ObjectId } from 'mongoose';
 import jwt  from 'jsonwebtoken';
-import { MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
+import { MutationCreateUserArgs, MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
 
 
 export const userQueryResolvers = {
@@ -287,7 +287,7 @@ export const userMutationResolvers = {
     }
   },
 
-  createUser: async (_parent: any, args: { username: string; email: string; passwordHash: string; phoneNumber: any; userType: string; status: string; firstName: string; lastName: string; lgaId: string; vehicleNumber: any; }) => {
+  createUser: async (_parent: any, args: MutationCreateUserArgs) => {
     try {
       const {
         username,
@@ -295,12 +295,17 @@ export const userMutationResolvers = {
         passwordHash,
         phoneNumber,
         userType,
-        status,
         firstName,
         lastName,
         lgaId,
         vehicleNumber,
       } = args;
+
+      // check if username, email, or phonenumber has been taking and return error message
+      const existingUser = await User.findOne({ $or: [{ username }, { email }, { phoneNumber }] });
+      if (existingUser) {
+        return { message: 'User already exists!', statusCode: 400, ok: false };
+      }
 
       const newUser = new User({
         firstName: _.trim(firstName),
@@ -309,13 +314,12 @@ export const userMutationResolvers = {
         email: _.trim(email),
         passwordHash: _.trim(passwordHash),
         phoneNumber: _.trim(phoneNumber),
-        userType: _.trim(userType),
-        status: _.trim(status),
+        userType: userType ? _.trim(userType) : undefined,
         lgaId,
         vehicleNumber,
       });
       const userData = await newUser.save();
-      return { userData, statusCode: 201, ok: true };
+      return { userData, statusCode: 201, ok: true, message: 'User have been registered successfully!' };
     } catch (error) {
       myLogger.error('Error creating user: ' + (error as Error).message)
       return { message: 'An error occurred while creating user', statusCode: 500, ok: false };

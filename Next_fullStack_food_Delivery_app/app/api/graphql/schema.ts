@@ -91,7 +91,7 @@ type Mutation {
     email: String!
     passwordHash: String!
     phoneNumber: String!
-    userType: String
+    userType: String!
     buyerStatus: String
     sellerStatus: String
     dispatcherStatus: String

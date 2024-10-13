@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { myRequest } from '@/app/api/graphql/utils';
-import { FORGOT_PASSWORD, LOGIN, RESET_PASSWORD } from '@/app/query/user.query';
+import { FORGOT_PASSWORD, LOGIN, RESET_PASSWORD, CREATE_USER } from '@/app/query/user.query';
 import { Message } from '@/lib/graphql-types';
 // import { signIn } from '@/auth';
 // import { AuthError } from 'next-auth';
@@ -154,6 +154,36 @@ export async function sendPasswordResetEmail(
   }
 }
 
+export async function signUpUser(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  let data;
+  try {
+    const variables = {
+      firstName: formData.get('firstName'),
+      lastName: formData.get('lastName'),
+      email: formData.get('email'),
+      password: formData.get('password'),
+      phoneNumber: formData.get('phoneNumber'),
+      userType: formData.get('userType'),
+      lgaId: formData.get('lgaId'),
+      vehicleNumber: formData.get('vehicleNumber'),
+      username: formData.get('username'),
+    };
+
+    const response = await myRequest(CREATE_USER, variables);
+    data = response.createUser;
+    return data;
+
+  } catch (error) {
+    if (data) data.message = 'An error occurred during signup.';
+    else data = { message: 'An error occurred during signup.' };
+    return data;
+  }
+}
+
+
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
@@ -167,9 +197,6 @@ export async function authenticate(
 
     const response = await myRequest(LOGIN, variables);
     data = response.login;
-    if (!data.ok) return data;
-
-    // Handle successful authentication (e.g., store token, redirect, etc.)
     return data;
 
   } catch (error) {
