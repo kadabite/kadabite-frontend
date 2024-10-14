@@ -1,5 +1,24 @@
 import { Revenue } from './definitions';
 
+export const getPasswordValidationMessage = (password: string) => {
+  if (!/(?=.*[a-z])/.test(password)) {
+    return 'Password must contain at least one lowercase letter.';
+  }
+  if (!/(?=.*[A-Z])/.test(password)) {
+    return 'Password must contain at least one uppercase letter.';
+  }
+  if (!/(?=.*\d)/.test(password)) {
+    return 'Password must contain at least one digit.';
+  }
+  if (!/(?=.*[@$!%*?&])/.test(password)) {
+    return 'Password must contain at least one special character (@$!%*?&).';
+  }
+  if (password.length < 6) {
+    return 'Password must be at least 6 characters long.';
+  }
+  return 'Password is strong.';
+};
+
 export const formatCurrency = (amount: number) => {
   return (amount / 100).toLocaleString('en-US', {
     style: 'currency',
