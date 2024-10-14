@@ -2,17 +2,18 @@ import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import { User } from '@/models/user';
 import { Product } from '@/models/product';
+import { State, Country, Lga, Location } from '@/models/location';
 import Category from '@/models/category';
 import { redisClient } from '@/lib/initialize';
 import { myLogger } from '@/app/api/upload/logger';
 import { authRequest } from '@/app/api/datasource/user.data';
 import { loginMe } from '@/app/api/datasource/user.data';
-import _, { rest } from 'lodash';
+import _, { fromPairs, rest } from 'lodash';
 import { NewArgs } from '@/app/lib/definitions';
 import { ObjectId } from 'mongoose';
 import jwt  from 'jsonwebtoken';
 import { MutationCreateUserArgs, MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
-
+import addressesData, { Addresses } from '@/app/api/datasource/addresses.data';
 
 export const userQueryResolvers = {
   category: async (_parent: any, { id }: any, { req }: any) => {
@@ -504,5 +505,40 @@ export const userMutationResolvers = {
       return { 'message': 'An error occurred!', statusCode: 500, ok: false };
     }
     return { message: 'User deleted successfully!', statusCode: 200, ok: true };
+  },
+  createLocation: async (_parent: any, _: any, { req }: any) => {
+    // based on the lgas, states and country create it
+    const addresses = addressesData
+    // create the country Nigeria
+    let country = await Country.findOne({ name: 'Nigeria' });
+    if (!country) {
+      country = new Country({
+        name: 'Nigeria',
+      });
+      await country.save();
+    }
+
+    for (const state in addresses) {
+      if (addresses.hasOwnProperty(state)) {
+        let myState = await State.findOne({name: state});
+        if (!myState) {
+          myState = new State({
+            name: state,
+            country: country._id
+          });
+          await myState.save();
+        }
+        addresses[state as keyof Addresses].forEach(async (lga) => {
+          let myLga = await Lga.findOne({ name: lga });
+          if (!myLga) {
+            myLga = new Lga({
+              name: lga,
+              state: myState._id
+            });
+            await myLga.save();
+          }
+        })
+      }
+    }
   },
 }
