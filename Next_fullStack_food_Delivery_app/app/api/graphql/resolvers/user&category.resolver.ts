@@ -117,6 +117,60 @@ export const userQueryResolvers = {
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
+
+  getCountries: async (_parent: any, _: any, { req }: any) => {
+    try {
+      const countriesData = await Country.find();
+      return { countriesData, statusCode: 200, ok: true };
+    } catch (error) {
+      myLogger.error('Error fetching countries: ' + (error as Error).message);
+      return { message: 'An error occurred!', statusCode: 500, ok: false };
+    }
+  },
+
+  getLgas: async (_parent: any, { state }: { state: string }, { req }: any) => {
+    try {
+      // check if the state is in the cache
+      const cachedData = await redisClient.get(state);
+      if (cachedData) {
+        return { lgasData: JSON.parse(cachedData), statusCode: 200, ok: true };
+      }
+      const stateData = await State.findOne({ name: state });
+      if (!stateData) return { message: 'State not found!', statusCode: 404, ok: false };
+      const data = await stateData.populate('lgas');
+      const lgasData = data.lgas;
+      // save it in redis cache for 24hours
+      redisClient.setEx(state, 86400, JSON.stringify(lgasData));
+
+      return { lgasData, statusCode: 200, ok: true };
+    } catch (error) {
+      myLogger.error('Error fetching lgas: ' + (error as Error).message);
+      return { message: 'An error occurred!', statusCode: 500, ok: false };
+    }
+  },
+
+  getStates: async (_parent: any, { country }: { country: string }, { req }: any) => {
+    try {
+      // check if the country is in the cache
+
+      const cachedData = await redisClient.get(country);
+      if (cachedData) {
+        return { statesData: JSON.parse(cachedData), statusCode: 200, ok: true };
+      }
+
+      const countryData = await Country.findOne({ name: country });
+      if (!countryData) return { message: 'Country not found!', statusCode: 404, ok: false };
+      const data = await countryData.populate('states');
+      const statesData = data.states;
+      // save it in redis cache for 24hours
+      redisClient.setEx(country, 86400, JSON.stringify(statesData));
+      return { statesData, statusCode: 200, ok: true };
+    } catch (error) {
+      myLogger.error('Error fetching states: ' + (error as Error).message);
+      return { message: 'An error occurred!', statusCode: 500, ok: false };
+    }
+  },
+
   user: async (_parent: any, _: any, { req }: any) => {
     // authenticate user
     const response = await authRequest(req.headers.get('authorization'));
@@ -134,6 +188,7 @@ export const userQueryResolvers = {
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
+
   users: async (_parent: any, _: any, { req }: any) => {
     // authenticate user
     const response = await authRequest(req.headers.get('authorization'));
@@ -265,25 +320,48 @@ export const userMutationResolvers = {
     return { 'message': 'Many categories have been created successfully!', ok: true, statusCode: 201 };
   },
 
-  deleteCategory: async (_parent: any, { id }: any, { req }: any) => {
-    // authenticate user who must be an admin
-    const response = await authRequest(req.headers.get('authorization'));
-
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    const { isAdmin } = await response.json();
-    if (!isAdmin) return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
-
+  createLocation: async (_parent: any, { location }: { location: string }, { req }: any) => {
     try {
-      const category = await Category.findByIdAndDelete(id);
-      if (!category) {
-        return { message: 'Category not found', statusCode: 404, ok: false };
-
+      // Authenticate user
+      const response = await authRequest(req.headers.get('authorization'));
+      if (!response.ok) {
+        throw new Error(response.statusText);
       }
-      return { message: 'Category has been deleted successfully!', statusCode: 201, ok: true };
+      const { isAdmin } = await response.json();
+      if (!isAdmin) {
+        return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
+      }
+
+      const addresses = addressesData[location as keyof Addresses];
+      if (!addresses) {
+        return { message: 'The country was not found in the data provided!', statusCode: 404, ok: false };
+      }
+
+      // Create the country
+      let country = await Country.findOne({ name: location });
+      if (!country) {
+        country = new Country({ name: location });
+        await country.save();
+      }
+
+      for (const state of Object.keys(addresses)) {
+        let myState = await State.findOne({ name: state });
+        if (!myState) {
+          myState = new State({ name: state, country: country._id });
+          await myState.save();
+        }
+        for (const lga of addresses[state as keyof Addresses]) {
+          let myLga = await Lga.findOne({ name: lga });
+          if (!myLga) {
+            myLga = new Lga({ name: lga, state: myState._id });
+            await myLga.save();
+          }
+        }
+      }
+      console.log('i have gotten here');
+      return { message: 'Location created successfully!', statusCode: 200, ok: true };
     } catch (error) {
-      myLogger.error('Error deleting category: ' + (error as Error).message);
+      myLogger.error('Error creating location: ' + (error as Error).message);
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
@@ -325,6 +403,82 @@ export const userMutationResolvers = {
       myLogger.error('Error creating user: ' + (error as Error).message)
       return { message: 'An error occurred while creating user', statusCode: 500, ok: false };
     }
+  },
+
+  deleteCategory: async (_parent: any, { id }: any, { req }: any) => {
+    // authenticate user who must be an admin
+    const response = await authRequest(req.headers.get('authorization'));
+
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const { isAdmin } = await response.json();
+    if (!isAdmin) return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
+
+    try {
+      const category = await Category.findByIdAndDelete(id);
+      if (!category) {
+        return { message: 'Category not found', statusCode: 404, ok: false };
+
+      }
+      return { message: 'Category has been deleted successfully!', statusCode: 201, ok: true };
+    } catch (error) {
+      myLogger.error('Error deleting category: ' + (error as Error).message);
+      return { message: 'An error occurred!', statusCode: 500, ok: false };
+    }
+  },
+
+  deleteUser: async (_parent: any, _: any, { req }: any) => {
+    // authenticate user
+    const response = await authRequest(req.headers.get('authorization'));
+
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const { user, message, statusCode, ok } = await response.json();
+    if (!user) return { message, statusCode, ok };
+    try {
+      const delUser = await User.findByIdAndUpdate((user._id as ObjectId).toString(), { isDeleted: true });
+      if (!delUser) return { message: 'Could not delete user!', statusCode: 500, ok: false }
+    } catch (error) {
+      myLogger.error('Error deleting user: ' + (error as Error).message);
+      return { 'message': 'An error occurred!', statusCode: 500, ok: false };
+    }
+    return { message: 'User deleted successfully!', statusCode: 200, ok: true };
+  },
+
+  forgotPassword: async (_parent: any, { email }: MutationForgotPasswordArgs) => {
+      try {
+        email = _.trim(email);
+        const user = await User.findOne({ email });
+        if (!user) {
+          return { message: 'User was not found!', statusCode: 404, ok: true };
+        }
+
+        const expiryDate = new Date();
+        expiryDate.setHours(expiryDate.getHours() + 1);
+        const token = uuidv4() + uuidv4();
+        const resetPasswordToken = `${token} ${expiryDate.toISOString()}`;
+
+        const updated = await User.findByIdAndUpdate(user.id, { resetPasswordToken });
+        if (!updated) {
+          return { message: 'Could not update user!', statusCode: 500, ok: true };
+        }
+        const user_data = {
+          id: user.id,
+          to: email,
+          subject: "Reset token for forgot password",
+          token,
+          uri: undefined,
+        };
+
+        // Add data to the queue
+        redisClient.lPush('user_data_queue', JSON.stringify(user_data));
+        return { message: 'Get the reset token from your email', statusCode: 200, ok: true };
+      } catch (error) {
+        myLogger.error('Error changing password: ' + (error as Error).message);
+        return { message: 'An error occurred!', statusCode: 500, ok: true };
+      }
   },
 
   login: async (_parent: any, args: { email: string; password: string; }) => {
@@ -417,40 +571,6 @@ export const userMutationResolvers = {
     }
   },
 
-  forgotPassword: async (_parent: any, { email }: MutationForgotPasswordArgs) => {
-      try {
-        email = _.trim(email);
-        const user = await User.findOne({ email });
-        if (!user) {
-          return { message: 'User was not found!', statusCode: 404, ok: true };
-        }
-
-        const expiryDate = new Date();
-        expiryDate.setHours(expiryDate.getHours() + 1);
-        const token = uuidv4() + uuidv4();
-        const resetPasswordToken = `${token} ${expiryDate.toISOString()}`;
-
-        const updated = await User.findByIdAndUpdate(user.id, { resetPasswordToken });
-        if (!updated) {
-          return { message: 'Could not update user!', statusCode: 500, ok: true };
-        }
-        const user_data = {
-          id: user.id,
-          to: email,
-          subject: "Reset token for forgot password",
-          token,
-          uri: undefined,
-        };
-
-        // Add data to the queue
-        redisClient.lPush('user_data_queue', JSON.stringify(user_data));
-        return { message: 'Get the reset token from your email', statusCode: 200, ok: true };
-      } catch (error) {
-        myLogger.error('Error changing password: ' + (error as Error).message);
-        return { message: 'An error occurred!', statusCode: 500, ok: true };
-      }
-    },
-
   updatePassword: async (_parent: any, { email, password, token }: MutationUpdatePasswordArgs) => {
       try {
         email = _.trim(email);
@@ -486,59 +606,5 @@ export const userMutationResolvers = {
         myLogger.error('Error updating password: ' + (error as Error).message);
         return { message: 'An error occurred!', statusCode: 500, ok: false };
       }
-    },
-
-  deleteUser: async (_parent: any, _: any, { req }: any) => {
-    // authenticate user
-    const response = await authRequest(req.headers.get('authorization'));
-
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    const { user, message, statusCode, ok } = await response.json();
-    if (!user) return { message, statusCode, ok };
-    try {
-      const delUser = await User.findByIdAndUpdate((user._id as ObjectId).toString(), { isDeleted: true });
-      if (!delUser) return { message: 'Could not delete user!', statusCode: 500, ok: false }
-    } catch (error) {
-      myLogger.error('Error deleting user: ' + (error as Error).message);
-      return { 'message': 'An error occurred!', statusCode: 500, ok: false };
-    }
-    return { message: 'User deleted successfully!', statusCode: 200, ok: true };
-  },
-  createLocation: async (_parent: any, _: any, { req }: any) => {
-    // based on the lgas, states and country create it
-    const addresses = addressesData
-    // create the country Nigeria
-    let country = await Country.findOne({ name: 'Nigeria' });
-    if (!country) {
-      country = new Country({
-        name: 'Nigeria',
-      });
-      await country.save();
-    }
-
-    for (const state in addresses) {
-      if (addresses.hasOwnProperty(state)) {
-        let myState = await State.findOne({name: state});
-        if (!myState) {
-          myState = new State({
-            name: state,
-            country: country._id
-          });
-          await myState.save();
-        }
-        addresses[state as keyof Addresses].forEach(async (lga) => {
-          let myLga = await Lga.findOne({ name: lga });
-          if (!myLga) {
-            myLga = new Lga({
-              name: lga,
-              state: myState._id
-            });
-            await myLga.save();
-          }
-        })
-      }
-    }
   },
 }

@@ -32,6 +32,18 @@ type Category {
   products: [Product]
 }
 
+type Country {
+  id: ID!
+  name: String!
+  states: [State]
+}
+
+type Lga {
+  id: ID!
+  name: String!
+  state: State
+}
+
 type Location {
   id: ID
   name: String
@@ -57,6 +69,9 @@ type Message {
   categoryData: Category
   categoriesData: [Category]
   locationData: Location
+  statesData: [State]
+  lgasData: [Lga]
+  countriesData: [Country]
   statusCode: Int!
   ok: Boolean!
   refreshToken: String
@@ -65,6 +80,7 @@ type Message {
 type Mutation {
   createCategory(name: String!): Message!
   createCategories(name: [String!]!): Message!
+  createLocation(location: String!): Message!
   createOrder(
     sellerId: ID!
     dispatcherId: ID
@@ -207,6 +223,9 @@ type Query {
   getMyPayment(orderId: ID!): Message!
   getNewAccessToken(refreshToken: String!): Message!
   getProduct(id: ID!): Message!
+  getStates(country: String!): Message!
+  getLgas(state: String!): Message!
+  getCountries: Message!
   getTheOrderAsDispatcher: Message!
   getTheOrderAsSeller: Message!
   getUserProducts: Message!
@@ -230,6 +249,12 @@ type Restaurant {
   createdAt: String!
   photo: String
   addressSeller: [Location]
+}
+
+type State {
+  id: ID!
+  name: String!
+  country: Country
 }
 
 type User {
