@@ -9,6 +9,8 @@ import { useRouter } from 'next/navigation';
 import { signUpUser } from '@/app/lib/actions';
 import { getPasswordValidationMessage } from '@/app/lib/utils';
 import clsx from 'clsx';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { GET_STATES, GET_LGAS, GET_COUNTRIES } from '@/app/query/location.query';
 
 export default function SignupForm() {
   const [data, formAction, isPending] = useActionState(signUpUser, undefined);
@@ -17,6 +19,14 @@ export default function SignupForm() {
   const [repeatPassword, setRepeatPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [passwordValidationError, setPasswordValidationError] = useState('');
+
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedState, setSelectedState] = useState('');
+  const [selectedLga, setSelectedLga] = useState('');
+
+  const [getStates, { error: errorData, data: statesData }] = useLazyQuery(GET_STATES);
+  const [getLgas, { data: lgasData }] = useLazyQuery(GET_LGAS);
+  const { loading, error, data: countriesData } = useQuery(GET_COUNTRIES);
 
   const handleUserTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setUserType(e.target.value);
@@ -45,13 +55,31 @@ export default function SignupForm() {
     }
   };
 
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCountry(e.target.value);
+    setSelectedState('');
+    setSelectedLga('');
+    getStates({ variables: { country: e.target.value } });
+  }; 
+
+  const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedState(e.target.value);
+    setSelectedLga('');
+    getLgas({ variables: { state: e.target.value } });
+  };
+
+  const handleLgaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedLga(e.target.value);
+  };
+
   const router = useRouter();
-  
+
   useEffect(() => {
     if (data && data.ok) {
       router.push('/login');
     }
   }, [data, router]);
+
 
   return (
     <form className="space-y-3" action={formAction}>
@@ -236,6 +264,79 @@ export default function SignupForm() {
                   name="vehicleNumber"
                   placeholder="Enter your vehicle number"
                 />
+                <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+          )}
+        <div>
+            <label className="mb-3 mt-5 block text-xs font-medium text-gray-900" htmlFor="country">
+              Country
+            </label>
+            <div className="relative">
+              <select
+                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                id="country"
+                name="country"
+                value={selectedCountry}
+                onChange={handleCountryChange}
+                required
+              >
+                <option value="">Select a country</option>
+                {countriesData?.getCountries?.countriesData?.map((country: any) => (
+                  <option key={country.id} value={country.name}>
+                    {country.name}
+                  </option>
+                ))}
+              </select>
+              <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
+          {selectedCountry && (
+            <div>
+              <label className="mb-3 mt-5 block text-xs font-medium text-gray-900" htmlFor="state">
+                State
+              </label>
+              <div className="relative">
+                <select
+                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                  id="state"
+                  name="state"
+                  value={selectedState}
+                  onChange={handleStateChange}
+                  required
+                >
+                  <option value="">Select a state</option>
+                  {statesData?.getStates?.statesData?.map((state: any) => (
+                    <option key={state.id} value={state.name}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select>
+                <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+          )}
+          {selectedState && (
+            <div>
+              <label className="mb-3 mt-5 block text-xs font-medium text-gray-900" htmlFor="lga">
+                LGA
+              </label>
+              <div className="relative">
+                <select
+                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                  id="lga"
+                  name="lga"
+                  value={selectedLga}
+                  onChange={handleLgaChange}
+                  required
+                >
+                  <option value="">Select an LGA</option>
+                  {lgasData?.getLgas?.lgasData?.map((lga: any) => (
+                    <option key={lga.id} value={lga.name}>
+                      {lga.name}
+                    </option>
+                  ))}
+                </select>
                 <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
               </div>
             </div>
