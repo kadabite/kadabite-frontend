@@ -6,7 +6,7 @@ interface ILocation extends Document {
   name: string;
   longitude: string;
   latitude: string;
-  userWithThisLocation: mongoose.Schema.Types.ObjectId[];
+  usersWithThisLocation: mongoose.Schema.Types.ObjectId[];
 }
 
 interface ILga extends Document {
@@ -30,7 +30,7 @@ const locationSchema: Schema<ILocation> = new Schema({
   name: { type: String, required: true, unique: true },
   longitude: { type: String, required: true },
   latitude: { type: String, required: true },
-  userWithThisLocation: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+  usersWithThisLocation: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 const lgaSchema = new Schema<ILga>({

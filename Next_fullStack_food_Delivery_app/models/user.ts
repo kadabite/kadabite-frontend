@@ -23,6 +23,7 @@ interface IUser extends Document {
   dispatcherStatus: 'available' | 'busy' | 'null';
   buyerStatus: 'available' | 'busy' | 'null';
   photo?: string;
+  locations: mongoose.Types.ObjectId[];
   products: mongoose.Types.ObjectId[] | IProduct[];
   addressSeller?: mongoose.Types.ObjectId;
   addressBuyer?: mongoose.Types.ObjectId;
