@@ -280,6 +280,7 @@ type User {
   addressDispatcher: [Location]
   businessDescription: String
   products: [String]!
+  locations: [String]!
 }
 
 type Users {
