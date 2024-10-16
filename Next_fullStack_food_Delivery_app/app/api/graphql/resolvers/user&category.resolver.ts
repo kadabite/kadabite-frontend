@@ -14,6 +14,7 @@ import { ObjectId } from 'mongoose';
 import jwt  from 'jsonwebtoken';
 import { MutationCreateUserArgs, MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
 import addressesData, { Addresses } from '@/app/api/datasource/addresses.data';
+import { red } from '@mui/material/colors';
 
 export const userQueryResolvers = {
   category: async (_parent: any, { id }: any, { req }: any) => {
@@ -120,8 +121,24 @@ export const userQueryResolvers = {
 
   getCountries: async (_parent: any, _: any, { req }: any) => {
     try {
+      if (!redisClient) {
+        myLogger.error('Redis client is not connected!');
+      } else {
+        const cachedData = await redisClient.get('countries');
+        if (cachedData) {
+          const parsedData = JSON.parse(cachedData);
+          return { countriesData: parsedData, statusCode: 200, ok: true };
+        }
+      }
+
       const countriesData = await Country.find();
-      return { countriesData, statusCode: 200, ok: true };
+      if (!countriesData) return { message: 'No country was found!', statusCode: 404, ok: false }
+      const transformedData = countriesData.map((country: any) => ({
+        id: country._id,
+        name: country.name,
+      }));
+      if (redisClient) await redisClient.setEx('countries', 86400, JSON.stringify(transformedData));
+      return { countriesData: transformedData, statusCode: 200, ok: true };
     } catch (error) {
       myLogger.error('Error fetching countries: ' + (error as Error).message);
       return { message: 'An error occurred!', statusCode: 500, ok: false };
@@ -131,17 +148,24 @@ export const userQueryResolvers = {
   getLgas: async (_parent: any, { state }: { state: string }, { req }: any) => {
     try {
       // check if the state is in the cache
-      const cachedData = await redisClient.get(state);
-      if (cachedData) {
-        return { lgasData: JSON.parse(cachedData), statusCode: 200, ok: true };
+      if (!redisClient) {
+        myLogger.error('Redis client is not connected!');
+      } else {
+        const cachedData = await redisClient.get(state);
+        if (cachedData) {
+          return { lgasData: JSON.parse(cachedData), statusCode: 200, ok: true };
+        }
       }
       const stateData = await State.findOne({ name: state });
       if (!stateData) return { message: 'State not found!', statusCode: 404, ok: false };
       const data = await stateData.populate('lgas');
-      const lgasData = data.lgas;
+      const oldDta = data.lgas;
+      const lgasData = oldDta.map((lga: any) => ({
+        id: lga._id,
+        name: lga.name,
+      }));
       // save it in redis cache for 24hours
-      redisClient.setEx(state, 86400, JSON.stringify(lgasData));
-
+      if (redisClient) await redisClient.setEx(state, 86400, JSON.stringify(lgasData));
       return { lgasData, statusCode: 200, ok: true };
     } catch (error) {
       myLogger.error('Error fetching lgas: ' + (error as Error).message);
@@ -152,18 +176,24 @@ export const userQueryResolvers = {
   getStates: async (_parent: any, { country }: { country: string }, { req }: any) => {
     try {
       // check if the country is in the cache
-
-      const cachedData = await redisClient.get(country);
-      if (cachedData) {
-        return { statesData: JSON.parse(cachedData), statusCode: 200, ok: true };
+      if (!redisClient) {
+        myLogger.error('Redis client is not connected!');
+      } else {
+        const cachedData = await redisClient.get(country);
+        if (cachedData) {
+          return { statesData: JSON.parse(cachedData), statusCode: 200, ok: true };
+        }
       }
-
       const countryData = await Country.findOne({ name: country });
       if (!countryData) return { message: 'Country not found!', statusCode: 404, ok: false };
       const data = await countryData.populate('states');
-      const statesData = data.states;
+      let oldData = data.states;
+      const statesData = oldData.map((state: any) => ({
+        id: state._id,
+        name: state.name,
+        }));
       // save it in redis cache for 24hours
-      redisClient.setEx(country, 86400, JSON.stringify(statesData));
+      if (redisClient) await redisClient.setEx(country, 86400, JSON.stringify(statesData));
       return { statesData, statusCode: 200, ok: true };
     } catch (error) {
       myLogger.error('Error fetching states: ' + (error as Error).message);
@@ -206,7 +236,6 @@ export const userQueryResolvers = {
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
-
 }
 
 export const userMutationResolvers = {
@@ -471,7 +500,10 @@ export const userMutationResolvers = {
           token,
           uri: undefined,
         };
-
+        if (!redisClient) {
+          myLogger.error('Redis client is not connected!, cannot queue user data for forgotten password');
+          return { message: 'An error occurred!', statusCode: 500, ok: true };
+        }
         // Add data to the queue
         redisClient.lPush('user_data_queue', JSON.stringify(user_data));
         return { message: 'Get the reset token from your email', statusCode: 200, ok: true };
