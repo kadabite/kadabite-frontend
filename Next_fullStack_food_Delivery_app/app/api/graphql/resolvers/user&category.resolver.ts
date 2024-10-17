@@ -13,7 +13,6 @@ import { NewArgs } from '@/app/lib/definitions';
 import mongoose, { ObjectId } from 'mongoose';
 import jwt  from 'jsonwebtoken';
 import { MutationCreateUserArgs, MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
-import addressesData, { Addresses } from '@/app/api/datasource/addresses.data';
 
 export const userQueryResolvers = {
   category: async (_parent: any, { id }: any, { req }: any) => {
@@ -114,88 +113,6 @@ export const userQueryResolvers = {
       return { token: accessToken, ok: true, statusCode: 200 };
     } catch (error) {
       myLogger.error('Error getting new access token: ' + (error as Error).message);
-      return { message: 'An error occurred!', statusCode: 500, ok: false };
-    }
-  },
-
-  getCountries: async (_parent: any, _: any, { req }: any) => {
-    try {
-      if (!redisClient) {
-        myLogger.error('Redis client is not connected!');
-      } else {
-        const cachedData = await redisClient.get('countries');
-        if (cachedData) {
-          const parsedData = JSON.parse(cachedData);
-          return { countriesData: parsedData, statusCode: 200, ok: true };
-        }
-      }
-
-      const countriesData = await Country.find();
-      if (!countriesData) return { message: 'No country was found!', statusCode: 404, ok: false }
-      const transformedData = countriesData.map((country: any) => ({
-        id: country._id,
-        name: country.name,
-      }));
-      if (redisClient) await redisClient.setEx('countries', 86400, JSON.stringify(transformedData));
-      return { countriesData: transformedData, statusCode: 200, ok: true };
-    } catch (error) {
-      myLogger.error('Error fetching countries: ' + (error as Error).message);
-      return { message: 'An error occurred!', statusCode: 500, ok: false };
-    }
-  },
-
-  getLgas: async (_parent: any, { state }: { state: string }, { req }: any) => {
-    try {
-      // check if the state is in the cache
-      if (!redisClient) {
-        myLogger.error('Redis client is not connected!');
-      } else {
-        const cachedData = await redisClient.get(state);
-        if (cachedData) {
-          return { lgasData: JSON.parse(cachedData), statusCode: 200, ok: true };
-        }
-      }
-      const stateData = await State.findOne({ name: state });
-      if (!stateData) return { message: 'State not found!', statusCode: 404, ok: false };
-      const data = await stateData.populate('lgas');
-      const oldDta = data.lgas;
-      const lgasData = oldDta.map((lga: any) => ({
-        id: lga._id,
-        name: lga.name,
-      }));
-      // save it in redis cache for 24hours
-      if (redisClient) await redisClient.setEx(state, 86400, JSON.stringify(lgasData));
-      return { lgasData, statusCode: 200, ok: true };
-    } catch (error) {
-      myLogger.error('Error fetching lgas: ' + (error as Error).message);
-      return { message: 'An error occurred!', statusCode: 500, ok: false };
-    }
-  },
-
-  getStates: async (_parent: any, { country }: { country: string }, { req }: any) => {
-    try {
-      // check if the country is in the cache
-      if (!redisClient) {
-        myLogger.error('Redis client is not connected!');
-      } else {
-        const cachedData = await redisClient.get(country);
-        if (cachedData) {
-          return { statesData: JSON.parse(cachedData), statusCode: 200, ok: true };
-        }
-      }
-      const countryData = await Country.findOne({ name: country });
-      if (!countryData) return { message: 'Country not found!', statusCode: 404, ok: false };
-      const data = await countryData.populate('states');
-      let oldData = data.states;
-      const statesData = oldData.map((state: any) => ({
-        id: state._id,
-        name: state.name,
-        }));
-      // save it in redis cache for 24hours
-      if (redisClient) await redisClient.setEx(country, 86400, JSON.stringify(statesData));
-      return { statesData, statusCode: 200, ok: true };
-    } catch (error) {
-      myLogger.error('Error fetching states: ' + (error as Error).message);
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
@@ -346,52 +263,6 @@ export const userMutationResolvers = {
       }
     }
     return { 'message': 'Many categories have been created successfully!', ok: true, statusCode: 201 };
-  },
-
-  createLocation: async (_parent: any, { location }: { location: string }, { req }: any) => {
-    try {
-      // Authenticate user
-      const response = await authRequest(req.headers.get('authorization'));
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      const { isAdmin } = await response.json();
-      if (!isAdmin) {
-        return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
-      }
-
-      const addresses = addressesData[location as keyof Addresses];
-      if (!addresses) {
-        return { message: 'The country was not found in the data provided!', statusCode: 404, ok: false };
-      }
-
-      // Create the country
-      let country = await Country.findOne({ name: location });
-      if (!country) {
-        country = new Country({ name: location });
-        await country.save();
-      }
-
-      for (const state of Object.keys(addresses)) {
-        let myState = await State.findOne({ name: state });
-        if (!myState) {
-          myState = new State({ name: state, country: country._id });
-          await myState.save();
-        }
-        for (const lga of addresses[state as keyof Addresses]) {
-          let myLga = await Lga.findOne({ name: lga });
-          if (!myLga) {
-            myLga = new Lga({ name: lga, state: myState._id });
-            await myLga.save();
-          }
-        }
-      }
-      console.log('i have gotten here');
-      return { message: 'Location created successfully!', statusCode: 200, ok: true };
-    } catch (error) {
-      myLogger.error('Error creating location: ' + (error as Error).message);
-      return { message: 'An error occurred!', statusCode: 500, ok: false };
-    }
   },
 
   createUser: async (_parent: any, args: MutationCreateUserArgs) => {

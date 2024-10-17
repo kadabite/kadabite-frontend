@@ -57,6 +57,7 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addLocation: Message;
   createCategories: Message;
   createCategory: Message;
   createOrder: Message;
@@ -81,6 +82,14 @@ export type Mutation = {
   updateUser: Message;
 };
 
+export type MutationAddUserLocationArgs = {
+  address: Scalars['String']['input'];
+  country: Scalars['String']['input'];
+  latitude: Scalars['String']['input'];
+  lga: Scalars['String']['input'];
+  longitude: Scalars['String']['input'];
+  state: Scalars['String']['input'];
+};
 
 export type MutationCreateCategoriesArgs = {
   name: Array<Scalars['String']['input']>;
@@ -222,12 +231,21 @@ export type MutationUpdateUserArgs = {
   email?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
-  lgaId?: InputMaybe<Scalars['String']['input']>;
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
   sellerStatus?: InputMaybe<Scalars['String']['input']>;
   userType?: InputMaybe<Scalars['String']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
   vehicleNumber?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type MutationUpdateUserLocationArgs = {
+  locationId: Scalars['ID']['input'];
+  address: Scalars['String']['input'];
+  country: Scalars['String']['input'];
+  latitude: Scalars['String']['input'];
+  lga: Scalars['String']['input'];
+  longitude: Scalars['String']['input'];
+  state: Scalars['String']['input'];
 };
 
 export type Order = {

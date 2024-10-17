@@ -68,7 +68,7 @@ type Message {
   paymentData: Payment
   categoryData: Category
   categoriesData: [Category]
-  locationData: Location
+  locationsData: [Location]
   statesData: [State]
   lgasData: [Lga]
   countriesData: [Country]
@@ -78,6 +78,14 @@ type Message {
 }
 
 type Mutation {
+  addUserLocation(
+    address: String!
+    lga: String
+    state: String
+    country: String
+    longitude: String
+    latitude: String
+  ): Message!
   createCategory(name: String!): Message!
   createCategories(name: [String!]!): Message!
   createLocation(location: String!): Message!
@@ -151,8 +159,16 @@ type Mutation {
     buyerStatus: String
     sellerStatus: String
     dispatcherStatus: String
-    lgaId: String
     vehicleNumber: String
+  ): Message!
+  updateUserLocation(
+    locationId: ID!
+    address: String!
+    lga: String!
+    state: String!
+    country: String!
+    longitude: String!
+    latitude: String!
   ): Message!
 }
 
@@ -233,6 +249,7 @@ type Query {
   getCountries: Message!
   getTheOrderAsDispatcher: Message!
   getTheOrderAsSeller: Message!
+  getUserLocations: Message!
   getUserProducts: Message!
   thirdPartyUser(username: String!): ThirdPartyUser!
   user: Message!
