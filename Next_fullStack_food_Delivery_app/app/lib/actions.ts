@@ -164,19 +164,24 @@ export async function signUpUser(
       firstName: formData.get('firstName'),
       lastName: formData.get('lastName'),
       email: formData.get('email'),
-      password: formData.get('password'),
+      passwordHash: formData.get('password'),
       phoneNumber: formData.get('phoneNumber'),
       userType: formData.get('userType'),
-      lgaId: formData.get('lgaId'),
+      lga: formData.get('lga'),
       vehicleNumber: formData.get('vehicleNumber'),
       username: formData.get('username'),
+      longitude: formData.get('longitude'),
+      latitude: formData.get('latitude'),
+      state: formData.get('state'),
+      country: formData.get('country'),
+      address: formData.get('address')
     };
-
     const response = await myRequest(CREATE_USER, variables);
     data = response.createUser;
     return data;
 
   } catch (error) {
+    console.log(error);
     if (data) data.message = 'An error occurred during signup.';
     else data = { message: 'An error occurred during signup.' };
     return data;

@@ -8,13 +8,12 @@ import { redisClient } from '@/lib/initialize';
 import { myLogger } from '@/app/api/upload/logger';
 import { authRequest } from '@/app/api/datasource/user.data';
 import { loginMe } from '@/app/api/datasource/user.data';
-import _, { fromPairs, rest } from 'lodash';
+import _ from 'lodash';
 import { NewArgs } from '@/app/lib/definitions';
-import { ObjectId } from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import jwt  from 'jsonwebtoken';
 import { MutationCreateUserArgs, MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
 import addressesData, { Addresses } from '@/app/api/datasource/addresses.data';
-import { red } from '@mui/material/colors';
 
 export const userQueryResolvers = {
   category: async (_parent: any, { id }: any, { req }: any) => {
@@ -396,6 +395,8 @@ export const userMutationResolvers = {
   },
 
   createUser: async (_parent: any, args: MutationCreateUserArgs) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
       const {
         username,
@@ -405,16 +406,60 @@ export const userMutationResolvers = {
         userType,
         firstName,
         lastName,
-        lgaId,
         vehicleNumber,
+        latitude,
+        longitude,
+        lga,
+        state,
+        country,
+        address
       } = args;
 
       // check if username, email, or phonenumber has been taking and return error message
       const existingUser = await User.findOne({ $or: [{ username }, { email }, { phoneNumber }] });
       if (existingUser) {
+        await session.abortTransaction();
+        session.endSession();
         return { message: 'User already exists!', statusCode: 400, ok: false };
       }
+      // find location
+      let locationId;
+      if (lga && state && country) {
+        // Find country
+        let countryDoc = await Country.findOne({ name: country });
+        if (!countryDoc) {
+          await session.abortTransaction();
+          session.endSession();
+          return { message: 'This country is not available here!', statusCode: 400, ok: false };
+        }
 
+        // Find state
+        let stateDoc = await State.findOne({ name: state, country: countryDoc._id });
+        if (!stateDoc) {
+          await session.abortTransaction();
+          session.endSession();
+          return { message: 'This state is not available here!', statusCode: 400, ok: false };
+        }
+
+        // Find lga
+        let lgaDoc = await Lga.findOne({ name: lga, state: stateDoc._id });
+        if (!lgaDoc) {
+          await session.abortTransaction();
+          session.endSession();
+          return { message: 'This country is not available here!', statusCode: 400, ok: false };
+        }
+
+        // Create location
+        const location = new Location({
+          name: `${address}, ${lga}, ${state}, ${country}`,
+          longitude,
+          latitude
+        });
+        const savedLocation = await location.save({ session });
+        locationId = savedLocation._id;
+      }
+
+      // Create new user
       const newUser = new User({
         firstName: _.trim(firstName),
         lastName: _.trim(lastName),
@@ -423,12 +468,16 @@ export const userMutationResolvers = {
         passwordHash: _.trim(passwordHash),
         phoneNumber: _.trim(phoneNumber),
         userType: userType ? _.trim(userType) : undefined,
-        lgaId,
-        vehicleNumber,
+        vehicleNumber: vehicleNumber ? _.trim(vehicleNumber) : undefined,
+        locations: locationId ? [locationId] : []
       });
-      const userData = await newUser.save();
+      const userData = await newUser.save({ session });
+      await session.commitTransaction();
+      session.endSession();
       return { userData, statusCode: 201, ok: true, message: 'User have been registered successfully!' };
     } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
       myLogger.error('Error creating user: ' + (error as Error).message)
       return { message: 'An error occurred while creating user', statusCode: 500, ok: false };
     }

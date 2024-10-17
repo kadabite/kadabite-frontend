@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { UserIcon } from '@heroicons/react/24/outline';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_STATES, GET_LGAS, GET_COUNTRIES } from '@/app/query/location.query';
+import { HomeIcon } from '@heroicons/react/24/outline';
 
 interface AddressFormProps {
   selectedCountry: string;
@@ -67,6 +68,21 @@ const AddressForm: React.FC<AddressFormProps> = ({
       <h2 className="mb-3 text-xl">Address Information</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div>
+            <label className="mb-3 mt-5 block text-xs font-medium text-gray-900" htmlFor="address">
+              Address
+            </label>
+            <div className="relative">
+              <input
+                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                id="address"
+                type="text"
+                name="address"
+                placeholder="Type your address"
+              />
+              <HomeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
+        <div>
           <label className="mb-3 mt-5 block text-xs font-medium text-gray-900" htmlFor="country">
             Country
           </label>
@@ -77,7 +93,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
               name="country"
               value={selectedCountry}
               onChange={ handleCountryChange}
-              required
             >
               <option value="">Select a country</option>
               {loading ? (
@@ -106,7 +121,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
                 name="state"
                 value={selectedState}
                 onChange={ handleStateChange }
-                required
               >
                 <option value="">Select a state</option>
                 {loadingState ? (
@@ -136,7 +150,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
                 name="lga"
                 value={selectedLga}
                 onChange={handleLgaChange}
-                required
               >
                 <option value="">Select an LGA</option>
                 {loadingLga ? (
@@ -152,9 +165,9 @@ const AddressForm: React.FC<AddressFormProps> = ({
               </select>
               <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-          </div>
+        </div>
         )}
-        <div>
+        <div style={{ display: 'none' }}>
           <label className="mb-3 mt-5 block text-xs font-medium text-gray-900" htmlFor="latitude">
             Latitude
           </label>
@@ -165,15 +178,13 @@ const AddressForm: React.FC<AddressFormProps> = ({
               type="text"
               name="latitude"
               readOnly
-              aria-readonly
-              placeholder="Enter latitude"
+              hidden={true}
               value={latitude}
-              required
             />
             <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
           </div>
         </div>
-        <div>
+        <div style={{ display: 'none' }}>
           <label className="mb-3 mt-5 block text-xs font-medium text-gray-900" htmlFor="longitude">
             Longitude
           </label>
@@ -184,10 +195,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
               type="text"
               name="longitude"
               readOnly
-              aria-readonly
-              placeholder="Enter longitude"
+              hidden={true}
               value={longitude}
-              required
             />
             <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
           </div>

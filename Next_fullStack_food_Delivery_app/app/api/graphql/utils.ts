@@ -49,9 +49,9 @@ export async function myRequest(query: any, variables: Record<string, any>): Pro
       variables,
     }),
   });
-
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    myLogger.error(response.statusText);
+    throw new HttpError('Failed to fetch data', response.status);
   }
 
   const responseData = await response.json();

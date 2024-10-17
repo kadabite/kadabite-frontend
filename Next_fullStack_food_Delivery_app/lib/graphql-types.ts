@@ -6,7 +6,7 @@ export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Mayb
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
-// To generarte schema: npx graphql-codegen
+// To generate schema: npx graphql-codegen
 
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -125,13 +125,18 @@ export type MutationCreateUserArgs = {
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
-  lgaId?: InputMaybe<Scalars['String']['input']>;
   passwordHash: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
   sellerStatus?: InputMaybe<Scalars['String']['input']>;
   userType: InputMaybe<Scalars['String']['input']>;
   username: Scalars['String']['input'];
   vehicleNumber?: InputMaybe<Scalars['String']['input']>;
+  latitude?: InputMaybe<Scalars['String']['input']>;
+  longitude?: InputMaybe<Scalars['String']['input']>;
+  lga?: InputMaybe<Scalars['String']['input']>;
+  state?: InputMaybe<Scalars['String']['input']>;
+  country?: InputMaybe<Scalars['String']['input']>;
+  address?: InputMaybe<Scalars['String']['input']>;
 };
 
 

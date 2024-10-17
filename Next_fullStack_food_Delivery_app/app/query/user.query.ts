@@ -5,25 +5,34 @@ export const CREATE_USER = gql`
     $firstName: String!
     $lastName: String!
     $email: String!
-    $password: String!
+    $passwordHash: String!
     $phoneNumber: String!
-    $userType: String
-    $lgaId: String
+    $userType: String!
     $vehicleNumber: String
     $username: String!
+    $longitude: String
+    $latitude: String
+    $lga: String
+    $state: String
+    $country: String
+    $address: String
   ) {
     createUser(
       firstName: $firstName
       lastName: $lastName
       email: $email
-      password: $password
+      passwordHash: $passwordHash
       phoneNumber: $phoneNumber
       userType: $userType
-      lgaId: $lgaId
       vehicleNumber: $vehicleNumber
       username: $username
+      longitude: $longitude
+      latitude: $latitude
+      lga: $lga
+      state: $state
+      country: $country
+      address: $address
     ) {
-      userData
       statusCode
       ok
       message

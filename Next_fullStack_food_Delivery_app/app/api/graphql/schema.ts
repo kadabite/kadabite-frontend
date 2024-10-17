@@ -111,9 +111,14 @@ type Mutation {
     buyerStatus: String
     sellerStatus: String
     dispatcherStatus: String
-    lgaId: String
+    lga: String
+    state: String
+    country: String
+    address: String
     vehicleNumber: String
     businessDescription: String
+    longitude: String
+    latitude: String
   ): Message!
   deleteAnOrderItem(orderId: ID!, orderItemId: ID!): Message!
   deleteCategory(id: ID!): Message!

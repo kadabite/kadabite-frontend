@@ -1,4 +1,3 @@
-import { ObjectEncodingOptions } from 'fs';
 import mongoose, { Document, Schema, Model, ObjectId, CallbackError } from 'mongoose';
 
 // Define interfaces for each schema
@@ -6,7 +5,6 @@ interface ILocation extends Document {
   name: string;
   longitude: string;
   latitude: string;
-  usersWithThisLocation: mongoose.Schema.Types.ObjectId[];
 }
 
 interface ILga extends Document {
@@ -30,7 +28,6 @@ const locationSchema: Schema<ILocation> = new Schema({
   name: { type: String, required: true, unique: true },
   longitude: { type: String, required: true },
   latitude: { type: String, required: true },
-  usersWithThisLocation: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 const lgaSchema = new Schema<ILga>({

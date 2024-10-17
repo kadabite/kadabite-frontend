@@ -13,7 +13,6 @@ interface IUser extends Document {
   resetPasswordToken?: string;
   createdAt: Date;
   updatedAt: Date;
-  lgaId?: mongoose.Types.ObjectId;
   vehicleNumber?: string;
   isLoggedIn: boolean;
   isDeleted: boolean;
@@ -43,7 +42,6 @@ const userSchema: Schema<IUser> = new Schema({
   resetPasswordToken: { type: String },
   createdAt: { type: Date, default: new Date() },
   updatedAt: { type: Date, default: new Date() },
-  lgaId: { type: mongoose.Schema.Types.ObjectId, ref: 'Location' },
   vehicleNumber: { type: String },
   isLoggedIn: { type: Boolean, default: false },
   isDeleted: { type: Boolean, default: false },
@@ -58,6 +56,7 @@ const userSchema: Schema<IUser> = new Schema({
   addressBuyer: { type: mongoose.Schema.Types.ObjectId, ref: 'Location' },
   addressDispatcher: { type: mongoose.Schema.Types.ObjectId, ref: 'Location' },
   businessDescription: { type: String, maxlength: 300 },
+  locations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }]
 });
 
 // Pre-save hook to hash the password
