@@ -109,7 +109,7 @@ export const userQueryResolvers = {
       if (!user.isLoggedIn) {
         return { message: 'User is not logged in!', statusCode: 401, ok: false };
       }
-      const accessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_TOKEN_SECRET_KEY as string, { expiresIn: `${process.env.NEXT_PUBLIC_ACCESS_TOKEN_EXPIRES_IN}d` });
+      const accessToken = jwt.sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET_KEY as string, { expiresIn: `${process.env.NEXT_PUBLIC_ACCESS_TOKEN_EXPIRES_IN}d` });
       return { token: accessToken, ok: true, statusCode: 200 };
     } catch (error) {
       myLogger.error('Error getting new access token: ' + (error as Error).message);

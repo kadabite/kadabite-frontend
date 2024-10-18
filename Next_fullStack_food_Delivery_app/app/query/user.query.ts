@@ -91,6 +91,7 @@ export const LOGIN = gql`
             message
             token
             statusCode
+            refreshToken
             ok
         }
     }
