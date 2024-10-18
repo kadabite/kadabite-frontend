@@ -57,7 +57,7 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addLocation: Message;
+  addUserLocation: Message;
   createCategories: Message;
   createCategory: Message;
   createOrder: Message;
@@ -70,6 +70,7 @@ export type Mutation = {
   deleteOrderItemsNow: Message;
   deleteProduct: Message;
   deleteUser: Message;
+  deleteLocation: Message;
   forgotPassword: Message;
   login: Message;
   logout: Message;
@@ -80,6 +81,7 @@ export type Mutation = {
   updatePayment: Message;
   updateProduct: Message;
   updateUser: Message;
+  updateUserLocation: Message;
 };
 
 export type MutationAddUserLocationArgs = {
@@ -343,6 +345,7 @@ export type Query = {
   getTheOrderAsDispatcher: Message;
   getTheOrderAsSeller: Message;
   getUserProducts: Message;
+  getUserLocations: Message;
   user: Message;
   users: Message;
 };

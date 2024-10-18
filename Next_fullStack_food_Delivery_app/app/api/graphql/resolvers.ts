@@ -2,7 +2,7 @@ import { userMutationResolvers, userQueryResolvers } from '@/app/api/graphql/res
 import { productQueryResolver, productMutationResolver } from '@/app/api/graphql/resolvers/products.resolver';
 import { ordersMutationResolver, ordersQueryResolver } from '@/app/api/graphql/resolvers/orders.resolver';
 import { paymentMutationResolver, paymentQueryResolver } from '@/app/api/graphql/resolvers/payment.resolver';
-import { locationMutationResolver, locationQueryResolver } from '@/app/api/graphql/resolvers/location.resolver';
+import { locationMutationResolvers, locationQueryResolvers } from '@/app/api/graphql/resolvers/location.resolver';
 
 const resolvers = {
   Query: {
@@ -10,7 +10,7 @@ const resolvers = {
     ...productQueryResolver,
     ...ordersQueryResolver,
     ...paymentQueryResolver,
-    ...locationQueryResolver,
+    ...locationQueryResolvers,
   },
 
   Mutation: {
@@ -18,7 +18,7 @@ const resolvers = {
     ...productMutationResolver,
     ...ordersMutationResolver,
     ...paymentMutationResolver,
-    ...locationMutationResolver,
+    ...locationMutationResolvers,
   },
 };
 

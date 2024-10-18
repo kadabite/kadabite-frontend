@@ -26,8 +26,8 @@ interface ICountry extends Document {
 // Define schemas with type annotations
 const locationSchema: Schema<ILocation> = new Schema({
   name: { type: String, required: true, unique: true },
-  longitude: { type: String, required: true },
-  latitude: { type: String, required: true },
+  longitude: { type: String },
+  latitude: { type: String },
 });
 
 const lgaSchema = new Schema<ILga>({

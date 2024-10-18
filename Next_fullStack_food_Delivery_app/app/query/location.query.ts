@@ -51,3 +51,49 @@ export const GET_COUNTRIES = gql`
     }
   }
 `;
+
+export const ADD_LOCATION = gql`
+  mutation addUserLocation($address: String!, $state: String, $country: String, $lga: String) {
+    addUserLocation(address: $address, state: $state, country: $country, lga: $lga) {
+      message
+      statusCode
+      ok
+    }
+  }
+`;
+
+export const DELETE_LOCATION = gql`
+  mutation deleteUserLocation($locationId: ID!) {
+    deleteUserLocation(locationId: $locationId) {
+      message
+      statusCode
+      ok
+    }
+  }
+`;
+
+export const UPDATE_LOCATION = gql`
+  mutation updateUserLocation($locationId: ID!, $address: String!, $state: String!, $country: String!, $lga: String!, $longitude: String!, $latitude: String!) {
+    updateUserLocation(locationId: $locationId, address: $address, state: $state, country: $country, lga: $lga, longitude: $longitude, latitude: $latitude) {
+      message
+      statusCode
+      ok
+    }
+  }
+`;
+
+export const GET_USER_LOCATIONS = gql`
+  query getUserLocations {
+    getUserLocations {
+      locationsData {
+        id
+        name
+        longitude
+        latitude
+      }
+      message
+      ok
+      statusCode
+    }
+  }
+`;

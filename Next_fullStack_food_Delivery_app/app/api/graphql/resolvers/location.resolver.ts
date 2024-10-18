@@ -93,6 +93,27 @@ export const locationQueryResolvers = {
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
+
+  getUserLocations: async (_parent: any, _: any, { req }: any) => {
+    try {
+      const response = await authRequest(req.headers.get('authorization'));
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      const { user } = await response.json();
+      if (!user) {
+        return { message: 'User not found!', statusCode: 404, ok: false };
+      }
+      const userInfo = await User.findById(user._id).populate('locations');
+      if (!userInfo) {
+        return { message: 'User not found!', statusCode: 404, ok: false };
+      }
+      return { locationsData: userInfo.locations, statusCode: 200, ok: true };
+    } catch (error) {
+      myLogger.error('Error fetching user locations: ' + (error as Error).message);
+      return { message: 'An error occurred!', statusCode: 500, ok: false };
+    }
+  },
 };
 
 export const locationMutationResolvers = {
@@ -153,27 +174,6 @@ export const locationMutationResolvers = {
     }
   },
 
-  getUserLocation: async (_parent: any, _: any, { req }: any) => {
-    try {
-      const response = await authRequest(req.headers.get('authorization'));
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      const { user } = await response.json();
-      if (!user) {
-        return { message: 'User not found!', statusCode: 404, ok: false };
-      }
-      const userInfo = await User.findById(user._id).populate('locations');
-      if (!userInfo) {
-        return { message: 'User not found!', statusCode: 404, ok: false };
-      }
-      return { locationsData: userInfo.locations, statusCode: 200, ok: true };
-    } catch (error) {
-      myLogger.error('Error fetching user locations: ' + (error as Error).message);
-      return { message: 'An error occurred!', statusCode: 500, ok: false };
-    }
-  },
-
   addUserLocation: async (_parent: any, { address, lga, state, country, longitude, latitude }: MutationAddUserLocationArgs, { req }: any) => {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -203,21 +203,9 @@ export const locationMutationResolvers = {
         throw new LgaNotFoundError();
       }
 
-      // Ensure that address does not have lga, state and country in it
-      let cleanedAddress = address;
-      if (lga) {
-        cleanedAddress = cleanedAddress.replace(new RegExp(`\\b${lga}\\b`, 'gi'), '').trim();
-      }
-      if (state) {
-        cleanedAddress = cleanedAddress.replace(new RegExp(`\\b${state}\\b`, 'gi'), '').trim();
-      }
-      if (country) {
-        cleanedAddress = cleanedAddress.replace(new RegExp(`\\b${country}\\b`, 'gi'), '').trim();
-      }
-
       // Create location
       const location = new Location({
-        name: `${cleanedAddress}, ${lga}, ${state}, ${country}`,
+        name: `${address}, ${lga}, ${state}, ${country}`,
         longitude,
         latitude
       });

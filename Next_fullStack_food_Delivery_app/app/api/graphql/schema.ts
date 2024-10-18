@@ -134,6 +134,7 @@ type Mutation {
   deleteOrderItemsNow(ids: [ID]!): Message!
   deleteProduct(id: ID!): Message!
   deleteUser: Message!
+  deleteUserLocation(locationId: ID!): Message!
   forgotPassword(email: String!): Message!
   login(email: String!, password: String!): Message!
   logout: Message!
