@@ -41,6 +41,9 @@ importers:
       '@tailwindcss/forms':
         specifier: ^0.5.7
         version: 0.5.9(tailwindcss@3.4.4(ts-node@10.9.2(@types/node@20.14.8)(typescript@5.5.2)))
+      '@types/express-rate-limit':
+        specifier: ^6.0.0
+        version: 6.0.0(express@4.21.0)
       '@types/js-cookie':
         specifier: ^3.0.6
         version: 3.0.6
@@ -80,6 +83,9 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
+      express-rate-limit:
+        specifier: ^7.4.1
+        version: 7.4.1(express@4.21.0)
       fs:
         specifier: 0.0.1-security
         version: 0.0.1-security
@@ -125,6 +131,9 @@ importers:
       postcss:
         specifier: 8.4.38
         version: 8.4.38
+      rate-limiter-flexible:
+        specifier: ^5.0.4
+        version: 5.0.4
       react:
         specifier: 19.0.0-rc-f38c22b244-20240704
         version: 19.0.0-rc-f38c22b244-20240704
@@ -1473,6 +1482,10 @@ packages:
   '@types/cookie@0.6.0':
     resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
 
+  '@types/express-rate-limit@6.0.0':
+    resolution: {integrity: sha512-nZxo3nwU20EkTl/f2eGdndQkDIJYwkXIX4S3Vrp2jMdSdFJ6AWtIda8gOz0wiMuOFoeH/UUlCAiacz3x3eWNFA==}
+    deprecated: This is a stub types definition. express-rate-limit provides its own type definitions, so you do not need this installed.
+
   '@types/express-serve-static-core@4.19.6':
     resolution: {integrity: sha512-N4LZ2xG7DatVqhCZzOGb1Yi5lMbXSZcmdLDe9EzSndPV2HpWYWzRbaerl2n27irrm94EPpprqa8KpskPT085+A==}
 
@@ -2360,6 +2373,12 @@ packages:
 
   eventemitter2@6.4.9:
     resolution: {integrity: sha512-JEPTiaOt9f04oa6NOkc4aH+nVp5I3wEjpHbIPqfgCdD5v5bUzy7xQqwcVO2aDQgOWhI28da57HksMrzK9HlRxg==}
+
+  express-rate-limit@7.4.1:
+    resolution: {integrity: sha512-KS3efpnpIDVIXopMc65EMbWbUht7qvTCdtCR2dD/IZmi9MIkopYESwyRqLgv8Pfu589+KqDqOdzJWW7AHoACeg==}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      express: 4 || 5 || ^5.0.0-beta.1
 
   express@4.21.0:
     resolution: {integrity: sha512-VqcNGcj/Id5ZT1LZ/cfihi3ttTn+NJmkli2eZADigjq29qTlWi/hAQ43t/VLPq8+UX06FCEx3ByOYet6ZFblng==}
@@ -3499,6 +3518,9 @@ packages:
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
+
+  rate-limiter-flexible@5.0.4:
+    resolution: {integrity: sha512-ftYHrIfSqWYDIJZ4yPTrgOduByAp+86gUS9iklv0JoXVM8eQCAjTnydCj1hAT4MmhmkSw86NaFEJ28m/LC1pKA==}
 
   raw-body@2.4.1:
     resolution: {integrity: sha512-9WmIKF6mkvA0SLmA2Knm9+qj89e+j1zqgyn8aXGd7+nAduPoqgI9lO57SAZNn/Byzo5P7JhXTyg9PzaJbH73bA==}
@@ -5886,6 +5908,12 @@ snapshots:
 
   '@types/cookie@0.6.0': {}
 
+  '@types/express-rate-limit@6.0.0(express@4.21.0)':
+    dependencies:
+      express-rate-limit: 7.4.1(express@4.21.0)
+    transitivePeerDependencies:
+      - express
+
   '@types/express-serve-static-core@4.19.6':
     dependencies:
       '@types/node': 20.14.8
@@ -6830,6 +6858,10 @@ snapshots:
   eventemitter2@5.0.1: {}
 
   eventemitter2@6.4.9: {}
+
+  express-rate-limit@7.4.1(express@4.21.0):
+    dependencies:
+      express: 4.21.0
 
   express@4.21.0:
     dependencies:
@@ -8063,6 +8095,8 @@ snapshots:
   queue-microtask@1.2.3: {}
 
   range-parser@1.2.1: {}
+
+  rate-limiter-flexible@5.0.4: {}
 
   raw-body@2.4.1:
     dependencies:

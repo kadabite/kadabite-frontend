@@ -8,8 +8,14 @@ import { initialize } from '@/lib/initialize';
 
 dotenv.config();
 
+// Trigger the initialization process immediately at the module level
+// to ensure it happens during the build or start-up phase.
+const initPromise = initialize();
+
+let handlerPromise: Promise<(req: NextRequest) => Promise<Response>> | null = null;
+
 async function startServer() {
-  await initialize(); // Ensure initialization is complete
+  await initPromise; // Ensure initialization is complete before starting the server
 
   const apolloServer = new ApolloServer<{}>({
     typeDefs,
@@ -26,14 +32,19 @@ async function startServer() {
   return handler;
 }
 
-const handlerPromise = startServer();
+export async function getHandler() {
+  if (!handlerPromise) {
+    handlerPromise = startServer();
+  }
+  return handlerPromise;
+}
 
 export async function POST(request: NextRequest) {
-  const handler = await handlerPromise;
+  const handler = await getHandler();
   return handler(request);
 }
 
 export async function GET(request: NextRequest) {
-  const handler = await handlerPromise;
+  const handler = await getHandler();
   return handler(request);
 }

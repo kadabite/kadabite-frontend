@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { createClient, RedisClientType } from 'redis';
 
 let isConnected = false;
-let redisClient: RedisClientType | null;
+let redisClient: RedisClientType | null = null;
 let idleTimeout: NodeJS.Timeout | null = null;
 
 // Function to initialize the database connection
@@ -10,7 +10,7 @@ export async function initializeDbConnection() {
   const uri = process.env.MONGODB_URI || '';
 
   if (!uri) {
-    throw new Error('Please define the NEXT_PUBLIC_MONGODB_URI environment variable inside .env.local');
+    throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
   }
 
   if (isConnected) {
@@ -33,13 +33,18 @@ export async function initializeDbConnection() {
 export async function initializeRedisClient() {
   if (!redisClient) {
     redisClient = createClient({
-      url: 'redis://localhost:6379'
+      url: process.env.REDIS_URL,
     });
 
     redisClient.on('error', (err) => console.error('Redis Client Error', err));
 
-    await redisClient.connect();
-    console.log('Redis client successfully connected');
+    try {
+      await redisClient.connect();
+      console.log('Redis client successfully connected');
+    } catch (error) {
+      console.error('Redis connection error:', error);
+      redisClient = null; // Reset if connection fails
+    }
   }
 }
 
@@ -49,8 +54,8 @@ export async function initialize() {
   await initializeDbConnection();
 }
 
-// Function to gracefully shut down the application
-async function shutdown() {
+// Function to gracefully shut down the database and Redis connections
+export async function shutdown() {
   console.log('Shutting down gracefully...');
   if (idleTimeout) {
     clearTimeout(idleTimeout);
@@ -58,30 +63,21 @@ async function shutdown() {
   await mongoose.disconnect();
   if (redisClient) {
     await redisClient.quit();
+    redisClient = null;
   }
+  isConnected = false;
   console.log('MongoDB and Redis disconnected');
-  process.exit(0);
 }
 
-// Function to handle Idle connections
-function handleIdleConnections() {
+// Function to handle idle connections
+export function handleIdleConnections() {
   if (idleTimeout) {
     clearTimeout(idleTimeout);
   }
   idleTimeout = setTimeout(async () => {
     console.log('Idle timeout reached. Closing connections...');
-    await mongoose.disconnect();
-    if (redisClient) {
-      await redisClient.quit();
-    }
-    isConnected = false;
-    redisClient = null;
-    console.log('Idle connections closed');
+    await shutdown();
   }, 120000);
 }
-// Handle process signals for graceful shutdown
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
 
-process.on('beforeExit', handleIdleConnections);
 export { redisClient };
