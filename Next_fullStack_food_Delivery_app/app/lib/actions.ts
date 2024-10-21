@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { myRequest } from '@/app/api/graphql/utils';
-import { FORGOT_PASSWORD, LOGIN, RESET_PASSWORD, CREATE_USER } from '@/app/query/user.query';
+import { FORGOT_PASSWORD, LOGIN, RESET_PASSWORD, CREATE_USER, UPDATE_USER, REGISTER_USER } from '@/app/query/user.query';
 import { Message } from '@/lib/graphql-types';
 // import { signIn } from '@/auth';
 // import { AuthError } from 'next-auth';
@@ -156,6 +156,30 @@ export async function sendPasswordResetEmail(
 
 export async function signUpUser(
   prevState: string | undefined,
+  formData: FormData
+ ) {
+  let data;
+  try {
+    const variables = {
+      email: formData.get('email'),
+      phoneNumber: formData.get('phoneNumber'),
+      passwordHash: formData.get('password')
+    };
+    const response = await myRequest(CREATE_USER, variables);
+      data = response.createUser;
+      return data;
+
+  } catch (error) {
+    console.log(error);
+    if (data) data.message = 'An error occurred during signup.';
+    else data = { message: 'An error occurred during signup.' };
+    return data;
+  }
+ };
+
+
+export async function registerUser(
+  prevState: string | undefined,
   formData: FormData,
 ) {
   let data;
@@ -164,7 +188,6 @@ export async function signUpUser(
       firstName: formData.get('firstName'),
       lastName: formData.get('lastName'),
       email: formData.get('email'),
-      passwordHash: formData.get('password'),
       phoneNumber: formData.get('phoneNumber'),
       userType: formData.get('userType'),
       lga: formData.get('lga'),
@@ -176,7 +199,7 @@ export async function signUpUser(
       country: formData.get('country'),
       address: formData.get('address')
     };
-    const response = await myRequest(CREATE_USER, variables);
+    const response = await myRequest(REGISTER_USER, variables);
     data = response.createUser;
     return data;
 
@@ -197,7 +220,8 @@ export async function authenticate(
   try {
     const variables = {
       email: formData.get('email'),
-      password: formData.get('password'),
+      phoneNumber: formData.get('phoneNumber'),
+      passwordHash: formData.get('password'),
     };
 
     const response = await myRequest(LOGIN, variables);

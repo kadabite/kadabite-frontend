@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
-import { User } from '@/models/user';
+import { User, IUser } from '@/models/user';
 import { Product } from '@/models/product';
 import { State, Country, Lga, Location } from '@/models/location';
 import Category from '@/models/category';
@@ -12,7 +12,9 @@ import _ from 'lodash';
 import { NewArgs } from '@/app/lib/definitions';
 import mongoose, { ObjectId } from 'mongoose';
 import jwt  from 'jsonwebtoken';
-import { MutationCreateUserArgs, MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
+import { MutationCreateUserArgs, MutationRegisterUserArgs, MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
+import { UserAlreadyExistsError, CountryNotFoundError, StateNotFoundError, LgaNotFoundError, UserNotFoundError } from '@/app/lib/errors';
+
 
 export const userQueryResolvers = {
   category: async (_parent: any, { id }: any, { req }: any) => {
@@ -265,14 +267,77 @@ export const userMutationResolvers = {
     return { 'message': 'Many categories have been created successfully!', ok: true, statusCode: 201 };
   },
 
-  createUser: async (_parent: any, args: MutationCreateUserArgs) => {
+  createUser: async (_parent: any, args: MutationCreateUserArgs, { req }: any) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
       const {
-        username,
         email,
         passwordHash,
+        phoneNumber,
+      } = args;
+
+      // Check if email or phoneNumber is provided
+      if (!email && !phoneNumber) {
+        throw new Error('Email or phoneNumber must be provided!');
+      }
+
+      // Check if email or phoneNumber is already taken
+      const existingUser = await User.findOne({ $or: [{ email }, { phoneNumber }] }).session(session);
+      if (existingUser) {
+        throw new UserAlreadyExistsError();
+      }
+
+      // Determine username
+      let username;
+      if (email) {
+        username = _.trim(email);
+      } else if (phoneNumber) {
+        username = _.trim(phoneNumber);
+      }
+
+      // Create new user
+      const newUser = new User({
+        username: _.trim(username),
+        email: email ? _.trim(email) : null,
+        passwordHash: _.trim(passwordHash),
+        phoneNumber: phoneNumber ? _.trim(phoneNumber) : null,
+        isRegistered: false, // Set isRegistered to false
+      });
+      const userData = await newUser.save({ session });
+      await session.commitTransaction();
+      return { userData, statusCode: 201, ok: true, message: 'User has been registered successfully!' };
+    } catch (error) {
+      await session.abortTransaction();
+      myLogger.error('Error creating user: ' + (error as Error).message);
+
+      if (error instanceof UserAlreadyExistsError) {
+        return { message: error.message, statusCode: 400, ok: false };
+      }
+
+      return { message: 'An error occurred while creating user', statusCode: 500, ok: false };
+    } finally {
+      session.endSession();
+    }
+  },
+
+  registerUser: async (_parent: any, args: MutationRegisterUserArgs, { req }: any) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      // Authenticate user
+      const response = await authRequest(req.headers.get('authorization'));
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      const { user } = await response.json();
+      if (!user) {
+        throw new UserNotFoundError();
+      }
+
+      const {
+        username,
+        email,
         phoneNumber,
         userType,
         firstName,
@@ -286,71 +351,78 @@ export const userMutationResolvers = {
         address
       } = args;
 
-      // check if username, email, or phonenumber has been taking and return error message
-      const existingUser = await User.findOne({ $or: [{ username }, { email }, { phoneNumber }] });
-      if (existingUser) {
-        await session.abortTransaction();
-        session.endSession();
-        return { message: 'User already exists!', statusCode: 400, ok: false };
-      }
-      // find location
-      let locationId;
-      if (lga && state && country) {
-        // Find country
-        let countryDoc = await Country.findOne({ name: country });
-        if (!countryDoc) {
-          await session.abortTransaction();
-          session.endSession();
-          return { message: 'This country is not available here!', statusCode: 400, ok: false };
-        }
-
-        // Find state
-        let stateDoc = await State.findOne({ name: state, country: countryDoc._id });
-        if (!stateDoc) {
-          await session.abortTransaction();
-          session.endSession();
-          return { message: 'This state is not available here!', statusCode: 400, ok: false };
-        }
-
-        // Find lga
-        let lgaDoc = await Lga.findOne({ name: lga, state: stateDoc._id });
-        if (!lgaDoc) {
-          await session.abortTransaction();
-          session.endSession();
-          return { message: 'This country is not available here!', statusCode: 400, ok: false };
-        }
-
-        // Create location
-        const location = new Location({
-          name: `${address}, ${lga}, ${state}, ${country}`,
-          longitude,
-          latitude
-        });
-        const savedLocation = await location.save({ session });
-        locationId = savedLocation._id;
+      // Check if user exists
+      const existingUser = await User.findById(user.id).session(session);
+      if (!existingUser) {
+        throw new UserNotFoundError();
       }
 
-      // Create new user
-      const newUser = new User({
-        firstName: _.trim(firstName),
-        lastName: _.trim(lastName),
-        username: _.trim(username),
-        email: _.trim(email),
-        passwordHash: _.trim(passwordHash),
-        phoneNumber: _.trim(phoneNumber),
-        userType: userType ? _.trim(userType) : undefined,
-        vehicleNumber: vehicleNumber ? _.trim(vehicleNumber) : undefined,
-        locations: locationId ? [locationId] : []
+      // Check if user is already registered
+      if (existingUser.isRegistered) {
+        return { message: 'User is already registered!', statusCode: 400, ok: false };
+      }
+
+      // Ensure address, lga, state, and country are provided
+      if (!address || !lga || !state || !country) {
+        throw new Error('Address, LGA, state, and country are mandatory.');
+      }
+
+      // Find location
+      let locationId: mongoose.Types.ObjectId | undefined;
+      // Find country
+      let countryDoc = await Country.findOne({ name: country }).session(session);
+      if (!countryDoc) {
+        throw new CountryNotFoundError();
+      }
+
+      // Find state
+      let stateDoc = await State.findOne({ name: state, country: countryDoc._id }).session(session);
+      if (!stateDoc) {
+        throw new StateNotFoundError();
+      }
+
+      // Find lga
+      let lgaDoc = await Lga.findOne({ name: lga, state: stateDoc._id }).session(session);
+      if (!lgaDoc) {
+        throw new LgaNotFoundError();
+      }
+
+      // Create location
+      const location = new Location({
+        name: `${address}, ${lga}, ${state}, ${country}`,
+        longitude,
+        latitude
       });
-      const userData = await newUser.save({ session });
+      const savedLocation = await location.save({ session });
+      locationId = savedLocation._id as mongoose.Types.ObjectId;
+
+      // Update user
+      existingUser.firstName = _.trim(firstName);
+      existingUser.lastName = _.trim(lastName);
+      existingUser.username = _.trim(username);
+      existingUser.email = existingUser.email ? existingUser.email: _.trim(email);
+      existingUser.phoneNumber = existingUser.phoneNumber? existingUser.phoneNumber:_.trim(phoneNumber);
+      if (userType && ["seller", "buyer", "dispatcher"].includes(userType)) {
+        existingUser.userType = userType as IUser["userType"];
+      }
+      existingUser.vehicleNumber = vehicleNumber ? _.trim(vehicleNumber) : existingUser.vehicleNumber;
+      existingUser.locations = locationId ? [locationId] : [];
+      existingUser.isRegistered = true; // Set isRegistered to true
+
+      const updatedUser = await existingUser.save({ session });
       await session.commitTransaction();
-      session.endSession();
-      return { userData, statusCode: 201, ok: true, message: 'User have been registered successfully!' };
+      return { userData: updatedUser, statusCode: 200, ok: true, message: 'User has been registered successfully!' };
     } catch (error) {
       await session.abortTransaction();
+      myLogger.error('Error updating user: ' + (error as Error).message);
+
+      if (error instanceof UserNotFoundError || error instanceof CountryNotFoundError || error instanceof StateNotFoundError || error instanceof LgaNotFoundError) {
+        return { message: error.message, statusCode: 400, ok: false };
+      }
+
+      return { message: 'An error occurred while updating user', statusCode: 500, ok: false };
+    } finally {
       session.endSession();
-      myLogger.error('Error creating user: ' + (error as Error).message)
-      return { message: 'An error occurred while creating user', statusCode: 500, ok: false };
     }
   },
 

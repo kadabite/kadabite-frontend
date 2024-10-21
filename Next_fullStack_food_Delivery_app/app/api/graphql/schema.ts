@@ -109,24 +109,9 @@ type Mutation {
     currency: String!,
     categoryId: ID!): Message!
   createUser(
-    firstName: String!
-    lastName: String!
-    username: String!
-    email: String!
+    email: String
     passwordHash: String!
-    phoneNumber: String!
-    userType: String!
-    buyerStatus: String
-    sellerStatus: String
-    dispatcherStatus: String
-    lga: String
-    state: String
-    country: String
-    address: String
-    vehicleNumber: String
-    businessDescription: String
-    longitude: String
-    latitude: String
+    phoneNumber: String
   ): Message!
   deleteAnOrderItem(orderId: ID!, orderItemId: ID!): Message!
   deleteCategory(id: ID!): Message!
@@ -138,6 +123,21 @@ type Mutation {
   forgotPassword(email: String!): Message!
   login(email: String!, password: String!): Message!
   logout: Message!
+  registerUser(
+    firstName: String!
+    lastName: String!
+    username: String!
+    userType: String!
+    email: String!
+    phoneNumber: String!
+    longitude: String
+    latitude: String
+    lga: String!
+    state: String!
+    country: String!
+    address: String!
+    vehicleNumber: String
+  ): Message!
   updateOrder(orderId: ID!, status: String!): Message!
   updateOrderItems(orderId: ID!, orderItems: [OrderItem2]!): Message!
   updatePassword(email: String!, token: String!, password: String!): Message! 
@@ -153,10 +153,13 @@ type Mutation {
   updateUser(
     firstName: String
     lastName: String
-    username: String
-    email: String
-    phoneNumber: String
-    userType: String
+    longitude: String
+    latitude: String
+    userName: String
+    lga: String
+    state: String
+    country: String
+    address: String
     buyerStatus: String
     sellerStatus: String
     dispatcherStatus: String

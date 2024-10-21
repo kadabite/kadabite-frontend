@@ -2,14 +2,28 @@ import { gql } from '@apollo/client';
 
 export const CREATE_USER = gql`
   mutation createUser(
-    $firstName: String!
-    $lastName: String!
-    $email: String!
+    $email: String
+    $phoneNumber: String
     $passwordHash: String!
-    $phoneNumber: String!
-    $userType: String!
+  ) {
+    createUser(
+      email: $email
+      phoneNumber: $phoneNumber
+      passwordHash: $passwordHash
+    ) {
+      statusCode
+      ok
+      message
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  mutation updateUser(
+    $firstName: String
+    $lastName: String
     $vehicleNumber: String
-    $username: String!
+    $username: String
     $longitude: String
     $latitude: String
     $lga: String
@@ -17,13 +31,47 @@ export const CREATE_USER = gql`
     $country: String
     $address: String
   ) {
-    createUser(
+    updateUser(
       firstName: $firstName
       lastName: $lastName
-      email: $email
-      passwordHash: $passwordHash
-      phoneNumber: $phoneNumber
+      vehicleNumber: $vehicleNumber
+      username: $username
+      longitude: $longitude
+      latitude: $latitude
+      lga: $lga
+      state: $state
+      country: $country
+      address: $address
+    ) {
+      statusCode
+      ok
+      message
+    }
+  }
+`;
+
+export const REGISTER_USER = gql`
+  mutation registerUser(
+    $firstName: String!
+    $lastName: String!
+    $email: String!
+    $phoneNumber: String!
+    $userType: String!
+    $vehicleNumber: String
+    $username: String!
+    $longitude: String
+    $latitude: String
+    $lga: String!
+    $state: String!
+    $country: String!
+    $address: String!
+  ) {
+    registerUser(
+      firstName: $firstName
+      lastName: $lastName
       userType: $userType
+      email: $email
+      phoneNumber: $phoneNumber
       vehicleNumber: $vehicleNumber
       username: $username
       longitude: $longitude

@@ -130,24 +130,9 @@ export type MutationCreateProductArgs = {
 
 
 export type MutationCreateUserArgs = {
-  businessDescription?: InputMaybe<Scalars['String']['input']>;
-  buyerStatus?: InputMaybe<Scalars['String']['input']>;
-  dispatcherStatus?: InputMaybe<Scalars['String']['input']>;
-  email: Scalars['String']['input'];
-  firstName: Scalars['String']['input'];
-  lastName: Scalars['String']['input'];
+  email?: InputMaybe<Scalars['String']['input']>;
   passwordHash: Scalars['String']['input'];
-  phoneNumber: Scalars['String']['input'];
-  sellerStatus?: InputMaybe<Scalars['String']['input']>;
-  userType: InputMaybe<Scalars['String']['input']>;
-  username: Scalars['String']['input'];
-  vehicleNumber?: InputMaybe<Scalars['String']['input']>;
-  latitude?: InputMaybe<Scalars['String']['input']>;
-  longitude?: InputMaybe<Scalars['String']['input']>;
-  lga?: InputMaybe<Scalars['String']['input']>;
-  state?: InputMaybe<Scalars['String']['input']>;
-  country?: InputMaybe<Scalars['String']['input']>;
-  address?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -228,16 +213,35 @@ export type MutationUpdateProductArgs = {
 
 
 export type MutationUpdateUserArgs = {
-  buyerStatus?: InputMaybe<Scalars['String']['input']>;
-  dispatcherStatus?: InputMaybe<Scalars['String']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
-  phoneNumber?: InputMaybe<Scalars['String']['input']>;
+  userName?: InputMaybe<Scalars['String']['input']>;
   sellerStatus?: InputMaybe<Scalars['String']['input']>;
-  userType?: InputMaybe<Scalars['String']['input']>;
-  username?: InputMaybe<Scalars['String']['input']>;
+  buyerStatus?: InputMaybe<Scalars['String']['input']>;
+  dispatcherStatus?: InputMaybe<Scalars['String']['input']>;
   vehicleNumber?: InputMaybe<Scalars['String']['input']>;
+  latitude?: InputMaybe<Scalars['String']['input']>;
+  longitude?: InputMaybe<Scalars['String']['input']>;
+  lga?: InputMaybe<Scalars['String']['input']>;
+  state?: InputMaybe<Scalars['String']['input']>;
+  country?: InputMaybe<Scalars['String']['input']>;
+  address?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type MutationRegisterUserArgs = {
+  userType: Scalars['String']['input'];
+  username: Scalars['String']['input'];
+  vehicleNumber?: InputMaybe<Scalars['String']['input']>;
+  latitude?: InputMaybe<Scalars['String']['input']>;
+  longitude?: InputMaybe<Scalars['String']['input']>;
+  lga: Scalars['String']['input'];
+  state: Scalars['String']['input'];
+  country: Scalars['String']['input'];
+  address: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  phoneNumber: Scalars['String']['input']
 };
 
 export type MutationUpdateUserLocationArgs = {

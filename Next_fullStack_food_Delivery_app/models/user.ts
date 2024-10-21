@@ -8,14 +8,15 @@ interface IUser extends Document {
   lastName?: string;
   username: string;
   passwordHash: string;
-  email: string;
-  phoneNumber: string;
+  email?: string;
+  phoneNumber?: string;
   resetPasswordToken?: string;
   createdAt: Date;
   updatedAt: Date;
   vehicleNumber?: string;
   isLoggedIn: boolean;
   isDeleted: boolean;
+  isRegistered: boolean;
   role: string;
   userType: 'seller' | 'buyer' | 'dispatcher';
   sellerStatus: 'available' | 'busy' | 'null';
@@ -37,14 +38,15 @@ const userSchema: Schema<IUser> = new Schema({
   lastName: { type: String, maxlength: 50 },
   username: { type: String, required: true, unique: true, collation: { locale: 'en', strength: 2 }, maxlength: 50 },
   passwordHash: { type: String },
-  email: { type: String, required: true, unique: true, collation: { locale: 'en', strength: 2 }, maxlength: 100 },
-  phoneNumber: { type: String, required: true, unique: true, collation: { locale: 'en', strength: 2 }, maxlength: 50 },
+  email: { type: String, unique: true, collation: { locale: 'en', strength: 2 }, maxlength: 100 },
+  phoneNumber: { type: String, unique: true, collation: { locale: 'en', strength: 2 }, maxlength: 50 },
   resetPasswordToken: { type: String },
   createdAt: { type: Date, default: new Date() },
   updatedAt: { type: Date, default: new Date() },
   vehicleNumber: { type: String },
   isLoggedIn: { type: Boolean, default: false },
   isDeleted: { type: Boolean, default: false },
+  isRegistered: {type:Boolean, default: false},
   role: { type: String, default: 'user' },
   userType: { type: String, enum: ['seller', 'buyer', 'dispatcher'], default: 'buyer' },
   sellerStatus: { type: String, enum: ['available', 'busy', 'null'], default: 'null' },
