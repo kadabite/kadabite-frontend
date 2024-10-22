@@ -13,7 +13,7 @@ import { NewArgs } from '@/app/lib/definitions';
 import mongoose, { ObjectId } from 'mongoose';
 import jwt  from 'jsonwebtoken';
 import { MutationCreateUserArgs, MutationRegisterUserArgs, MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
-import { UserAlreadyExistsError, CountryNotFoundError, StateNotFoundError, LgaNotFoundError, UserNotFoundError } from '@/app/lib/errors';
+import { UserAlreadyExistsError, CountryNotFoundError, StateNotFoundError, LgaNotFoundError, UserNotFoundError, InvalidCredentialsError } from '@/app/lib/errors';
 
 
 export const userQueryResolvers = {
@@ -273,17 +273,26 @@ export const userMutationResolvers = {
     try {
       const {
         email,
-        passwordHash,
+        password,
         phoneNumber,
       } = args;
 
       // Check if email or phoneNumber is provided
       if (!email && !phoneNumber) {
-        throw new Error('Email or phoneNumber must be provided!');
+        throw new InvalidCredentialsError();
       }
 
       // Check if email or phoneNumber is already taken
-      const existingUser = await User.findOne({ $or: [{ email }, { phoneNumber }] }).session(session);
+      let existingUser;
+      if (email) {
+        existingUser = await User.findOne({ email }).session(session);
+      } else if (phoneNumber) {
+        existingUser = await User.findOne({ phoneNumber }).session(session);
+      } else {
+        existingUser = null;
+        throw new InvalidCredentialsError();
+      }
+
       if (existingUser) {
         throw new UserAlreadyExistsError();
       }
@@ -299,9 +308,9 @@ export const userMutationResolvers = {
       // Create new user
       const newUser = new User({
         username: _.trim(username),
-        email: email ? _.trim(email) : null,
-        passwordHash: _.trim(passwordHash),
-        phoneNumber: phoneNumber ? _.trim(phoneNumber) : null,
+        email: email ? _.trim(email) : '',
+        passwordHash: _.trim(password),
+        phoneNumber: phoneNumber ? _.trim(phoneNumber) : '',
         isRegistered: false, // Set isRegistered to false
       });
       const userData = await newUser.save({ session });
@@ -311,7 +320,7 @@ export const userMutationResolvers = {
       await session.abortTransaction();
       myLogger.error('Error creating user: ' + (error as Error).message);
 
-      if (error instanceof UserAlreadyExistsError) {
+      if (error instanceof UserAlreadyExistsError || error instanceof InvalidCredentialsError) {
         return { message: error.message, statusCode: 400, ok: false };
       }
 
@@ -322,10 +331,12 @@ export const userMutationResolvers = {
   },
 
   registerUser: async (_parent: any, args: MutationRegisterUserArgs, { req }: any) => {
+
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
       // Authenticate user
+
       const response = await authRequest(req.headers.get('authorization'));
       if (!response.ok) {
         throw new Error(response.statusText);

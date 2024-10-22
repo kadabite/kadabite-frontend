@@ -4,12 +4,12 @@ export const CREATE_USER = gql`
   mutation createUser(
     $email: String
     $phoneNumber: String
-    $passwordHash: String!
+    $password: String!
   ) {
     createUser(
       email: $email
       phoneNumber: $phoneNumber
-      passwordHash: $passwordHash
+      password: $password
     ) {
       statusCode
       ok
@@ -165,6 +165,22 @@ export const GET_DATA = gql`
         message
         ok
         statusCode
+      }
+    }
+  `;
+
+export const GET_USERS_DATA = gql`
+    query getUser {
+      user {
+        statusCode
+        ok
+        userData {
+          firstName
+          lastName
+          email
+          phoneNumber
+          username
+        }
       }
     }
   `;

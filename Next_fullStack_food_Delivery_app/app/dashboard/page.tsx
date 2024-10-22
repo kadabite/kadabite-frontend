@@ -25,14 +25,6 @@ const Dashboard = () => {
   const [updateLocation, { loading:upLoading, error: upError, data: upData }] = useMutation(UPDATE_LOCATION, { variables: { locationId: '1234', address: 'Nigeria', state: 'Lagos', country: 'Nigeria', lga: 'Ikeja', longitude: '4.5433', latitude: '4.5435' } });
   const { loading:myLoading, error: myError, data: myData } = useQuery(GET_USER_LOCATIONS);
 
-  if (delData) {
-    console.log(myData && myData.getUserLocations?.locationsData[0].id);
-    console.log(delData);
-  }
-  if (upError) {
-    console.log(delError);
-  }
-
   if (loading) {
     return (<Loading />);
   }

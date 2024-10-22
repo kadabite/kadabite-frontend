@@ -163,7 +163,7 @@ export async function signUpUser(
     const variables = {
       email: formData.get('email'),
       phoneNumber: formData.get('phoneNumber'),
-      passwordHash: formData.get('password')
+      password: formData.get('password')
     };
     const response = await myRequest(CREATE_USER, variables);
       data = response.createUser;
@@ -205,8 +205,8 @@ export async function registerUser(
 
   } catch (error) {
     console.log(error);
-    if (data) data.message = 'An error occurred during signup.';
-    else data = { message: 'An error occurred during signup.' };
+    if (data) data.message = 'An error occurred during registeration.';
+    else data = { message: 'An error occurred during registeration.' };
     return data;
   }
 }
@@ -221,14 +221,14 @@ export async function authenticate(
     const variables = {
       email: formData.get('email'),
       phoneNumber: formData.get('phoneNumber'),
-      passwordHash: formData.get('password'),
+      password: formData.get('password'),
     };
-
     const response = await myRequest(LOGIN, variables);
     data = response.login;
     return data;
 
   } catch (error) {
+
     if (data) data.message = 'An error occurred during authentication.';
     else data = { message: 'An error occurred during authentication.' };
     return data;

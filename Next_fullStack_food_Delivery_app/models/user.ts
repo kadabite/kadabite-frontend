@@ -9,7 +9,7 @@ interface IUser extends Document {
   username: string;
   passwordHash: string;
   email?: string;
-  phoneNumber?: string;
+  phoneNumber?: string | null;
   resetPasswordToken?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -38,8 +38,8 @@ const userSchema: Schema<IUser> = new Schema({
   lastName: { type: String, maxlength: 50 },
   username: { type: String, required: true, unique: true, collation: { locale: 'en', strength: 2 }, maxlength: 50 },
   passwordHash: { type: String },
-  email: { type: String, unique: true, collation: { locale: 'en', strength: 2 }, maxlength: 100 },
-  phoneNumber: { type: String, unique: true, collation: { locale: 'en', strength: 2 }, maxlength: 50 },
+  email: { type: String, collation: { locale: 'en', strength: 2 }, maxlength: 100 },
+  phoneNumber: { type: String, collation: { locale: 'en', strength: 2 }, maxlength: 50 },
   resetPasswordToken: { type: String },
   createdAt: { type: Date, default: new Date() },
   updatedAt: { type: Date, default: new Date() },
@@ -60,6 +60,9 @@ const userSchema: Schema<IUser> = new Schema({
   businessDescription: { type: String, maxlength: 300 },
   locations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }]
 });
+
+// Create a unique index for phoneNumber with sparse option
+// userSchema.index({ phoneNumber: 1 }, { unique: true, partialFilterExpression: { phoneNumber: { $exists: true, $ne: null } } });
 
 // Pre-save hook to hash the password
 userSchema.pre<IUser>('save', async function (next) {

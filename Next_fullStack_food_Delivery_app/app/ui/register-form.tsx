@@ -8,6 +8,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useRouter } from 'next/navigation';
 import { registerUser } from '@/app/lib/actions';
 import AddressForm from '@/app/ui/address-form';
+import { GET_USERS_DATA } from '@/app/query/user.query';
+import { useQuery } from '@apollo/client';
 
 export default function RegisterForm() {
   const [data, formAction, isPending] = useActionState(registerUser, undefined);
@@ -15,7 +17,20 @@ export default function RegisterForm() {
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedState, setSelectedState] = useState('');
   const [selectedLga, setSelectedLga] = useState('');
+  const {loading, error, data:userData } = useQuery(GET_USERS_DATA);
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+  };
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhoneNumber(e.target.value);
+  };
   const handleUserTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setUserType(e.target.value);
   };
@@ -38,10 +53,15 @@ export default function RegisterForm() {
   const router = useRouter();
 
   useEffect(() => {
+    if (userData) {
+      setEmail(userData.user.userData.email);
+      setUsername(userData.user.userData.username);
+      setPhoneNumber(userData.user.userData.phoneNumber);
+    }
     if (data && data.ok) {
       router.push('/login');
     }
-  }, [data, router]);
+  }, [data, router, userData]);
 
   return (
     <form className="space-y-3" action={formAction}>
@@ -90,6 +110,8 @@ export default function RegisterForm() {
                 id="username"
                 type="text"
                 name="username"
+                value={username}
+                onChange={handleUsernameChange}
                 placeholder="Enter your username"
                 required
               />
@@ -106,8 +128,9 @@ export default function RegisterForm() {
                 id="email"
                 type="email"
                 name="email"
+                value={email}
+                onChange={handleEmailChange}
                 placeholder="Enter your email address"
-                required
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -122,6 +145,8 @@ export default function RegisterForm() {
                 id="phoneNumber"
                 type="text"
                 name="phoneNumber"
+                value={phoneNumber}
+                onChange={handlePhoneNumberChange}
                 placeholder="Enter your phone number"
                 required
               />

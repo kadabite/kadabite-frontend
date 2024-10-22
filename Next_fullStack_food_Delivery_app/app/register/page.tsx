@@ -1,7 +1,10 @@
+'use client';
+
 import AcmeLogo from '@/app/ui/acme-logo';
 import RegisterForm from '@/app/ui/register-form';
+import withAuth from '@/app/hoc/withAuth';
 
-export default function RegisterPage() {
+function RegisterPage() {
   return (
     <main className="flex items-center justify-center">
       <div className="relative mx-auto flex w-full flex-col space-y-2.5 p-4">
@@ -15,3 +18,4 @@ export default function RegisterPage() {
     </main>
   );
 }
+export default withAuth(RegisterPage);

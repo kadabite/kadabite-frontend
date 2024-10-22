@@ -110,7 +110,7 @@ type Mutation {
     categoryId: ID!): Message!
   createUser(
     email: String
-    passwordHash: String!
+    password: String!
     phoneNumber: String
   ): Message!
   deleteAnOrderItem(orderId: ID!, orderItemId: ID!): Message!
@@ -285,14 +285,13 @@ type State {
 
 type User {
   id: ID!
-  firstName: String!
-  lastName: String!
-  username: String!
-  email: String!
+  firstName: String
+  lastName: String
+  username: String
+  email: String
   createdAt: String!
   updatedAt: String!
   phoneNumber: String
-  lgaId: String
   vehicleNumber: String
   isLoggedIn: Boolean
   isDeleted: Boolean
@@ -310,10 +309,11 @@ type User {
 }
 
 type Users {
-  firstName: String!
-  lastName: String!
-  username: String!
-  email: String!
+  firstName: String
+  lastName: String
+  username: String
+  phoneNumber: String
+  email: String
   role: String!
 }
 

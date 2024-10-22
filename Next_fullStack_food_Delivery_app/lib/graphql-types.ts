@@ -131,7 +131,7 @@ export type MutationCreateProductArgs = {
 
 export type MutationCreateUserArgs = {
   email?: InputMaybe<Scalars['String']['input']>;
-  passwordHash: Scalars['String']['input'];
+  password: Scalars['String']['input'];
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
 };
 
