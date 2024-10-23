@@ -39,10 +39,12 @@ export const deleteOrderItems = async (createdItem: mongoose.Types.ObjectId[] | 
 
 // Graphql request
 export async function myRequest(query: any, variables: Record<string, any>): Promise<any> {
+  const token = variables?.token;
   const response = await fetch(`${process.env.DELIVER_URL}/api/graphql`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': token && `Bearer ${variables.token}`,
     },
     body: JSON.stringify({
       query: query.loc?.source.body,

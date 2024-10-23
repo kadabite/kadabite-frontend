@@ -197,10 +197,11 @@ export async function registerUser(
       latitude: formData.get('latitude'),
       state: formData.get('state'),
       country: formData.get('country'),
-      address: formData.get('address')
+      address: formData.get('address'),
+      token: formData.get('token'),
     };
     const response = await myRequest(REGISTER_USER, variables);
-    data = response.createUser;
+    data = response.registerUser;
     return data;
 
   } catch (error) {

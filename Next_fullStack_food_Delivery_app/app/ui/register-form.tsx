@@ -10,6 +10,7 @@ import { registerUser } from '@/app/lib/actions';
 import AddressForm from '@/app/ui/address-form';
 import { GET_USERS_DATA } from '@/app/query/user.query';
 import { useQuery } from '@apollo/client';
+import Cookies from 'js-cookie';
 
 export default function RegisterForm() {
   const [data, formAction, isPending] = useActionState(registerUser, undefined);
@@ -21,6 +22,7 @@ export default function RegisterForm() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [token, setToken] = useState('');
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
@@ -53,6 +55,12 @@ export default function RegisterForm() {
   const router = useRouter();
 
   useEffect(() => {
+
+    const storedToken = Cookies.get('authToken');
+    if (storedToken) {
+      setToken(storedToken);
+    }
+
     if (userData) {
       setEmail(userData.user.userData.email);
       setUsername(userData.user.userData.username);
@@ -151,6 +159,19 @@ export default function RegisterForm() {
                 required
               />
               <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
+          <div style={{ display: 'none' }}>
+            <div className="relative">
+              <input
+                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                id="token"
+                type="text"
+                name="token"
+                hidden={true}
+                readOnly
+                value={token}
+              />
             </div>
           </div>
           <div>
