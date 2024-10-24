@@ -29,7 +29,8 @@ interface IUser extends Document {
   addressBuyer?: mongoose.Types.ObjectId;
   addressDispatcher?: mongoose.Types.ObjectId;
   businessDescription?: string;
-  refreshToken?: string;
+  isEmailVerified?: boolean;
+  provider?: string;
 }
 
 // Define the schema for the User model
@@ -53,12 +54,14 @@ const userSchema: Schema<IUser> = new Schema({
   dispatcherStatus: { type: String, enum: ['available', 'busy', 'null'], default: 'null' },
   buyerStatus: { type: String, enum: ['available', 'busy', 'null'], default: 'null' },
   photo: { type: String },
+  isEmailVerified: { type: Boolean, default: false },
   products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
   addressSeller: { type: mongoose.Schema.Types.ObjectId, ref: 'Location' },
   addressBuyer: { type: mongoose.Schema.Types.ObjectId, ref: 'Location' },
   addressDispatcher: { type: mongoose.Schema.Types.ObjectId, ref: 'Location' },
   businessDescription: { type: String, maxlength: 300 },
-  locations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }]
+  locations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }],
+  provider: { type: String }
 });
 
 // Create a unique index for phoneNumber with sparse option

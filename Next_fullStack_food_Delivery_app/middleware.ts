@@ -9,6 +9,7 @@ import { xFrameOptionsMiddleware } from '@/lib/xFrameOptionsMiddleware';
 import { referrerPolicyMiddleware } from '@/lib/referrerPolicyMiddleware';
 import { permissionsPolicyMiddleware } from '@/lib/permissionsPolicyMiddleware';
 
+
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
 
@@ -52,3 +53,5 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: '/:path*',
 }
+
+

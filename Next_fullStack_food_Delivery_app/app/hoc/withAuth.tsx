@@ -2,49 +2,35 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
-import { GET_ACCESS_TOKEN } from '@/app/query/user.query';
 import CircularProgress from '@mui/material/CircularProgress';
 import { orange } from '@mui/material/colors';
-import { useLazyQuery } from '@apollo/client';
+import { getSession } from 'next-auth/react';
 
 export default function withAuth(WrappedComponent: React.ComponentType) {
   return (props: any) => {
     const router = useRouter();
-    const [getNewAccessToken, { loading, error, data }] = useLazyQuery(GET_ACCESS_TOKEN);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [errors, setError] = useState<string | null>(null);
 
     useEffect(() => {
-      const token = Cookies.get('authToken');
-      if (!token) {
-        const refreshToken = localStorage.getItem('refreshToken');
-
-        if (!refreshToken) {
-          router.push('/login');
-        } else {
-          getNewAccessToken({ variables: { refreshToken } });
-        }
-      }
-    }, [getNewAccessToken, router]);
-
-    useEffect(() => {
-      if (data && data.getNewAccessToken) {
-        if (data.getNewAccessToken.ok) {
-          Cookies.set('authToken', data.getNewAccessToken.token);
-        } else {
+      const checkAuthentication = async () => {
+        try {
+          const session = await getSession();
+          if (!session) {
+            router.push('/login');
+          } else {
+            setIsAuthenticated(true);
+          }
+        } catch (error) {
+          setError('Failed to check authentication');
           router.push('/login');
         }
-      }
-    }, [data, router]);
+      };
 
-    useEffect(() => {
-      if (error) {
-        setError(error.message);
-        router.push('/login');
-      }
-    }, [error, router]);
+      checkAuthentication();
+    }, [router]);
 
-    if (loading) {
+    if (isAuthenticated === null) {
       return (
         <div className="flex justify-center items-center h-screen">
           <CircularProgress
