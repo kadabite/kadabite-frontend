@@ -1,12 +1,10 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-// import { authConfig } from './auth.config';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
-import Google from "next-auth/providers/google"
-import Facebook from "next-auth/providers/facebook"
+import Google from "next-auth/providers/google";
+import Facebook from "next-auth/providers/facebook";
 import { User } from '@/models/user';
-
 
 async function saveGoogleUser(user: any, account: any, profile: any) {
   const userLogin = await User.findOne({ email: profile.email });
@@ -44,6 +42,8 @@ async function verifyUserCredentials(email: string, password: string) {
   const user = await User.findOne({ email });
 
   if (user && await bcrypt.compare(password, user.passwordHash)) {
+    // Update user information to be loggedIn
+    await User.findByIdAndUpdate(user.id, { isLoggedIn: true });
     return {
       id: user.id,
     };
@@ -53,14 +53,20 @@ async function verifyUserCredentials(email: string, password: string) {
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   providers: [
-    Google,
-    // Facebook,
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+    Facebook({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    }),
     Credentials({
       async authorize(credentials) {
         const parsedCredentials = z
           .object({ email: z.string().email(), password: z.string().min(6) })
           .safeParse(credentials);
- 
+
         if (parsedCredentials.success && parsedCredentials.data) {
           const user = await verifyUserCredentials(credentials.email as string, credentials.password as string);
           if (user) {
@@ -94,6 +100,15 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         await saveFacebookUser(user, account, profile);
       }
       return true;
-    }
+    },
+  },
+  events: {
+    async signOut(message) {
+      if ('session' in message && message.session?.userId) {
+        await User.findByIdAndUpdate(message.session.userId, { isLoggedIn: false });
+      } else if ('token' in message && message.token?.id) {
+        await User.findByIdAndUpdate(message.token.id, { isLoggedIn: false });
+      }
+    },
   },
 });

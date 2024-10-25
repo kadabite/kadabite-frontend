@@ -11,7 +11,6 @@ import { Button } from '@/app/ui/button';
 import { useRouter } from 'next/navigation';
 import { useActionState, useEffect } from 'react';
 import { authenticate } from '@/app/lib/actions';
-import Cookies from 'js-cookie';
 import CircularProgress from '@mui/material/CircularProgress';
 import Link from 'next/link';
 
@@ -23,14 +22,7 @@ export default function LoginForm() {
   const router = useRouter();
 
   useEffect(() => {
-    if (data && data.token) {
-      // remove old cookies
-      Cookies.remove('authToken');
-      // Store the token in a cookie
-      Cookies.set('authToken', data.token, { expires: Number(process.env.NEXT_PUBLIC_ACCESS_TOKEN_EXPIRES_IN), sameSite: 'strict', secure: true });
-
-      localStorage.setItem('refreshToken', data.refreshToken);
-      // Redirect to a protected page
+    if (data && data.ok) {
       router.push('/dashboard');
     }
   }, [data, router]);

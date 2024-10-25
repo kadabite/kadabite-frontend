@@ -1,14 +1,9 @@
+"use client"
+
 import { Button } from '@/app/ui/button';
-import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation';
+import { signOut } from "next-auth/react"
 
 
 export default function LogoutButton() {
-
-    const router = useRouter();
-    return <Button onClick={() => {
-        localStorage.removeItem('refreshToken');
-        Cookies.remove('authToken');
-        router.push('/login');
-    }}>Logout</Button>
+    return <Button onClick={() => { signOut(); }}>Logout</Button>
 }

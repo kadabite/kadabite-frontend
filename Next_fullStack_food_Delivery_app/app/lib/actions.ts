@@ -6,8 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { myRequest } from '@/app/api/graphql/utils';
 import { FORGOT_PASSWORD, LOGIN, RESET_PASSWORD, CREATE_USER, UPDATE_USER, REGISTER_USER } from '@/app/query/user.query';
-import { Message } from '@/lib/graphql-types';
-// import { signIn } from '@/auth';
+import { auth, signIn } from '@/auth';
 // import { AuthError } from 'next-auth';
 
 
@@ -212,26 +211,29 @@ export async function registerUser(
   }
 }
 
-
 export async function authenticate(
-  prevState: string | undefined,
+  prevState: { message: string; ok: boolean; statusCode: number } | undefined,
   formData: FormData,
 ) {
-  let data;
   try {
     const variables = {
       email: formData.get('email'),
       phoneNumber: formData.get('phoneNumber'),
       password: formData.get('password'),
     };
-    const response = await myRequest(LOGIN, variables);
-    data = response.login;
-    return data;
 
+    const result = await signIn('credentials', {
+      email: variables.email,
+      password: variables.password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      return { message: 'An error occurred during authentication.', ok: false, statusCode: 400 };
+    }
+
+    return { message: 'Signed in successfully!', ok: true, statusCode: 201 };
   } catch (error) {
-
-    if (data) data.message = 'An error occurred during authentication.';
-    else data = { message: 'An error occurred during authentication.' };
-    return data;
+    return { message: 'An error occurred during authentication.',  ok: true, statusCode: 500 };
   }
 }
