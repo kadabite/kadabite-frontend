@@ -18,6 +18,7 @@ async function saveGoogleUser(user: any, account: any, profile: any) {
     photo: profile.picture,
     isEmailVerified: profile.email_verified,
     provider: account.provider,
+    role: 'user',
   });
 
   await newUser.save();
@@ -34,6 +35,7 @@ async function saveFacebookUser(user: any, account: any, profile: any) {
     lastName: profile.name.split(' ')[1],
     photo: profile.picture,
     provider: account.provider,
+    role: 'user',
   });
   await newUser.save();
 }
@@ -46,6 +48,7 @@ async function verifyUserCredentials(email: string, password: string) {
     await User.findByIdAndUpdate(user.id, { isLoggedIn: true });
     return {
       id: user.id,
+      role: user.role,
     };
   }
   return null;
@@ -86,11 +89,13 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = await User.findById(user.id).then((user) => user?.role) || 'guest';
       }
       return token;
     },
     async session({ session, token }) {
       session.user.id = token.id as string;
+      session.user.role = token.role as string;
       return session;
     },
     async signIn({ user, account, profile }) {

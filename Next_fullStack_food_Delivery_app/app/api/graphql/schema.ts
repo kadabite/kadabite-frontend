@@ -121,8 +121,6 @@ type Mutation {
   deleteUser: Message!
   deleteUserLocation(locationId: ID!): Message!
   forgotPassword(email: String!): Message!
-  login(email: String!, password: String!): Message!
-  logout: Message!
   registerUser(
     firstName: String!
     lastName: String!
@@ -153,13 +151,6 @@ type Mutation {
   updateUser(
     firstName: String
     lastName: String
-    longitude: String
-    latitude: String
-    userName: String
-    lga: String
-    state: String
-    country: String
-    address: String
     buyerStatus: String
     sellerStatus: String
     dispatcherStatus: String

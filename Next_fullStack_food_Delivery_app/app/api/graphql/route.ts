@@ -5,6 +5,7 @@ import typeDefs from '@/app/api/graphql/schema';
 import resolvers from '@/app/api/graphql/resolvers';
 import dotenv from 'dotenv';
 import { initialize } from '@/lib/initialize';
+import { auth } from '@/auth';
 
 dotenv.config();
 
@@ -20,12 +21,16 @@ async function startServer() {
   });
 
   const handler = startServerAndCreateNextHandler<NextRequest>(apolloServer, {
-    context: async (req, res) => ({
-      req,
-      res,
-    }),
+    context: async (req, res) => {
+      const session = await auth();
+      if (!session) {
+        return { req, res, user: { id: '', role: 'guest' } };
+      }
+      const role = session?.user.role;
+      const id = session?.user.id;
+      return { req, res, role, user: { id, role } }
+    },
   });
-
   return handler;
 }
 

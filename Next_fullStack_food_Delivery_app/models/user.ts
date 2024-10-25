@@ -61,7 +61,7 @@ const userSchema: Schema<IUser> = new Schema({
   addressDispatcher: { type: mongoose.Schema.Types.ObjectId, ref: 'Location' },
   businessDescription: { type: String, maxlength: 300 },
   locations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }],
-  provider: { type: String }
+  provider: { type: String, default: 'credentials' }
 });
 
 // Create a unique index for phoneNumber with sparse option

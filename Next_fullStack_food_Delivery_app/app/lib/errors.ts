@@ -42,22 +42,42 @@ export class LgaNotFoundError extends Error {
 }
 
 export class UnauthorizedError extends Error {
-  constructor(message: string = 'You need to be an admin to access this route!') {
+  constructor(message: string = 'Contact the admin to take this action!') {
     super(message);
     this.name = 'UnauthorizedError';
   }
 }
 
 export class UserAlreadyExistsError extends Error {
-  constructor() {
-    super('User already exists!');
+  constructor(message: string = 'User already exists!') {
+    super(message);
     this.name = 'UserAlreadyExistsError';
   }
 }
 
 export class InvalidCredentialsError extends Error {
-  constructor() {
-    super('Invalid credentials!');
+  constructor(message: string = 'Invalid credentials!') {
+    super(message);
     this.name = 'InvalidCredentialsError';
+  }
+}
+
+export class CategoryNotFoundError extends Error {
+  constructor(message: string = 'Category not found!') {
+    super(message);
+    this.name = 'CategoryNotFoundError';
+  }
+}
+
+export class CategoryAlreadyExistsError extends Error {
+  constructor(message: string = 'Category already exists!') {
+    super(message);
+    this.name = 'CategoryAlreadyExistsError';
+  }
+}
+export class InvalidCategoryFormatError extends Error {
+  constructor(message: string = 'Invalid category format!') {
+    super(message);
+    this.name = 'InvalidCategoryFormatError';
   }
 }

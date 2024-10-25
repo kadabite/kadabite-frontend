@@ -215,17 +215,10 @@ export type MutationUpdateProductArgs = {
 export type MutationUpdateUserArgs = {
   firstName?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
-  userName?: InputMaybe<Scalars['String']['input']>;
   sellerStatus?: InputMaybe<Scalars['String']['input']>;
   buyerStatus?: InputMaybe<Scalars['String']['input']>;
   dispatcherStatus?: InputMaybe<Scalars['String']['input']>;
   vehicleNumber?: InputMaybe<Scalars['String']['input']>;
-  latitude?: InputMaybe<Scalars['String']['input']>;
-  longitude?: InputMaybe<Scalars['String']['input']>;
-  lga?: InputMaybe<Scalars['String']['input']>;
-  state?: InputMaybe<Scalars['String']['input']>;
-  country?: InputMaybe<Scalars['String']['input']>;
-  address?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type MutationRegisterUserArgs = {

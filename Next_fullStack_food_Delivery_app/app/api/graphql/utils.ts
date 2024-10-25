@@ -3,6 +3,8 @@ import { IOrderItem, OrderItem } from '@/models/orderItem';
 import fetch, { Response } from 'node-fetch';
 import { AuthRequestHeaders } from '@/app/lib/definitions';
 import mongoose from 'mongoose';
+import { ROLE_BASED_ACCESS_CONTROL } from '@/rbac';
+import { Role, Permissions } from '@/types/types';
 
 export class HttpError extends Error {
   statusCode: number;
@@ -61,4 +63,17 @@ export async function myRequest(query: any, variables: Record<string, any>): Pro
     throw new Error(`GraphQL error: ${responseData.errors.map((error: any) => error.message).join(', ')}`);
   }
   return responseData.data;
+}
+
+
+export function hasAccessTo(resolverName: keyof Permissions, role: Role): Boolean {
+  try {
+    const access = ROLE_BASED_ACCESS_CONTROL[role];
+    if (access) {
+      return access[resolverName] ?? false;
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
 }

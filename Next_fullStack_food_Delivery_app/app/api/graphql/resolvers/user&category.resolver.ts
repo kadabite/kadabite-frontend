@@ -7,44 +7,61 @@ import Category from '@/models/category';
 import { redisClient } from '@/lib/initialize';
 import { myLogger } from '@/app/api/upload/logger';
 import { authRequest } from '@/app/api/datasource/user.data';
-import { loginMe } from '@/app/api/datasource/user.data';
 import _ from 'lodash';
-import { NewArgs } from '@/app/lib/definitions';
 import mongoose, { ObjectId } from 'mongoose';
 import jwt  from 'jsonwebtoken';
-import { MutationCreateUserArgs, MutationRegisterUserArgs, MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs } from '@/lib/graphql-types';
-import { UserAlreadyExistsError, CountryNotFoundError, StateNotFoundError, LgaNotFoundError, UserNotFoundError, InvalidCredentialsError } from '@/app/lib/errors';
+import { MutationCreateUserArgs, MutationRegisterUserArgs, MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs, MutationCreateCategoriesArgs, MutationDeleteCategoryArgs, MutationUpdateUserArgs } from '@/lib/graphql-types';
+import { UserAlreadyExistsError, CategoryNotFoundError, UnauthorizedError, CountryNotFoundError, StateNotFoundError, LgaNotFoundError, UserNotFoundError, InvalidCredentialsError,  CategoryAlreadyExistsError, InvalidCategoryFormatError } from '@/app/lib/errors';
+import { hasAccessTo } from '@/app/api/graphql/utils';
 
 
 export const userQueryResolvers = {
-  category: async (_parent: any, { id }: any, { req }: any) => {
-    // authenticate user
-    const response = await authRequest(req.headers.get('authorization'));
-
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
+  category: async (_parent: any, { id }: any, { user }: any) => {
     try {
+      const role = user.role;
+
+      // Check if the user has access to view categories
+      if (!hasAccessTo('viewCategories', role)) {
+        throw new UnauthorizedError('You do not have permission to view categories.');
+      }
+
       const categoryData = await Category.findById(id);
-      return { categoryData, statusCode: response.status, ok: true };
+      if (!categoryData) {
+        throw new CategoryNotFoundError('Category not found');
+      }
+
+      return { categoryData, statusCode: 200, ok: true };
     } catch (error) {
+      if (error instanceof UnauthorizedError) {
+        return { message: error.message, statusCode: 403, ok: false };
+      }
+
+      if (error instanceof CategoryNotFoundError) {
+        return { message: error.message, statusCode: 404, ok: false };
+      }
+
       myLogger.error('Error fetching category: ' + (error as Error).message);
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
 
-  categories: async (_parent: any, _: any, { req }: any) => {
-    // authenticate user
-    const response = await authRequest(req.headers.get('authorization'));
-
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
+  categories: async (_parent: any, _: any, { user }: any) => {
     try {
+      const role = user.role;
+
+      // Check if the user has access to view categories
+      if (!hasAccessTo('viewCategories', role)) {
+        throw new UnauthorizedError('You do not have permission to view categories.');
+      }
+
       const categoriesData = await Category.find();
-      return { categoriesData, statusCode: response.status, ok: true };
+      return { categoriesData, statusCode: 200, ok: true };
     } catch (error) {
-      myLogger.error('Error fetching category: ' + (error as Error).message);
+      if (error instanceof UnauthorizedError) {
+        return { message: error.message, statusCode: 403, ok: false };
+      }
+
+      myLogger.error('Error fetching categories: ' + (error as Error).message);
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
@@ -119,56 +136,69 @@ export const userQueryResolvers = {
     }
   },
 
-  user: async (_parent: any, _: any, { req }: any) => {
-    // authenticate user
-    const response = await authRequest(req.headers.get('authorization'));
-
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    const { user, message, statusCode, ok } = await response.json();
-    if (!user) return { message, statusCode, ok };
+  user: async (_parent: any, _: any, { user }: any) => {
     try {
-      const userData = await User.findById((user._id as ObjectId).toString());
-      return { userData, statusCode: response.status, ok: true };
+      const role = user.role;
+
+      // Check if the user has access to view users
+      if (!hasAccessTo('viewUsers', role)) {
+        throw new UnauthorizedError('You do not have permission to view users.');
+      }
+
+      const userData = await User.findById(user.id);
+      if (!userData) {
+        throw new UserNotFoundError('User not found');
+      }
+
+      return { userData, statusCode: 200, ok: true };
     } catch (error) {
+      if (error instanceof UnauthorizedError) {
+        return { message: error.message, statusCode: 403, ok: false };
+      }
+
+      if (error instanceof UserNotFoundError) {
+        return { message: error.message, statusCode: 404, ok: false };
+      }
+
       myLogger.error('Error fetching user: ' + (error as Error).message);
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
 
-  users: async (_parent: any, _: any, { req }: any) => {
-    // authenticate user
-    const response = await authRequest(req.headers.get('authorization'));
+  users: async (_parent: any, _: any, { user }: any) => {
+    const role = user.role;
 
-    if (!response.ok) {
-      throw new Error(response.statusText)
+    // Check if the user has access to view users
+    if (!hasAccessTo('viewUsers', role)) {
+      throw new UnauthorizedError('You do not have permission to view users.');
     }
-    const { isAdmin } = await response.json();
-    if (!isAdmin) return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
     try {
       const usersData = await User.find();
+      if (!usersData) {
+        throw new UserNotFoundError();
+      }
       return { usersData, statusCode: 200, ok: true };
     } catch (error) {
       myLogger.error('Error fetching users: ' + (error as Error).message);
+      if (error instanceof UserNotFoundError) {
+        return { message: error.message, statusCode: 404, ok: false };
+      }
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
 }
 
 export const userMutationResolvers = {
-  createCategory: async (_parent: any, { name }: any, { req }: any) => {
-    // authenticate user who must be an admin
-    const response = await authRequest(req.headers.get('authorization'));
-
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    const { isAdmin } = await response.json();
-    if (!isAdmin) return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
-
+  createCategory: async (_parent: any, { name }: any, { user }: any) => {
     try {
-      // trim leading and ending whitespaces if any
+      const role = user.role;
+
+      // Check if the user has access to create categories
+      if (!hasAccessTo('createCategory', role)) {
+        throw new UnauthorizedError('You do not have permission to create categories.');
+      }
+
+      // Trim leading and ending whitespaces if any
       name = _.trim(name);
       const listCategories = ['Consumable Products', 'Non-Consumable Products'];
 
@@ -177,7 +207,7 @@ export const userMutationResolvers = {
 
       // Validate category format
       if (!categoryFormat.test(name)) {
-        return { message: 'Invalid category format', statusCode: 400, ok: false };
+        throw new InvalidCategoryFormatError('Invalid category format');
       }
 
       // Execute the regex and check if the result is not null
@@ -185,16 +215,16 @@ export const userMutationResolvers = {
       if (match && match[1]) {
         const mainName = match[1];
         if (!listCategories.includes(mainName)) {
-          return { message: 'Invalid category name', statusCode: 400, ok: false };
+          throw new InvalidCategoryFormatError('Invalid category name');
         }
       } else {
-        return { message: 'Invalid category format', statusCode: 400, ok: false };
+        throw new InvalidCategoryFormatError('Invalid category format');
       }
 
       // Check if category already exists
       const existingCategory = await Category.findOne({ name });
       if (existingCategory) {
-        return { message: 'Category already exists', statusCode: 400, ok: false };
+        throw new CategoryAlreadyExistsError('Category already exists');
       }
 
       // Create and save new category
@@ -203,68 +233,100 @@ export const userMutationResolvers = {
       return { categoryData, statusCode: 201, ok: true };
 
     } catch (error) {
+      if (error instanceof UnauthorizedError) {
+        return { message: error.message, statusCode: 403, ok: false };
+      }
+
+      if (error instanceof InvalidCategoryFormatError) {
+        return { message: error.message, statusCode: 400, ok: false };
+      }
+
+      if (error instanceof CategoryAlreadyExistsError) {
+        return { message: error.message, statusCode: 400, ok: false };
+      }
+
       myLogger.error('Error creating category: ' + (error as Error).message);
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
 
-  createCategories: async (_parent: any, { name }: any, { req }: any) => {
-    // authenticate user who must be an admin
-    const response = await authRequest(req.headers.get('authorization'));
+  createCategories: async (_parent: any, { name }: MutationCreateCategoriesArgs, { user }: any) => {
+    try {
+      const role = user.role;
 
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    const { isAdmin } = await response.json();
-    if (!isAdmin) return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
-
-    if (!Array.isArray(name)) {
-      return { message: 'Name must be an array', statusCode: 400, ok: false };
-    }
-    if (name.length === 0) {
-      return { message: 'Name cannot be empty', statusCode: 400, ok: false };
-    }
-    for (let singleName of name) {
-      try {
-        const listCategories = ['Consumable Products', 'Non-Consumable Products'];
-
-        // Define the category format regex
-        const categoryFormat = /^([\w\s]+)\|[\w\s]+\|[\w\s]+$/;
-
-        // remove whitespaces from start and end of the string if any
-        singleName = _.trim(singleName);
-
-        // Validate category format
-        if (!categoryFormat.test(singleName)) {
-          return { message: 'Invalid category format', statusCode: 400, ok: false };
-        }
-
-        // Validate input
-        const match = categoryFormat.exec(singleName);
-        if (match && match[1]) {
-          const mainName = match[1];
-          if (!listCategories.includes(mainName)) {
-            return { message: 'Invalid category name', statusCode: 400, ok: false };
-          }
-        } else {
-          return { message: 'Invalid category format', statusCode: 400, ok: false };
-        }
-
-        // Check if category already exists
-        const existingCategory = await Category.findOne({ name: singleName });
-        if (existingCategory) {
-          return { message: 'Category already exists', statusCode: 400, ok: false };
-        }
-
-        // Create and save new category
-        const category = new Category({ name: singleName });
-        await category.save();
-      } catch (error) {
-        myLogger.error('Error creating category: ' + (error as Error).message);
-        return { message: 'An error occurred!', statusCode: 500, ok: false };
+      // Check if the user has access to create categories
+      if (!hasAccessTo('createCategories', role)) {
+        throw new UnauthorizedError('You do not have permission to create categories.');
       }
+
+      // Validate input
+      if (!Array.isArray(name)) {
+        throw new InvalidCategoryFormatError('Name must be an array');
+      }
+      if (name.length === 0) {
+        throw new InvalidCategoryFormatError('Name cannot be empty');
+      }
+
+      const listCategories = ['Consumable Products', 'Non-Consumable Products'];
+      const categoryFormat = /^([\w\s]+)\|[\w\s]+\|[\w\s]+$/;
+
+      for (let singleName of name) {
+        try {
+          // Trim leading and ending whitespaces if any
+          singleName = _.trim(singleName);
+
+          // Validate category format
+          if (!categoryFormat.test(singleName)) {
+            throw new InvalidCategoryFormatError('Invalid category format');
+          }
+
+          // Validate input
+          const match = categoryFormat.exec(singleName);
+          if (match && match[1]) {
+            const mainName = match[1];
+            if (!listCategories.includes(mainName)) {
+              throw new InvalidCategoryFormatError('Invalid category name');
+            }
+          } else {
+            throw new InvalidCategoryFormatError('Invalid category format');
+          }
+
+          // Check if category already exists
+          const existingCategory = await Category.findOne({ name: singleName });
+          if (existingCategory) {
+            throw new CategoryAlreadyExistsError('Category already exists');
+          }
+
+          // Create and save new category
+          const category = new Category({ name: singleName });
+          await category.save();
+        } catch (error) {
+          if (error instanceof InvalidCategoryFormatError || error instanceof CategoryAlreadyExistsError) {
+            return { message: error.message, statusCode: 400, ok: false };
+          }
+
+          myLogger.error('Error creating category: ' + (error as Error).message);
+          return { message: 'An error occurred!', statusCode: 500, ok: false };
+        }
+      }
+
+      return { message: 'Many categories have been created successfully!', ok: true, statusCode: 201 };
+    } catch (error) {
+      if (error instanceof UnauthorizedError) {
+        return { message: error.message, statusCode: 403, ok: false };
+      }
+
+      if (error instanceof InvalidCategoryFormatError) {
+        return { message: error.message, statusCode: 400, ok: false };
+      }
+
+      if (error instanceof CategoryAlreadyExistsError) {
+        return { message: error.message, statusCode: 400, ok: false };
+      }
+
+      myLogger.error('Error creating categories: ' + (error as Error).message);
+      return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
-    return { 'message': 'Many categories have been created successfully!', ok: true, statusCode: 201 };
   },
 
   createUser: async (_parent: any, args: MutationCreateUserArgs, { req }: any) => {
@@ -437,46 +499,62 @@ export const userMutationResolvers = {
     }
   },
 
-  deleteCategory: async (_parent: any, { id }: any, { req }: any) => {
-    // authenticate user who must be an admin
-    const response = await authRequest(req.headers.get('authorization'));
-
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    const { isAdmin } = await response.json();
-    if (!isAdmin) return { message: 'You need to be an admin to access this route!', statusCode: 403, ok: false };
-
+  deleteCategory: async (_parent: any, { id }: MutationDeleteCategoryArgs, { user }: any) => {
     try {
+      const role = user.role;
+
+      // Check if the user has access to delete categories
+      if (!hasAccessTo('deleteCategory', role)) {
+        throw new UnauthorizedError('You do not have permission to delete categories.');
+      }
+
       const category = await Category.findByIdAndDelete(id);
       if (!category) {
-        return { message: 'Category not found', statusCode: 404, ok: false };
-
+        throw new CategoryNotFoundError('Category not found');
       }
-      return { message: 'Category has been deleted successfully!', statusCode: 201, ok: true };
+
+      return { message: 'Category has been deleted successfully!', statusCode: 200, ok: true };
     } catch (error) {
+      if (error instanceof UnauthorizedError) {
+        return { message: error.message, statusCode: 403, ok: false };
+      }
+
+      if (error instanceof CategoryNotFoundError) {
+        return { message: error.message, statusCode: 404, ok: false };
+      }
+
       myLogger.error('Error deleting category: ' + (error as Error).message);
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
 
-  deleteUser: async (_parent: any, _: any, { req }: any) => {
-    // authenticate user
-    const response = await authRequest(req.headers.get('authorization'));
-
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    const { user, message, statusCode, ok } = await response.json();
-    if (!user) return { message, statusCode, ok };
+  deleteUser: async (_parent: any, _: any, { user }: any) => {
     try {
-      const delUser = await User.findByIdAndUpdate((user._id as ObjectId).toString(), { isDeleted: true });
-      if (!delUser) return { message: 'Could not delete user!', statusCode: 500, ok: false }
+      const role = user.role;
+
+      // Check if the user has access to delete users
+      if (!hasAccessTo('deleteUser', role)) {
+        throw new UnauthorizedError('You do not have permission to delete users.');
+      }
+
+      const delUser = await User.findByIdAndUpdate(user.id, { isDeleted: true });
+      if (!delUser) {
+        throw new UserNotFoundError('Could not delete user!');
+      }
+
+      return { message: 'User deleted successfully!', statusCode: 200, ok: true };
     } catch (error) {
+      if (error instanceof UnauthorizedError) {
+        return { message: error.message, statusCode: 403, ok: false };
+      }
+
+      if (error instanceof UserNotFoundError) {
+        return { message: error.message, statusCode: 404, ok: false };
+      }
+
       myLogger.error('Error deleting user: ' + (error as Error).message);
-      return { 'message': 'An error occurred!', statusCode: 500, ok: false };
+      return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
-    return { message: 'User deleted successfully!', statusCode: 200, ok: true };
   },
 
   forgotPassword: async (_parent: any, { email }: MutationForgotPasswordArgs) => {
@@ -516,92 +594,40 @@ export const userMutationResolvers = {
       }
   },
 
-  login: async (_parent: any, args: { email: string; password: string; }) => {
-    const { email, password } = args;
-    // Login logic using the RESTful API (already implemented)
-    const loginResponse = await loginMe(email, password);
-    if (!loginResponse.ok) {
-      return { statusCode: loginResponse.statusCode, message: loginResponse.message, ok: loginResponse.ok };
-    }
-
-    const token = loginResponse.token;
-    const refreshToken = loginResponse.refreshToken;
-    
-    return { message: 'User logged in successfully', token, statusCode: 200, ok: true, refreshToken };
-  },
-
-  logout: async (_parent: any, _: any, { req }: any) => {
-    // authenticate user
-    const response = await authRequest(req.headers.get('authorization'));
-
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    const { user, message, statusCode, ok } = await response.json();
-    if (!user) return { message, statusCode, ok };
-  
+  updateUser: async (_parent: any, args: MutationUpdateUserArgs, { user }: any) => {
     try {
-      // Update the user information to be logged out
-      const updated = await User.findByIdAndUpdate((user._id as ObjectId).toString(), { isLoggedIn: false });
-      if (updated) return { 'message': 'Logged out successfully', statusCode: 200, ok: true };
-      else return { 'message': 'Unable to logout user!', statusCode: 400, ok: false };
-    } catch (error) {
-      myLogger.error('Error logging out: ' + (error as Error).message)
-      return { message: 'An error occurred!', statusCode: 500, ok: false };
-    }
-  },
+      const role = user.role;
 
-  updateUser: async (_parent: any, args: { firstName: any; lastName: any; username: any; email: any; phoneNumber: any; lgaId: any; vehicleNumber: any; userType: any; buyerStatus: any; sellerStatus: any; dispatcherStatus: any; }, { req }: any) => {
-    // authenticate user
-    const response = await authRequest(req.headers.get('authorization'));
+      // Check if the user has access to update users
+      if (!hasAccessTo('updateUser', role)) {
+        throw new UnauthorizedError('You do not have permission to update users.');
+      }
 
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    const { user, message, statusCode, ok } = await response.json();
-    if (!user) return { message, statusCode, ok };
-    try {
-      const {
-        firstName,
-        lastName,
-        username,
-        email,
-        phoneNumber,
-        lgaId,
-        vehicleNumber,
-        userType,
-        buyerStatus,
-        sellerStatus,
-        dispatcherStatus,
-      } = args;
-      const newArgs = {
-        firstName,
-        lastName,
-        username,
-        email,
-        phoneNumber,
-        lgaId,
-        vehicleNumber,
-        userType,
-        buyerStatus,
-        sellerStatus,
-        dispatcherStatus,
-      };
-
-      // use map, filter, reduce, etc.
-      const keys = Object.keys(newArgs);
-      const filteredArgs = keys.reduce((acc: Partial<NewArgs>, key) => {
-        if (newArgs[key as keyof NewArgs] !== undefined) {
-          acc[key as keyof NewArgs] = newArgs[key as keyof NewArgs];
+      // Filter out undefined values from args
+      const keys = Object.keys(args);
+      const filteredArgs = keys.reduce((acc: Partial<MutationUpdateUserArgs>, key) => {
+        if (args[key as keyof MutationUpdateUserArgs] !== undefined) {
+          acc[key as keyof MutationUpdateUserArgs] = args[key as keyof MutationUpdateUserArgs];
         }
         return acc;
       }, {});
 
-      const updated = await User.findByIdAndUpdate((user._id as ObjectId).toString(), filteredArgs);
-      if (updated) return { message: 'Updated successfully', statusCode: 200, ok: true };
-      else return { message: 'An error occurred!', statusCode: 500, ok: false };
+      const updated = await User.findByIdAndUpdate((user._id as ObjectId).toString(), filteredArgs, { new: true });
+      if (!updated) {
+        throw new UserNotFoundError('User not found');
+      }
+
+      return { message: 'Updated successfully', statusCode: 200, ok: true };
     } catch (error) {
-      myLogger.error('Error updating user: ' + (error as Error).message)
+      if (error instanceof UnauthorizedError) {
+        return { message: error.message, statusCode: 403, ok: false };
+      }
+
+      if (error instanceof UserNotFoundError) {
+        return { message: error.message, statusCode: 404, ok: false };
+      }
+
+      myLogger.error('Error updating user: ' + (error as Error).message);
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
