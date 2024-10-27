@@ -229,15 +229,15 @@ type Query {
   category(id: ID!): Message!
   categories: Message!
   findFoods(productName: String!): Message!
-  findRestaurants(username: String): Message!
   getAllOrders: Message!
   getAllProducts: Message!
   getAllProductsOfUsersByCategory(categoryId: ID!): Message!
   getAnOrderItem(orderItemId: ID!): Message!
   getMyOrderItems(orderId: ID!): Message!
   getMyOrders: Message!
-  getMyPayment(orderId: ID!): Message!
+  getMyPayments(orderId: ID!): Message!
   getNewAccessToken(refreshToken: String!): Message!
+  getOrderById(orderId: ID!): Message!
   getProduct(id: ID!): Message!
   getStates(country: String!): Message!
   getLgas(state: String!): Message!

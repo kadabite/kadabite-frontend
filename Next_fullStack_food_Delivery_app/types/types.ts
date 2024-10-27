@@ -12,10 +12,13 @@ export type Permissions = {
   deleteAnOrderItem?: boolean;
   deleteCategory?: boolean;
   deleteOrder?: boolean;
-  deleteOrderItemsNow?: boolean;
+  deleteOrderItems?: boolean;
   deleteProduct?: boolean;
   deleteUser?: boolean;
   deleteUserLocation?: boolean;
+  findFoods?: boolean;
+  getMyPayments?: boolean;
+  registerUser?: boolean;
   updateOrder?: boolean;
   updateOrderItems?: boolean;
   updatePassword?: boolean;
@@ -25,6 +28,7 @@ export type Permissions = {
   updateUserLocation?: boolean;
   viewCategories?: boolean;
   viewOrders?: boolean;
+  viewAllOrders?: boolean;
   viewProducts?: boolean;
   viewUsers?: boolean;
   viewLocations?: boolean;

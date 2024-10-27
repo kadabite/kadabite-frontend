@@ -6,12 +6,11 @@ import { State, Country, Lga, Location } from '@/models/location';
 import Category from '@/models/category';
 import { redisClient } from '@/lib/initialize';
 import { myLogger } from '@/app/api/upload/logger';
-import { authRequest } from '@/app/api/datasource/user.data';
 import _ from 'lodash';
 import mongoose, { ObjectId } from 'mongoose';
 import jwt  from 'jsonwebtoken';
 import { MutationCreateUserArgs, MutationRegisterUserArgs, MutationForgotPasswordArgs, MutationUpdatePasswordArgs, QueryGetNewAccessTokenArgs, MutationCreateCategoriesArgs, MutationDeleteCategoryArgs, MutationUpdateUserArgs } from '@/lib/graphql-types';
-import { UserAlreadyExistsError, CategoryNotFoundError, UnauthorizedError, CountryNotFoundError, StateNotFoundError, LgaNotFoundError, UserNotFoundError, InvalidCredentialsError,  CategoryAlreadyExistsError, InvalidCategoryFormatError } from '@/app/lib/errors';
+import { UserAlreadyExistsError, ProductNotFoundError, CategoryNotFoundError, UnauthorizedError, CountryNotFoundError, StateNotFoundError, LgaNotFoundError, UserNotFoundError, InvalidCredentialsError,  CategoryAlreadyExistsError, InvalidCategoryFormatError } from '@/app/lib/errors';
 import { hasAccessTo } from '@/app/api/graphql/utils';
 
 
@@ -66,16 +65,26 @@ export const userQueryResolvers = {
     }
   },
 
-  findFoods: async (_parent: any, { productName }: any, { req }: any) => {
+  findFoods: async (_parent: any, { productName }: any, { user }: any) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
-      // find the product by their name
-      // use the userId in the product model to find the user information
-      // return the user information and the product information
-      const productsData = await Product.find({ name: _.trim(productName) });
-      if (!productsData) return { message: 'No product was found!', statusCode: 404, ok: false }
-      // let foodsData = [];
-      const foodsData = productsData.map(async (data) => {
-        const user = await User.findById(data.userId);
+      const role = user.role;
+
+      // Check if the user has access to find foods
+      if (!hasAccessTo('findFoods', role)) {
+        throw new UnauthorizedError('You do not have permission to find foods.');
+      }
+
+      // Find the product by their name
+      const productsData = await Product.find({ name: _.trim(productName) }).session(session);
+      if (!productsData || productsData.length === 0) {
+        throw new ProductNotFoundError('No product was found!');
+      }
+
+      // Map the product data to include user information
+      const foodsData = await Promise.all(productsData.map(async (data) => {
+        const user = await User.findById(data.userId).session(session);
         return {
           id: data._id,
           name: data.name,
@@ -92,23 +101,24 @@ export const userQueryResolvers = {
           photo: data.photo,
           addressSeller: user?.addressSeller,
         };
-      });
+      }));
+
+      await session.commitTransaction();
       return { foodsData, statusCode: 200, ok: true };
     } catch (error) {
-      myLogger.error('Error fetching users: ' + (error as Error).message);
-      return { message: 'An error occurred!', statusCode: 500, ok: false };
-    }
-  },
+      await session.abortTransaction();
+      if (error instanceof UnauthorizedError) {
+        return { message: error.message, statusCode: 403, ok: false };
+      }
 
-  findRestaurants: async (_parent: any, { }: any, { req }: any) => {
-    // data: name, image, id, altText, businessDescription
-    try {
-      const usersData = await User.find();
+      if (error instanceof ProductNotFoundError) {
+        return { message: error.message, statusCode: 404, ok: false };
+      }
 
-      return { usersData, statusCode: 200, ok: true };
-    } catch (error) {
-      myLogger.error('Error fetching users: ' + (error as Error).message);
+      myLogger.error('Error fetching foods: ' + (error as Error).message);
       return { message: 'An error occurred!', statusCode: 500, ok: false };
+    } finally {
+      session.endSession();
     }
   },
 
@@ -329,15 +339,18 @@ export const userMutationResolvers = {
     }
   },
 
-  createUser: async (_parent: any, args: MutationCreateUserArgs, { req }: any) => {
+  createUser: async (_parent: any, args: MutationCreateUserArgs, { user }: any) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-      const {
-        email,
-        password,
-        phoneNumber,
-      } = args;
+      const role = user?.role;
+
+      // Check if the user has access to create a user
+      if (!hasAccessTo('createUser', role)) {
+        throw new UnauthorizedError('You do not have permission to create a user.');
+      }
+
+      const { email, password, phoneNumber } = args;
 
       // Check if email or phoneNumber is provided
       if (!email && !phoneNumber) {
@@ -382,6 +395,10 @@ export const userMutationResolvers = {
       await session.abortTransaction();
       myLogger.error('Error creating user: ' + (error as Error).message);
 
+      if (error instanceof UnauthorizedError) {
+        return { message: error.message, statusCode: 403, ok: false };
+      }
+
       if (error instanceof UserAlreadyExistsError || error instanceof InvalidCredentialsError) {
         return { message: error.message, statusCode: 400, ok: false };
       }
@@ -392,20 +409,15 @@ export const userMutationResolvers = {
     }
   },
 
-  registerUser: async (_parent: any, args: MutationRegisterUserArgs, { req }: any) => {
-
+  registerUser: async (_parent: any, args: MutationRegisterUserArgs, { user }: any) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-      // Authenticate user
+      const role = user?.role;
 
-      const response = await authRequest(req.headers.get('authorization'));
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      const { user } = await response.json();
-      if (!user) {
-        throw new UserNotFoundError();
+      // Check if the user has access to register a user
+      if (role && !hasAccessTo('registerUser', role)) {
+        throw new UnauthorizedError('You do not have permission to register a user.');
       }
 
       const {
@@ -473,8 +485,8 @@ export const userMutationResolvers = {
       existingUser.firstName = _.trim(firstName);
       existingUser.lastName = _.trim(lastName);
       existingUser.username = _.trim(username);
-      existingUser.email = existingUser.email ? existingUser.email: _.trim(email);
-      existingUser.phoneNumber = existingUser.phoneNumber? existingUser.phoneNumber:_.trim(phoneNumber);
+      existingUser.email = existingUser.email ? existingUser.email : _.trim(email);
+      existingUser.phoneNumber = existingUser.phoneNumber ? existingUser.phoneNumber : _.trim(phoneNumber);
       if (userType && ["seller", "buyer", "dispatcher"].includes(userType)) {
         existingUser.userType = userType as IUser["userType"];
       }
@@ -488,6 +500,10 @@ export const userMutationResolvers = {
     } catch (error) {
       await session.abortTransaction();
       myLogger.error('Error updating user: ' + (error as Error).message);
+
+      if (error instanceof UnauthorizedError) {
+        return { message: error.message, statusCode: 403, ok: false };
+      }
 
       if (error instanceof UserNotFoundError || error instanceof CountryNotFoundError || error instanceof StateNotFoundError || error instanceof LgaNotFoundError) {
         return { message: error.message, statusCode: 400, ok: false };

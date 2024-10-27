@@ -8,12 +8,19 @@ import mongoose, { ObjectId } from 'mongoose';
 import { MutationAddUserLocationArgs, MutationUpdateUserLocationArgs } from '@/lib/graphql-types';
 import addressesData, { Addresses } from '@/app/api/datasource/addresses.data';
 import { UserNotFoundError, CountryNotFoundError, StateNotFoundError, LgaNotFoundError, UnauthorizedError, LocationNotFoundError, DeletionError } from '@/app/lib/errors';
+import { hasAccessTo } from '@/app/api/graphql/utils';
 
 
 export const locationQueryResolvers = {
 
-  getCountries: async (_parent: any, _: any, { req }: any) => {
+  getCountries: async (_parent: any, _: any, { user }: any) => {
     try {
+      const role = user.role;
+
+      // Check if the user has access
+      if (!hasAccessTo('viewCountries', role)) {
+        throw new UnauthorizedError('You do not have permission to view Countries.');
+      }
       if (!redisClient) {
         myLogger.error('Redis client is not connected!');
       } else {
@@ -34,12 +41,19 @@ export const locationQueryResolvers = {
       return { countriesData: transformedData, statusCode: 200, ok: true };
     } catch (error) {
       myLogger.error('Error fetching countries: ' + (error as Error).message);
+      if (error instanceof UnauthorizedError) return { message: error.message, statusCode: 401, ok: false };
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
 
-  getLgas: async (_parent: any, { state }: { state: string }, { req }: any) => {
+  getLgas: async (_parent: any, { state }: { state: string }, { user}: any) => {
     try {
+      const role = user.role;
+
+      // Check if the user has access
+      if (!hasAccessTo('viewLgas', role)) {
+        throw new UnauthorizedError('You do not have permission to view lgas.');
+      }
       // check if the state is in the cache
       if (!redisClient) {
         myLogger.error('Redis client is not connected!');
@@ -62,12 +76,19 @@ export const locationQueryResolvers = {
       return { lgasData, statusCode: 200, ok: true };
     } catch (error) {
       myLogger.error('Error fetching lgas: ' + (error as Error).message);
+      if (error instanceof UnauthorizedError) return { message: error.message, statusCode: 401, ok: false };
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
 
-  getStates: async (_parent: any, { country }: { country: string }, { req }: any) => {
+  getStates: async (_parent: any, { country }: { country: string }, { user }: any) => {
     try {
+       const role = user.role;
+
+      // Check if the user has access
+      if (!hasAccessTo('viewStates', role)) {
+        throw new UnauthorizedError('You do not have permission to view States.');
+      }
       // check if the country is in the cache
       if (!redisClient) {
         myLogger.error('Redis client is not connected!');
@@ -90,27 +111,29 @@ export const locationQueryResolvers = {
       return { statesData, statusCode: 200, ok: true };
     } catch (error) {
       myLogger.error('Error fetching states: ' + (error as Error).message);
+      if (error instanceof UnauthorizedError) return { message: error.message, statusCode: 401, ok: false };
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
 
-  getUserLocations: async (_parent: any, _: any, { req }: any) => {
+  getUserLocations: async (_parent: any, _: any, { user }: any) => {
     try {
-      const response = await authRequest(req.headers.get('authorization'));
-      if (!response.ok) {
-        throw new Error(response.statusText);
+      const role = user.role;
+
+      // Check if the user has access
+      if (!hasAccessTo('viewLocations', role)) {
+        throw new UnauthorizedError('You do not have permission to view user location.');
       }
-      const { user } = await response.json();
-      if (!user) {
-        return { message: 'User not found!', statusCode: 404, ok: false };
-      }
-      const userInfo = await User.findById(user._id).populate('locations');
+
+      const userInfo = await User.findById(user.id).populate('locations');
       if (!userInfo) {
         return { message: 'User not found!', statusCode: 404, ok: false };
       }
       return { locationsData: userInfo.locations, statusCode: 200, ok: true };
     } catch (error) {
       myLogger.error('Error fetching user locations: ' + (error as Error).message);
+      if (error instanceof UnauthorizedError) return { message: error.message, statusCode: 401, ok: false };
+
       return { message: 'An error occurred!', statusCode: 500, ok: false };
     }
   },
@@ -118,19 +141,17 @@ export const locationQueryResolvers = {
 
 export const locationMutationResolvers = {
 
-  createLocation: async (_parent: any, { location }: { location: string }, { req }: any) => {
+  createLocation: async (_parent: any, { location }: { location: string }, { user }: any) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-      // Authenticate user
-      const response = await authRequest(req.headers.get('authorization'));
-      if (!response.ok) {
-        throw new Error(response.statusText);
+       const role = user.role;
+
+      // Check if the user has access to create Location
+      if (!hasAccessTo('createLocation', role)) {
+        throw new UnauthorizedError('You do not have permission to create Location.');
       }
-      const { isAdmin } = await response.json();
-      if (!isAdmin) {
-        throw new UnauthorizedError();
-      }
+
 
       const addresses = addressesData[location as keyof Addresses];
       if (!addresses) {
@@ -163,8 +184,8 @@ export const locationMutationResolvers = {
     } catch (error) {
       await session.abortTransaction();
       myLogger.error('Error creating location: ' + (error as Error).message);
-
-      if (error instanceof UnauthorizedError || error instanceof CountryNotFoundError) {
+      if (error instanceof UnauthorizedError) return { message: error.message, statusCode: 401, ok: false };
+      if (error instanceof CountryNotFoundError) {
         return { message: error.message, statusCode: 400, ok: false };
       }
 
@@ -174,15 +195,17 @@ export const locationMutationResolvers = {
     }
   },
 
-  addUserLocation: async (_parent: any, { address, lga, state, country, longitude, latitude }: MutationAddUserLocationArgs, { req }: any) => {
+  addUserLocation: async (_parent: any, { address, lga, state, country, longitude, latitude }: MutationAddUserLocationArgs, { user }: any) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-      // Authenticate user
-      const response = await authRequest(req.headers.get('authorization'));
-      if (!response.ok) {
-        throw new Error(response.statusText);
+      const role = user.role;
+
+      // Check if the user has access to add user location to user
+      if (!hasAccessTo('addUserLocation', role)) {
+        throw new UnauthorizedError('You do not have permission to add user location!');
       }
+
       let locationId;
 
       // Find country
@@ -213,11 +236,8 @@ export const locationMutationResolvers = {
       locationId = savedLocation._id;
 
       // Add location to user
-      const { user } = await response.json();
-      if (!user) {
-        throw new UserNotFoundError();
-      }
-      const userInfo = await User.findById(user._id).session(session);
+
+      const userInfo = await User.findById(user.id).session(session);
       if (!userInfo) {
         throw new UserNotFoundError();
       }
@@ -228,7 +248,7 @@ export const locationMutationResolvers = {
     } catch (error) {
       await session.abortTransaction();
       myLogger.error('Error creating location: ' + (error as Error).message);
-
+      if (error instanceof UnauthorizedError) return { message: error.message, statusCode: 401, ok: false };
       if (error instanceof UserNotFoundError || error instanceof CountryNotFoundError || error instanceof StateNotFoundError || error instanceof LgaNotFoundError) {
         return { message: error.message, statusCode: 400, ok: false };
       }
@@ -239,21 +259,19 @@ export const locationMutationResolvers = {
     }
   },
 
-  deleteUserLocation: async (_parent: any, { locationId }: { locationId: string }, { req }: any) => {
+  deleteUserLocation: async (_parent: any, { locationId }: { locationId: string }, { user }: any) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-      // Authenticate user
-      const response = await authRequest(req.headers.get('authorization'));
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      const { user } = await response.json();
-      if (!user) {
-        throw new UserNotFoundError();
+      const role = user.role;
+
+      // Check if the user has access to delete user's location
+      if (!hasAccessTo('deleteUserLocation', role)) {
+        throw new UnauthorizedError('You do not have permission to delete User Location.');
       }
 
-      const userInfo = await User.findById(user._id).session(session);
+
+      const userInfo = await User.findById(user.id).session(session);
       if (!userInfo) {
         throw new UserNotFoundError();
       }
@@ -275,7 +293,7 @@ export const locationMutationResolvers = {
     } catch (error) {
       await session.abortTransaction();
       myLogger.error('Error deleting location: ' + (error as Error).message);
-
+      if (error instanceof UnauthorizedError) return { message: error.message, statusCode: 401, ok: false };
       if (error instanceof UserNotFoundError || error instanceof LocationNotFoundError || error instanceof DeletionError) {
         return { message: error.message, statusCode: 400, ok: false };
       }
@@ -286,21 +304,18 @@ export const locationMutationResolvers = {
     }
   },
 
-  updateUserLocation: async (_parent: any, { locationId, address, lga, state, country, longitude, latitude }: MutationUpdateUserLocationArgs, { req }: any) => {
+  updateUserLocation: async (_parent: any, { locationId, address, lga, state, country, longitude, latitude }: MutationUpdateUserLocationArgs, { user }: any) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-      // Authenticate user
-      const response = await authRequest(req.headers.get('authorization'));
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      const { user } = await response.json();
-      if (!user) {
-        throw new UserNotFoundError();
+      const role = user.role;
+
+      // Check if the user has access to update User Location
+      if (!hasAccessTo('updateUserLocation', role)) {
+        throw new UnauthorizedError('You do not have permission to update User Location.');
       }
 
-      const userInfo = await User.findById(user._id).session(session);
+      const userInfo = await User.findById(user.id).session(session);
       if (!userInfo) {
         throw new UserNotFoundError();
       }
@@ -344,6 +359,7 @@ export const locationMutationResolvers = {
       await session.abortTransaction();
       myLogger.error('Error updating location: ' + (error as Error).message);
 
+      if (error instanceof UnauthorizedError) return { message: error.message, statusCode: 401, ok: false };
       if (error instanceof UserNotFoundError || error instanceof CountryNotFoundError || error instanceof StateNotFoundError || error instanceof LgaNotFoundError || error instanceof LocationNotFoundError) { 
         return { message: error.message, statusCode: 400, ok: false };
       }
