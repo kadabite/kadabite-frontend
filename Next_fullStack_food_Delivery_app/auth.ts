@@ -14,6 +14,7 @@ async function saveGoogleUser(user: any, account: any, profile: any) {
   const newUser = new User({
     email: profile.email,
     firstName: profile.given_name,
+    username: profile.email,
     lastName: profile.family_name,
     photo: profile.picture,
     isEmailVerified: profile.email_verified,
@@ -33,6 +34,7 @@ async function saveFacebookUser(user: any, account: any, profile: any) {
     email: profile.email,
     firstName: profile.name.split(' ')[0],
     lastName: profile.name.split(' ')[1],
+    username: profile.email,
     photo: profile.picture,
     provider: account.provider,
     role: 'user',
@@ -45,9 +47,11 @@ async function verifyUserCredentials(email: string, password: string) {
 
   if (user && await bcrypt.compare(password, user.passwordHash)) {
     // Update user information to be loggedIn
-    await User.findByIdAndUpdate(user.id, { isLoggedIn: true });
+    await User.findByIdAndUpdate(user._id as string, { isLoggedIn: true });
+    console.log(user.role);
+    console.log(user._id, '111111111111111111111111111111111');
     return {
-      id: user.id,
+      id: user._id as string,
       role: user.role,
     };
   }
@@ -57,13 +61,15 @@ async function verifyUserCredentials(email: string, password: string) {
 export const { auth, signIn, signOut, handlers } = NextAuth({
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      authorization: {
+        params: {
+          scope: 'email profile',
+        },
+      },
     }),
-    Facebook({
-      clientId: process.env.FACEBOOK_CLIENT_ID,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-    }),
+    // Facebook,
     Credentials({
       async authorize(credentials) {
         const parsedCredentials = z
@@ -85,11 +91,15 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
   session: {
     strategy: 'jwt',
   },
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
-        token.role = await User.findById(user.id).then((user) => user?.role) || 'guest';
+        const userInfo = await User.findOne({ email: user.email });
+        if (userInfo) {
+          token.id = userInfo._id as string;
+          token.role = userInfo.role as string;
+        }
       }
       return token;
     },
@@ -99,10 +109,14 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       return session;
     },
     async signIn({ user, account, profile }) {
-      if (account?.provider && (account.provider === 'google')) {
-        await saveGoogleUser(user, account, profile);
-      } else if (account?.provider && (account.provider === 'facebook')) {
-        await saveFacebookUser(user, account, profile);
+      try {
+        if (account?.provider && (account.provider === 'google')) {
+          await saveGoogleUser(user, account, profile);
+        } else if (account?.provider && (account.provider === 'facebook')) {
+          await saveFacebookUser(user, account, profile);
+        }
+      } catch(error) {
+        return false;
       }
       return true;
     },
@@ -115,5 +129,10 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         await User.findByIdAndUpdate(message.token.id, { isLoggedIn: false });
       }
     },
+  },
+  pages: {
+    signIn: '/auth/signin',
+    signOut: '/auth/signout',
+    error: '/auth/error',
   },
 });

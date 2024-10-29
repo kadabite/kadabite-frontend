@@ -22,7 +22,7 @@ const serverError = {
 };
 
 const rateLimiterOptions = {
-  points: 200, // Number of requests
+  points: 1000, // Number of requests
   duration: 900, // Per 15 minutes
   keyPrefix: 'rate-limit',
 };

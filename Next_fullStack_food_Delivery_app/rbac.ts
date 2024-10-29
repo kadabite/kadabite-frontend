@@ -45,6 +45,7 @@ export const ROLE_BASED_ACCESS_CONTROL: RoleBasedAccessControl = {
     viewProducts: true,
     viewOrders: true,
     viewUser: true,
+    viewUsers: true,
     addUserLocation: true,
     viewCategories: true,
     viewCategory: true,

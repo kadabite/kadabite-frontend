@@ -25,7 +25,7 @@ export async function middleware(request: NextRequest) {
     response = corsMiddleware(request);
   }
 
-  // Handle rate limiting for all pages
+  // // Handle rate limiting for all pages
   const rateLimitResponse = await handleRateLimiting(request);
   if (rateLimitResponse) {
     return rateLimitResponse;
@@ -53,5 +53,3 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: '/:path*',
 }
-
-
