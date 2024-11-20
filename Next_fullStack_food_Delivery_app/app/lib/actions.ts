@@ -6,7 +6,6 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { myRequest } from '@/app/api/graphql/utils';
 import { FORGOT_PASSWORD, LOGIN, RESET_PASSWORD, CREATE_USER, UPDATE_USER, REGISTER_USER } from '@/app/query/user.query';
-import { Message } from '@/lib/graphql-types';
 // import { signIn } from '@/auth';
 // import { AuthError } from 'next-auth';
 
