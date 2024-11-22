@@ -3,7 +3,7 @@ import { gql } from '@apollo/client';
 export const CREATE_USER = gql`
   mutation createUser(
     $email: String
-    $phoneNumber: String
+    $phoneNumber: String!
     $password: String!
   ) {
     createUser(

@@ -13,7 +13,7 @@ export class HttpError extends Error {
 // Graphql request
 export async function myRequest(query: any, variables: Record<string, any>): Promise<any> {
   const token = variables?.token;
-  const response = await fetch(`${process.env.DELIVER_URL}/api/graphql`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_GRAPHQL_URL}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

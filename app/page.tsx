@@ -44,16 +44,20 @@ export default function Page() {
       <section aria-labelledby="hero-heading" className='relative w-full p-12 bg-orange-50 shadow-md bg-[url("/landing_page/meal_mockup3.jpg")] bg-bottom bg-no-repeat bg-[length:100%_50%] md:bg-right md:bg-[length:65%_130%]'>
         <div className="sr-only" id="hero-heading">Healthy Meals Delivered to You</div>
         <h1 className='pt-5 text-orange-900 md:w-1/2 w-full md:text-6xl text-3xl md:tracking-wide tracking-normal md:leading-tight leading-normal font-semibold'>
-          Experience Seamless Food Delivery with LinuXapp
+          Experience Seamless Food Delivery with Kadabite
         </h1>
         <p className='text-gray-900 w-full md:max-w-sm md:text-lg text-sm md:tracking-wide leading-normal mb-10'>
-            At Linux Kitchens, we revolutionize your food ordering experience by connecting you with local
-            restaurants and vendors effortlessly. With LinuXapp, enjoy quick access to a diverse range of
+            At Kadabites, we revolutionize your food ordering experience by connecting you with local
+            restaurants and vendors effortlessly. With Kadabite, enjoy quick access to a diverse range of
             delicious meals delivered right to your doorstep.
         </p>
         <div className='flex flex-row space-x-2 items-center mb-20'>
+        <Link href='/order'>
           <Button className='bg-orange-500 text-white rounded-lg' aria-label="Order Now for Healthy Meals">Order</Button>
+        </Link>
+        <Link href='/learn-more'>
           <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+        </Link>
         </div>
       </section>
 
@@ -74,13 +78,17 @@ export default function Page() {
         <h1 className='md:w-1/2 w-full text-center md:text-5xl text-2xl text-orange-900 font-semibold'>
           Savor the Flavor, Delivered to Your Door
         </h1>
-        <p className='md:w-1/2 w-full text-center text-slate-700 text-md'>At Linux Kitchens, we connect you with your favorite local restaurants and food vendors,
-          making ordering food a breeze. Experience the convenience of our LinuXapp and enjoy delicious
+        <p className='md:w-1/2 w-full text-center text-slate-700 text-md'>At Kadabites, we connect you with your favorite local restaurants and food vendors,
+          making ordering food a breeze. Experience the convenience of our Kadabite and enjoy delicious
           meals delivered right to you.
         </p>
         <div className='flex flex-row space-x-5'>
-          <Button className='bg-orange-500 text-white rounded-lg' aria-label="Download the app">Download</Button>
-          <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+          <Link href='/download'>
+            <Button className='bg-orange-500 text-white rounded-lg' aria-label="Download the app">Download</Button>
+          </Link>
+          <Link href='/learn-more'>
+            <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+          </Link>
         </div>
       </section>
 
@@ -91,28 +99,32 @@ export default function Page() {
             aria-hidden="true"
           />
           <h2 className='md:text-5xl text-2xl text-gray-700 font-semibold'>
-            Experience Effortless Food Ordering with LinuXapp
+            Experience Effortless Food Ordering with Kadabite
           </h2>
           <p className='text-slate-900 text-md'>
-            LinuXapp revolutionizes the way you order food, offering a smooth and intuitive interface
+            Kadabite revolutionizes the way you order food, offering a smooth and intuitive interface
             that makes your cravings just a few taps away.
             Enjoy a diverse selection of local vendors and restaurants, all delivered right
              to your doorstep with unmatched convenience.
           </p>
           <div className='flex flex-row space-x-5'>
-            <Button className='bg-orange-500 text-white rounded-lg' aria-label="Order Now for Healthy Meals">Order</Button>
-            <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
-          </div>
+            <Link href='/order'>
+              <Button className='bg-orange-500 text-white rounded-lg' aria-label="Order Now for Healthy Meals">Order</Button>
+            </Link>
+            <Link href='/learn-more'>
+              <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+            </Link>
+            </div>
         </div>
       </Imagetext>
 
       <Imagetext ariaLabelledby='feature_section_access' imageUrl='/landing_page/meal_mockup3.jpg' className=''>
         <div className='md:w-1/2 w-full flex flex-col justify-center space-y-7' id='feature_section_access'>
           <h2 className='md:text-5xl text-2xl text-gray-700 font-semibold'>
-            Experience Effortless Food Ordering with LinuXapp's User-Friendly Platform
+            Experience Effortless Food Ordering with Kadabite's User-Friendly Platform
           </h2>
           <p className='text-slate-900 text-md'>
-            With LinuXapp, ordering your favourite meals is just a few taps away.
+            With Kadabite, ordering your favourite meals is just a few taps away.
             Enjoy a hassle-free process that connects you directly to local restaurants and food
             vendors.
           </p>
@@ -181,7 +193,7 @@ export default function Page() {
             Discover the Best Local Restaurants and Enjoy Seamless Food Delivery
           </h1>
           <p className='self-center text-slate-500 font-bold text-md md:w-1/2 w-full tracking-wide md:leading-snug leading-normal'>
-            At Linux Kitchens, we make it easy to find your favorite local eateries.
+            At Kadabites, we make it easy to find your favorite local eateries.
             Our platform allows you to explore variety of restaurants and cuisines right
             at your fingertips. Enjoy a hassle-free ordering experience that brings
             delicious meals straight to your door.
@@ -240,12 +252,16 @@ export default function Page() {
             Savor the Best Local Flavors Delivered Fast
           </h2>
           <p className='text-slate-900 text-md'>
-            Discover a world of culinary delights at your fingertips with LinuXapp. 
+            Discover a world of culinary delights at your fingertips with Kadabite. 
             We connect you with local restaurants and food vendors for a seamless ordering experience.
           </p>
           <div className='flex flex-row space-x-5'>
-            <Button className='bg-orange-500 text-white rounded-lg' aria-label="Order Now for Healthy Meals">Order</Button>
-            <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+            <Link href='/order'>
+              <Button className='bg-orange-500 text-white rounded-lg' aria-label="Order Now for Healthy Meals">Order</Button>
+            </Link>
+            <Link href='/learn-more'>
+              <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+            </Link>
           </div>
         </div>
       </Imagetext>
@@ -286,7 +302,9 @@ export default function Page() {
             </div>
           </div>
           <div className='flex flex-row space-x-5'>
-            <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+            <Link href='/learn-more'>
+              <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+            </Link>
             <Link href='/signup' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
               Sign Up &nbsp; &gt;
             </Link>
@@ -297,10 +315,10 @@ export default function Page() {
       <section className='shadow-2xl relative md:p-28 p-7 space-y-7 flex flex-col justify-center items-center bg-gradient-to-l from-orange-300 to-blue-200 w-full'>
         <h6 className='text-sm text-slate-800'>Discover</h6>
         <h1 className='md:w-3/7 w-full text-center md:text-5xl text-2xl text-orange-900 font-semibold'>
-        Explore the Amazing Featues of LinuXapp
+        Explore the Amazing Featues of Kadabite
         </h1>
         <p className='md:w-1/2 w-full text-center text-slate-700 text-md'>
-          LinuXapp offers a user-friendly interface that makes ordering food a breeze.
+          Kadabite offers a user-friendly interface that makes ordering food a breeze.
           Enjoy real-time tracking and a diverse selection of food options right at your fingertips.
         </p>
 
@@ -379,10 +397,12 @@ export default function Page() {
             
         </div>
         <div className='flex flex-row space-x-5'>
+          <Link href='/learn-more'>
             <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
-            <Link href='/signup' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
-              Sign Up &nbsp; &gt;
-            </Link>
+          </Link>
+          <Link href='/signup' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
+            Sign Up &nbsp; &gt;
+          </Link>
         </div>
       </section>
 
@@ -394,7 +414,7 @@ export default function Page() {
         </div>
         <div className='flex space-y-10 flex-col'>
           <h6 className='text-sm text-slate-800'>
-            Linux Kitchens bridges the gap between customers and local food vendors.
+            Kadabites bridges the gap between customers and local food vendors.
             Enjoy a seamless ordering experience while supporting your community.
           </h6>
           <div className='flex md:flex-row flex-col md:space-x-5 md:space-y-0 space-y-4'>
@@ -420,7 +440,9 @@ export default function Page() {
             </div>
           </div>
           <div className='flex flex-row space-x-5'>
-            <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+            <Link href='/learn-more'>
+              <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+            </Link>
             <Link href='/signup' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
               Sign Up &nbsp; &gt;
             </Link>
@@ -525,10 +547,10 @@ export default function Page() {
       <section className='shadow-2xl relative md:p-28 p-7 space-y-7 flex flex-col justify-center items-center bg-gradient-to-l from-orange-300 to-blue-200 w-full'>
         <h6 className='text-sm text-slate-800'>Connect</h6>
         <h1 className='md:w-3/7 w-full text-center md:text-5xl text-2xl text-orange-900 font-semibold'>
-          Discover How LinuXapp Transforms Food Delivery
+          Discover How Kadabite Transforms Food Delivery
         </h1>
         <p className='md:w-1/2 w-full text-center text-slate-700 text-md'>
-          LinuXapp revolutionizes the way we order food. Our platform seamlessly connects Customers
+          Kadabite revolutionizes the way we order food. Our platform seamlessly connects Customers
           with local food vendors, ensuring a delightful experience from start to finish.  
         </p>
         <div className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">
@@ -562,20 +584,22 @@ export default function Page() {
             
         </div>
         <div className='flex flex-row space-x-5'>
+          <Link href='/learn-more'>
             <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
-            <Link href='/signup' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
-              Sign Up &nbsp; &gt;
-            </Link>
+          </Link>
+          <Link href='/signup' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
+            Sign Up &nbsp; &gt;
+          </Link>
         </div>
       </section>
 
       <section className='shadow-2xl relative md:p-28 p-7 space-y-7 flex flex-col justify-center items-center bg-gradient-to-l from-orange-300 to-grey-200 w-full'>
         <h6 className='text-sm text-slate-800'>Connect</h6>
         <h1 className='md:w-3/7 w-full text-center md:text-5xl text-2xl text-orange-900 font-semibold'>
-          Discover How LinuXapp Transforms Food Delivery
+          Discover How Kadabite Transforms Food Delivery
         </h1>
         <p className='md:w-1/2 w-full text-center text-slate-700 text-md'>
-          With LinuXapp, ordering your favorite meals is simple and fast. Experience a seamless connection
+          With Kadabite, ordering your favorite meals is simple and fast. Experience a seamless connection
           between you and local restaurants. 
         </p>
         <div className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">
@@ -603,10 +627,12 @@ export default function Page() {
             
         </div>
         <div className='flex flex-row space-x-5'>
-            <Button aria-label="Learn more about how we operate" className='rounded-lg'>Order</Button>
-            <Link href='/' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
-              Learn More &nbsp; &gt;
-            </Link>
+          <Link href='/order'>
+            <Button aria-label="Order" className='rounded-lg'>Order</Button>
+          </Link>
+          <Link href='/' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
+            Learn More &nbsp; &gt;
+          </Link>
         </div>
       </section>
 
@@ -615,13 +641,15 @@ export default function Page() {
           Join the Food Revolution Today
         </h1>
         <p className='md:w-1/2 w-full text-center text-slate-700 text-md'>
-          Download LinuXapp now or sign up as a vendor or rider to get started!
+          Download Kadabite now or sign up as a vendor or rider to get started!
         </p>
         <div className='flex flex-row space-x-5'>
-            <Button aria-label="Learn more about how we operate" className='rounded-lg'>Download</Button>
-            <Link href='/' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
-              Learn More &nbsp; &gt;
-            </Link>
+          <Link href='/download'>
+            <Button aria-label="Download the app" className='rounded-lg'>Download</Button>
+          </Link>
+          <Link href='/learn-more' className='self-center text-slate-900 hover:text-orange-700 focus:text-orange-900 active:text-orange-900 text-sm tracking-tighter font-semibold'>
+            Learn More &nbsp; &gt;
+          </Link>
         </div>
       </section>
 
@@ -631,13 +659,17 @@ export default function Page() {
       <div className="flex flex-col text-gray-900 md:tracking-wide leading-normal mb-10 space-y-5">
         <h2 className='md:text-3xl text-xl font-semibold'>Order or Sell Food Today </h2>
         <p className='text-sm text-slate-500'>
-          Download LinuXapp now to explore delicious food options or
+          Download Kadabite now to explore delicious food options or
           start your own food business!
         </p>
       </div>
       <div className='flex flex-row space-x-2 items-center mb-20'>
-        <Button className='bg-orange-500 text-white rounded-lg' aria-label="download the app">Download</Button>
-        <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+        <Link href='/download'>
+          <Button className='bg-orange-500 text-white rounded-lg' aria-label="download the app">Download</Button>
+        </Link>
+        <Link href='/learn-more'>
+          <Button aria-label="Learn more about how we operate" className='rounded-lg'>Learn More</Button>
+        </Link>
       </div>
 
       <hr className='bg-orange-800 h-1 w-full' />
@@ -645,10 +677,10 @@ export default function Page() {
 
     <section aria-labelledby="download-app-bottom" className="w-full bg-gray-100 md:p-20 p-8 space-y-5">
       <div className="flex flex-col text-gray-900 md:tracking-wide leading-normal mb-10 space-y-5">
-        <h2 className='md:text-3xl text-xl font-semibold'>Stay Updated with Linux Kitchens </h2>
+        <h2 className='md:text-3xl text-xl font-semibold'>Stay Updated with Kadabites </h2>
         <p className='text-sm text-slate-500'>
           Subscribe to our newsletter for the latest updates,
-          promotions, and exclusive offers from Linux Kitchens.
+          promotions, and exclusive offers from Kadabites.
         </p>
       </div>
       <NewsletterForm />
@@ -666,13 +698,13 @@ export default function Page() {
             alt='company logo'
             height={30}
             width={100}
-            src='/landing_page/logo.png'
+            src='/landing_page/logo.jpg'
           />
         </div>
         <div className='flex flex-col text-slate-50'>
           <Typography sx={{ mt: 2, color: "black", fontSize: 20 }}>Quick Links</Typography>
           <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to home page">About Us</Link>
-          <Link href='/about' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to about page">Contact Us</Link>
+          <Link href='/aboutUs' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to about page">Contact Us</Link>
           <Link href='/app' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to app page">Our Services</Link>
           <Link href='/marketplace' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to marketplace">FAQ</Link>
           <Link href='/marketplace' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to marketplace">Blog</Link>
@@ -698,7 +730,7 @@ export default function Page() {
       <div 
         className='flex flex-col md:flex-row justify-around items-center text-slate-50 md:space-x-5 md:space-y-0 space-y-5 w-full bg-orange-700 p-5'
       >
-        <p>&copy; 2024 Linux Kitchens. All rights reserved.</p>
+        <p>&copy; 2024 Kadabites. All rights reserved.</p>
         <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to home page">Privacy Policy</Link>
         <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to about page">Terms of Use</Link>
         <Link href='/' className='cursor-pointer hover:text-gray-900 active:text-gray-900 focus:text-gray-900' aria-label="Go to app page">Cookie Settings</Link>

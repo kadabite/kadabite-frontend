@@ -5,12 +5,13 @@ import withAuth from '@/app/hoc/withAuth';
 import { GET_USERS } from '@/app/query/user.query';
 import LogoutButton from '@/app/ui/logout-button';
 import Loading from '@/app/ui/loading'
+import Error from '@/app/ui/error';
 // import { CREATE_NEW_LOCATION } from '@/app/query/location.query';
 import { useMutation } from '@apollo/client';
 import { Button } from '@/app/ui/button';
 import { ADD_LOCATION, GET_USER_LOCATIONS, DELETE_LOCATION, UPDATE_LOCATION } from '@/app/query/location.query';
 
-interface User { 
+interface User {
     firstName: string;
     lastName: string;
     email: string;
@@ -29,6 +30,9 @@ const Dashboard = () => {
     return (<Loading />);
   }
 
+  if (error) {
+    return (<Error message={error.message} />);
+  }
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">User Management Dashboard</h1>

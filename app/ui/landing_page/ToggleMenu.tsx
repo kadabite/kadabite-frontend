@@ -24,12 +24,13 @@ export default function ToggleMenu() {
 
   return (
     <>
-    <div className='fixed top-0 left-0 md:hidden bg-gray-50 flex flex-row justify-between shadow-md h-15 px-3 w-full overflow-x-hidden z-50'>
+    <div className='fixed top-0 left-0 md:hidden bg-gray-50 flex flex-row justify-between items-center shadow-md h-15 px-3 w-full overflow-x-hidden z-50'>
       <Image 
         alt='company logo'
-        height={30}
+        height={50}
         width={100}
-        src='/landing_page/logo.png'
+        src='/landing_page/logo.jpg'
+        className='h-12 w-auto'
       />
       <button onClick={() => setIsOpen(!isOpen)} aria-label="Open Menu" className="cursor-pointer">
         <AppsIcon sx={{ 
@@ -70,20 +71,20 @@ export function Navigation() {
   const [hash, setHash] = useState(0);
 
   useEffect(() => {
-    const location = window.location.hash;
+    const location = window.location.pathname;
     const index = navItems.findIndex(({ url }) => url === `/${location}`);
     if (index !== -1) setHash(index);
   }, [])
 
   return (
     <>
-    <nav aria-label="header section" className='hidden md:flex flex-row justify-between shadow-md h-20 items-center p-4 bg-gray-50 fixed z-50 left-0 top-0 w-full '>
+    <nav aria-label="header section" className='hidden md:flex flex-row justify-between shadow-md h-20 items-center p-4 bg-gray-50 fixed z-50 left-0 top-0 w-full'>
       <Image 
         alt='company logo'
         height={30}
         width={60}
-        src='/landing_page/logo.png'
-        className='cursor-pointer transition-transform transform hover:scale-105'
+        src='/landing_page/logo.jpg'
+        className='h-8 w-auto cursor-pointer transition-transform transform hover:scale-105'
       />
       <div className='flex flex-row xl:space-x-10'>
         { navItems.map(({ name, url }: { name: string, url: string}, index) => (
@@ -98,9 +99,17 @@ export function Navigation() {
       </div>
 
       <div className='flex flex-row space-x-2'>
-        <Button className='bg-orange-500'>Sign Up</Button>
+        <Link href='/signup'>
+            <Button className='bg-orange-500'>
+              Sign Up
+            </Button>
+        </Link>
         <div className='mt-auto mb-auto'> -or- </div>
-        <Button className='hover:bg-orange-400 focus-visible:outline-orange-500 active:bg-orange-600'>Login</Button>
+        <Link href='/login'>
+          <Button className='hover:bg-orange-400 focus-visible:outline-orange-500 active:bg-orange-600'>
+            Login
+          </Button>
+        </Link>
       </div>
     </nav>
     <div className="h-20 w-full hidden md:flex flex-row relative"></div>
