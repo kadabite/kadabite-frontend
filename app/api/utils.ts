@@ -29,7 +29,7 @@ export async function myRequest(query: any, variables: Record<string, any>): Pro
     throw new HttpError('Failed to fetch data', response.status);
   }
 
-  const responseData = await response.json();
+  const responseData = await response.json() as any;
   if (responseData.errors) {
     throw new Error(`GraphQL error: ${responseData.errors.map((error: any) => error.message).join(', ')}`);
   }
