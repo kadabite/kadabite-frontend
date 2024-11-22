@@ -7,7 +7,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import CircularProgress from '@mui/material/CircularProgress';
 import { orange } from '@mui/material/colors';
 import { useQuery } from '@apollo/client';
-import { Restaurant } from '@/lib/graphql-types';
+// import { Restaurant } from '@/lib/graphql-types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { GET_DATA } from '@/app/query/user.query';
@@ -84,7 +84,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
               />
             ) : (
               <div className='flex flex-col w-full h-full justify-center items-center'>
-                {data?.findFoods?.foodsData?.map((food: Restaurant, index: number) => (
+                {data?.findFoods?.foodsData?.map((food: any, index: number) => (
                   <Link href={food.userId} key={index} className="flex flex-row items-center space-x-4 overflow-x-auto p-4 m-2 bg-white border border-gray-200 rounded-md shadow-sm w-full cursor-pointer hover:bg-gray-100 focus:bg-gray-100 active:bg-gray-200">
                     <Image 
                       src={food.photo || '/landing_page/meal_mockup3.jpg'}
