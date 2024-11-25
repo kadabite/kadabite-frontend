@@ -1,5 +1,25 @@
 import { gql } from '@apollo/client';
 
+export const SUBSCRIBE_USER = gql`
+  mutation subscribeUser($email: String!) {
+    newsletter(email: $email) {
+      message
+      statusCode
+      ok
+      emailToken
+    }
+  }
+`;
+
+export const ADD_WAITLIST = gql`
+  mutation addWaitlist($email: String!, $lga: String!, $state: String!, $country: String!, $address: String) {
+    waitlist(email: $email, lga: $lga, state: $state, country: $country, address: $address) {
+      message
+      statusCode
+      ok
+    }
+  }
+`;
 export const CREATE_USER = gql`
   mutation createUser(
     $email: String
@@ -167,7 +187,7 @@ export const GET_DATA = gql`
         statusCode
       }
     }
-  `;
+`;
 
 export const GET_USERS_DATA = gql`
     query getUser {
@@ -183,4 +203,4 @@ export const GET_USERS_DATA = gql`
         }
       }
     }
-  `;
+`;

@@ -2,7 +2,16 @@
 
 import { z } from 'zod';
 import { myRequest } from '@/app/api/utils';
-import { FORGOT_PASSWORD, LOGIN, RESET_PASSWORD, CREATE_USER, UPDATE_USER, REGISTER_USER } from '@/app/query/user.query';
+import {
+  FORGOT_PASSWORD,
+  LOGIN,
+  RESET_PASSWORD,
+  CREATE_USER,
+  UPDATE_USER,
+  REGISTER_USER,
+  SUBSCRIBE_USER,
+  ADD_WAITLIST
+} from '@/app/query/user.query';
 // import { signIn } from '@/auth';
 // import { AuthError } from 'next-auth';
 
@@ -228,6 +237,48 @@ export async function authenticate(
 
     if (data) data.message = 'An error occurred during authentication.';
     else data = { message: 'An error occurred during authentication.' };
+    return data;
+  }
+}
+
+export async function subscribe(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  let data;
+  try {
+    const variables = {
+      email: formData.get('email'),
+    };
+    const response = await myRequest(SUBSCRIBE_USER, variables);
+    data = response.newsletter;
+    return data;
+  } catch (error) {
+    if (data) data.message = 'An error occurred during subscription.';
+    else data = { message: 'An error occurred during subscription.' };
+    return data;
+  }
+}
+
+export async function waitlist(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  let data;
+  try {
+    const variables = {
+      email: formData.get('email'),
+      lga: formData.get('lga'),
+      state: formData.get('state'),
+      country: formData.get('country'),
+      address: formData.get('address'),
+    };
+    const response = await myRequest(ADD_WAITLIST, variables);
+    data = response.waitlist;
+    return data;
+  } catch (error) {
+    if (data) data.message = 'An error occurred during waitlist.';
+    else data = { message: 'An error occurred during waitlist.' };
     return data;
   }
 }

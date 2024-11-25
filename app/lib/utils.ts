@@ -90,6 +90,7 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
 export const navItems = [
   { name: 'Home', url: '/' },
   { name: 'About Us', url: '/about_us' },
+  { name: 'Join our Waitlist', url: 'waitlist' },
   { name: 'Popular restaurants', url: '/#popular_restaurants' },
   { name: 'Contact', url: '/#contact' },
 ];

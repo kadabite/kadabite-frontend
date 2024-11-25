@@ -17,17 +17,13 @@ export async function myRequest(query: any, variables: Record<string, any>): Pro
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': token && `Bearer ${variables.token}`,
+      'Authorization': token && `Bearer ${variables?.token}`,
     },
     body: JSON.stringify({
       query: query.loc?.source.body,
       variables,
     }),
   });
-  if (!response.ok) {
-    myLogger.error(response.statusText);
-    throw new HttpError('Failed to fetch data', response.status);
-  }
 
   const responseData = await response.json() as any;
   if (responseData.errors) {

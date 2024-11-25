@@ -9,16 +9,16 @@ import {
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
 import { useActionState } from 'react';
-// import { authenticate } from '@/app/lib/actions';
+import { subscribe } from '@/app/lib/actions';
 
 export default function NewsletterForm() {
-    // const [errorMessage, formAction, isPending] = useActionState(
-	// 		authenticate,
-	// 		undefined,
-    // );
+    const [data, formAction, isPending] = useActionState(
+			subscribe,
+			undefined,
+    );
 
     return (
-			<form className="space-y-3 items-center w-full">
+			<form className="space-y-3 items-center w-full" action={formAction}>
 				<div className="flex md:flex-row flex-col md:space-x-5 md:space-y-0 space-y-5 text-center md:items-center items-left w-full rounded-lg">
 					<div>		
 							<div className="relative">
@@ -33,17 +33,17 @@ export default function NewsletterForm() {
 								<AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
 							</div>
 					</div>
-					{/* <Button className="rounded-lg" aria-disabled={isPending}>
+					<Button className="rounded-lg" aria-disabled={isPending}>
 						Join Now <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
 					</Button>
 					<div className="flex items-end space-x-1">
-						{errorMessage && (
+						{data && (!data?.ok ? (
 							<>
 								<ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-								<p className="text-sm text-red-500">{errorMessage}</p>
+								<p className="text-sm text-red-500">{data.message}</p>
 							</>
-						)}
-					</div> */}
+						): <p className="text-sm text-green-500">{data.message}</p>)}
+					</div>
 				</div>
 		</form>
     );
