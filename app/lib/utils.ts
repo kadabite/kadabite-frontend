@@ -91,9 +91,6 @@ export const navItems = [
   { name: 'Home', url: '/' },
   { name: 'About Us', url: '/about_us' },
   { name: 'Popular restaurants', url: '/#popular_restaurants' },
-  { name: 'How It Works', url: '/#how_it_works' },
-  { name: 'Why Choose Us', url: '/#why_choose_us' },
-  { name: 'Success Stories', url: '/#success_stories' },
   { name: 'Contact', url: '/#contact' },
 ];
 
