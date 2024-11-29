@@ -25,16 +25,13 @@ export default function WaitlistPage() {
     undefined
   );
 
-  const { loading, error, data: waitList } = useQuery(GET_WAITLIST);
+  const { loading, error, data: myWaitList } = useQuery(GET_WAITLIST);
 
-  if (error) {
-    console.log(error);
-  }
   useEffect(() => {
-    if (waitList) {
-      setWait(waitList.getWaitList.waitListData);
+    if (myWaitList) {
+      setWait(myWaitList.getWaitList.waitListData);
     }
-  }, [waitList]);
+  }, [myWaitList]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -58,8 +55,8 @@ export default function WaitlistPage() {
   return (
     <>
       <main className='pt-5 md:pt-0'>
-        <section className='relative w-full p-12 bg-orange-50 shadow-md'>
-          <Typography variant="h4" className='text-orange-900'>Join Our Waitlist</Typography>
+        <section className='relative w-full p-4 md:p-12 bg-orange-50 shadow-md'>
+          <Typography variant="h4" className='text-orange-900 text-center md:text-left'>Join Our Waitlist</Typography>
           <form className="space-y-3 items-center w-full" action={formAction}>
             <div className="flex flex-col">
               <div>
@@ -107,31 +104,31 @@ export default function WaitlistPage() {
       </form>
     </section>
 
-    <section className='relative w-full p-12 bg-slate-100 shadow-md'>
-      <Typography variant="h5" className='text-gray-700'>Current Waitlist</Typography>
+    <section className='relative w-full p-4 md:p-12 bg-slate-100 shadow-md'>
+      <Typography variant="h5" className='text-gray-700 text-center md:text-left'>Current Waitlist</Typography>
       {loading ? <Loading /> : (
-        <table className='min-w-full bg-white'>
-          <thead>
-            <tr>
-              <th className='py-2 px-4 border-b'>Email</th>
-              <th className='py-2 px-4 border-b'>LGA</th>
-              <th className='py-2 px-4 border-b'>State</th>
-              <th className='py-2 px-4 border-b'>Country</th>
-              <th className='py-2 px-4 border-b'>Created At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {wait.map((user: any, index) => (
-              <tr key={index}>
-                <td className='py-2 px-4 border-b'>{user?.email}</td>
-                <td className='py-2 px-4 border-b'>{user?.lga}</td>
-                <td className='py-2 px-4 border-b'>{user?.state}</td>
-                <td className='py-2 px-4 border-b'>{user?.country}</td>
-                <td className='py-2 px-4 border-b'>{new Date(user?.createdAt).toLocaleDateString()}</td>
+        <div className="overflow-x-auto">
+          <table className='min-w-full bg-white'>
+            <thead>
+              <tr>
+                <th className='py-2 px-4 border-b'>Email</th>
+                <th className='py-2 px-4 border-b'>Location</th>
+                <th className='py-2 px-4 border-b'>Created At</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {wait.map((user: any, index) => (
+                <tr key={index}>
+                  <td className='py-2 px-4 border-b'>{user?.email}</td>
+                  <td className='py-2 px-4 border-b'>{user?.location}</td>
+                  <td className='py-2 px-4 border-b'>
+                    {user?.createdAt ? new Date(parseInt(user.createdAt)).toLocaleString() : 'N/A'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </section>
   </main>

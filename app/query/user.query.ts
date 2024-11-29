@@ -4,13 +4,11 @@ export const GET_WAITLIST = gql `
   query getWaitList {
     getWaitList {
       message
-      statuscode
+      statusCode
       ok
       waitListData {
         email
-        lga
-        state
-        country
+        location
         createdAt
       }
     }

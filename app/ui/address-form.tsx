@@ -97,8 +97,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
               <option value="">Select a country</option>
               {loading ? (
                 <option className="text-green-500">loading...</option>
-              ) : error ? (
-                <option className="text-red-500">unable to load country now</option>
+              ) : (error || !data?.getCountries?.ok) ? (
+                <option className="text-red-500">Unable to load countries now!</option>
               ) : null}
               {data?.getCountries?.countriesData?.map((country: any) => (
                 <option key={country.id} value={country.name}>
@@ -125,8 +125,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
                 <option value="">Select a state</option>
                 {loadingState ? (
                   <option className="text-green-500">loading...</option>
-                ) : errorState ? (
-                  <option className="text-red-500">unable to load state now</option>
+                ) : (errorState || !statesData?.getStates?.ok) ? (
+                  <option className="text-red-500" onClick={()=> getStates({ variables: { state: selectedCountry } })}>Error, Click to reload!</option>
                 ) : null}
                 {statesData?.getStates?.statesData?.map((state: any) => (
                   <option key={state.id} value={state.name}>
@@ -154,8 +154,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
                 <option value="">Select an LGA</option>
                 {loadingLga ? (
                   <option className="text-green-500">loading...</option>
-                ) : errorLga ? (
-                  <option className="text-red-500">unable to load LGA now</option>
+                ) : (errorLga || !lgasData?.getLgas?.ok) ? (
+                  <option className="text-red-500" onClick={()=> getLgas({ variables: { state: selectedState } })}>error, click to reload!</option>
                 ) : null}
                 {lgasData?.getLgas?.lgasData?.map((lga: any) => (
                   <option key={lga.id} value={lga.name}>
