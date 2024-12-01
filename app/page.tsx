@@ -20,7 +20,7 @@ import { Suspense } from 'react';
 import { SearchSkeleton } from '@/app/ui/skeletons';
  
 export const metadata: Metadata = {
-  title: 'Invoices',
+  title: 'Food Delivery',
 };
 
 export default function Page() {
@@ -35,7 +35,7 @@ export default function Page() {
       <Search placeholder={placeholder}/>
     </Suspense>
     <main className='pt-5 md:pt-0'>
-      <section aria-labelledby="hero-heading" className='relative w-full p-12 bg-orange-50 shadow-md bg-[url("/landing_page/meal_mockup3.jpg")] bg-bottom bg-no-repeat bg-[length:100%_50%] md:bg-right md:bg-[length:65%_130%]'>
+      <section aria-labelledby="hero-heading" className='relative w-full p-12 bg-orange-50 shadow-md md:bg-[url("/landing_page/meal_mockup3.jpg")] bg-bottom bg-no-repeat md:bg-right md:bg-[length:65%_130%]'>
         <div className="sr-only" id="hero-heading">Healthy Meals Delivered to You</div>
         <h1 className='pt-5 text-orange-900 md:w-1/2 w-full md:text-6xl text-3xl md:tracking-wide tracking-normal md:leading-tight leading-normal font-semibold'>
           Experience Seamless Food Delivery with Kadabite
@@ -45,6 +45,13 @@ export default function Page() {
             restaurants and vendors effortlessly. With Kadabite, enjoy quick access to a diverse range of
             delicious meals delivered right to your doorstep.
         </p>
+        <Image 
+          width={500}
+          height={500}
+          className='rounded-lg md:hidden mb-5'
+          alt='Visual representation of the solution'
+          src='/landing_page/meal_mockup3.jpg'
+        />
         <div className='flex flex-row space-x-2 items-center mb-20'>
         <Link href='/order'>
           <Button className='bg-orange-500 text-white rounded-lg' aria-label="Order Now for Healthy Meals">Order</Button>
