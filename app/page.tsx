@@ -75,7 +75,6 @@ export default function Page() {
         </div>
       </Imagetext>
 
-
       <section className='relative md:p-28 p-7 space-y-7 flex flex-col justify-center items-center bg-gradient-to-l from-blue-300 to-orange-200 w-full'>
         <h1 className='md:w-1/2 w-full text-center md:text-5xl text-2xl text-orange-900 font-semibold'>
           Savor the Flavor, Delivered to Your Door
