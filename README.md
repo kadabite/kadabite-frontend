@@ -25,46 +25,30 @@ Deliver App is a delivery application that connects buyers, sellers, and dispatc
 
 ## Features
 
-- User authentication and authorization
-- Product management
-- Order management
-- Payment processing
-- Rate limiting
-- Logging
-- GraphQL API with Apollo Server
+
 
 ## Technologies Used
 
 - Node.js
-- Express.js
+- Next.js
 - Apollo Server
-- GraphQL
-- MongoDB
-- Mongoose
-- dotenv
-- bcrypt
-- cors
-- body-parser
-- express-rate-limit
-- graphql-shield
-- graphql-rate-limit
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js (v14 or higher)
-- MongoDB
-- Docker (optional, for containerized deployment)
-- Redis server
+- Git
+- Nginx
+- 
 
 ### Installation
 
 1. Clone the repository:
 
 ```sh
-   git clone https://github.com/dominic-source/Express_food_delivery_backend.git
-   cd Express_food_delivery_backend
+   git clone https://github.com/kadabite/kadabite-frontend.git
+   cd kadabite-frontend
 ```
 
 2. Install dependencies using pnpm:
@@ -73,48 +57,24 @@ Deliver App is a delivery application that connects buyers, sellers, and dispatc
     pnpm install
 ```
 
-3. Set permissions for database_mongo folder, this will preserve our database data
 
-```bash
-    chmod 777 -R ./database_mongo
-```
-
-4. Run docker compose to start mongodb
-
-```bash
-    docker compose up -d
-```
-
-5. Ensure that redis server is installed and start it
-
-6. Open a new terminal and start consumer precess
-
-```bash
-    cd utils
-    node consumer.js
-```
-
-7. Start the application, ensure you are in the root folder of the project
+3. Start the application, ensure you are in the root folder of the project
 
 ```bash
     pnpm start
 ```
 
-8. The server will start on the port specified in the environment variables (default is 5000).
+4. To run development build
+
+```bash
+    pnpm run build
+    pnpm run pm2:start
+```
+
+5. The server will start on the port specified in the environment variables (default is 3000).
 
 ### Environment Variables
 
-```bash
-DELIVER_MONGODB_HOST=localhost
-DELIVER_MONGODB_DB=example_db
-DELIVER_MONGODB_USER=example_user
-DELIVER_MONGODB_PWD=example_pwd
-DELIVER_MONGODB_PORT=port_number
-DELIVER_MONGODB_URL="example uri"
-DELIVER_URL=http://localhost:3000
-SECRET_KEY=secret_key
-FRONTEND_URL="http://localhost:3000"
-```
 
 ### Project Structure
 
@@ -234,9 +194,6 @@ FRONTEND_URL="http://localhost:3000"
 
 - `/graphql`: Main GraphQL endpoint for querying and mutating data.
 
-### REST Endpoints
-
-- `/api`: RESTful API routes for additional functionalities.
 
 ## Unittesting
 
