@@ -30,7 +30,7 @@ export default function withAuth(WrappedComponent: React.ComponentType) {
     useEffect(() => {
       if (data && data.getNewAccessToken) {
         if (data.getNewAccessToken.ok) {
-          Cookies.set('authToken', data.getNewAccessToken.token);
+          Cookies.set('authToken', data.getNewAccessToken.token, { sameSite: 'None', secure: true });
         } else {
           router.push('/login');
         }

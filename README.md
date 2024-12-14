@@ -37,10 +37,12 @@ Deliver App is a delivery application that connects buyers, sellers, and dispatc
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js (v18 or higher)
 - Git
 - Nginx
-- 
+- PM2
+- NPM
+- pNPM
 
 ### Installation
 
