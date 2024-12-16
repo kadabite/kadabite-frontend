@@ -457,7 +457,7 @@ export default function Page() {
           Our Team
         </h1>
         <p className='md:w-1/2 w-full text-center text-slate-700 text-md'>
-          Meet the passionate individuals driving Linux Kitchens forward.
+          Meet the passionate individuals driving Kadabite forward.
         </p>
       
         <div className="w-full p-5 md:p-8 flex flex-col md:flex-row flex-wrap md:items-center">

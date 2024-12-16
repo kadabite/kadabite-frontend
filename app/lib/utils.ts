@@ -147,33 +147,42 @@ export const connect2 = [
 
 export const team = [
   {
-    name: 'Alice Johnson',
+    name: 'Morba Chinonso',
     position: 'CEO & Founder',
-    description: 'Alice leads our vision, ensuring quality and innovation in every delivery.',
+    description: 'Chinonso leads our vision, ensuring quality and innovation in every delivery.',
     linkedIn: 'https://www.linkedin.com/in/chinonsomorba/',
     x: 'https://x.com/Cadatech1/',
     image: '/landing_page/testimonial1.jpg'
   },
   {
-    name: 'Mark Smith',
-    position: 'CTO',
-    description: 'Mark drives our technology strategy, enhancing user experience and operationsl efficiency.',
-    linkedIn: 'https://www.linkedin.com/in/chinonsomorba/',
-    x: 'https://x.com/Cadatech1/',
-    image: '/landing_page/testimonial1.jpg'
-  },
-  {
-    name: 'Sarah Lee',
-    position: 'Marketing Director',
+    name: 'Ekwomadu Emmanuel',
+    position: 'Marketing Director, UI/UX Designer',
     description: 'Sarah crafts our brand story, connecting with customers and food vendors alike.',
     linkedIn: 'https://www.linkedin.com/in/chinonsomorba/',
     x: 'https://x.com/Cadatech1/',
     image: '/landing_page/testimonial1.jpg'
   },
   {
-    name: 'James Brown',
-    position: 'Operations Manager',
+    name: 'Louis Obianke',
+    position: 'Marketter/Content Manager',
     description: 'James ensures smooth operations, optimizing logistics for timely deliveries.',
+    linkedIn: 'https://www.linkedin.com/in/chinonsomorba/',
+    x: 'https://x.com/Cadatech1/',
+    image: '/landing_page/testimonial1.jpg'
+  },
+  {
+    name: 'Akintola Azeez',
+    position: 'Senior DevOps Engineer',
+    description: 'James ensures smooth operations, optimizing logistics for timely deliveries.',
+    linkedIn: 'https://www.linkedin.com/in/chinonsomorba/',
+    x: 'https://x.com/Cadatech1/',
+    image: '/landing_page/testimonial1.jpg'
+  },
+
+    {
+    name: 'Afolabi Timothy',
+    position: 'Q/A engineer',
+    description: 'Timothy drives our technology strategy, enhancing user experience and operationsl efficiency.',
     linkedIn: 'https://www.linkedin.com/in/chinonsomorba/',
     x: 'https://x.com/Cadatech1/',
     image: '/landing_page/testimonial1.jpg'
@@ -186,7 +195,7 @@ export const testimonials = [
     name: 'Sarah Johnson',
     image: '/landing_page/testimonial1.jpg',
     altText: 'Photo of satisfied customer Jane Doe',
-    message: 'Linux Kitchens has completely changed the way I order food. The convenience and variety they offer are unmatched!',
+    message: 'Kadabite has completely changed the way I order food. The convenience and variety they offer are unmatched!',
     location: 'New York, NY',
     star: '⭐⭐⭐⭐⭐'
   },
