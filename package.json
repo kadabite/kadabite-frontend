@@ -4,6 +4,7 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
+    "pm2:start": "pm2 start npm --name kadabite-frontend -- start",
     "lint": "next lint"
   },
   "dependencies": {
